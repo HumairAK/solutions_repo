@@ -74,9 +74,26 @@ a {
 					color: lightblue;
 				}
 
-#drop-down {
-	display: none;
-}
+			/*.drop-menu {
+			    display: none;
+			    position: absolute;
+			    background-color: #f9f9f9;
+			    min-width: 160px;
+			    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			}
+
+			.drop-menu a {
+			    color: black;
+			    padding: 12px 16px;
+			    text-decoration: none;
+			    display: block;
+			    text-align: left;
+			}
+
+			.drop-down:hover .drop-menu {
+			    display: block;
+			}*/
+
 
 main {
 	

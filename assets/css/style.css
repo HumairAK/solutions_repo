@@ -73,13 +73,15 @@ a {
 }
 
 main {
-	position: relative;
+	
 	background-image: url("../images/main.jpg");
 	background-size: 250px 250px;
 	text-align: center;
-	height: 80%;
 	width: 100%;
-	overflow: auto;
+	min-height: 80%;
+	/*position: relative;
+	height: 80%;
+	overflow: auto;*/
 }
 
 /* Changes - main is a flex container for search content*/
@@ -87,19 +89,15 @@ main{
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-flow: column; /* Makes it grow vertically */
 }
 
 
 /* Changes - search is a flex container for h2 and bar, removed various attributes */
 main #search {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-
+	flex: 1;
 	width: 60%;
 	height: 100%;
-	vertical-align: middle;
 	background-color: rgba(235,235,235, 0.7);
 
 }
@@ -110,6 +108,7 @@ main #search h2{
 	color: gray;
 	font-size: 2.5em;
 	margin: 4%;
+	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
 main #search input[type=text] {

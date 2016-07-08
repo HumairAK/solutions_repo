@@ -45,7 +45,6 @@ a {
 
 	#top-bar img {
 		padding: 10%;
-		height: 3%;
 		width: auto;
 		/* Humair - I added this because size wasn't working for firefox*/
 		max-width: 150px;  

@@ -68,7 +68,7 @@ a {
 					color: lightblue;
 				}
 
-			.drop-menu {
+			/*.drop-menu {
 			    display: none;
 			    position: absolute;
 			    background-color: #f9f9f9;
@@ -86,7 +86,7 @@ a {
 
 			.drop-down:hover .drop-menu {
 			    display: block;
-			}
+			}*/
 
 
 main {

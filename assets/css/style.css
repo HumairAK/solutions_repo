@@ -41,6 +41,8 @@ a {
 		padding: 10%;
 		height: 3%;
 		width: auto;
+		/* Humair - I added this because size wasn't working for firefox*/
+		max-width: 150px;  
 	}
 
 
@@ -97,14 +99,34 @@ main {
 	overflow: auto;
 }
 
+/* Changes - main is a flex container for search content*/
+main{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
+/* Changes - search is a flex container for h2 and bar, removed various attributes */
 main #search {
-	position: absolute;
-	vertical-align: middle;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
 	width: 60%;
-	height: 80%;
+	height: 100%;
+	vertical-align: middle;
 	background-color: rgba(235,235,235, 0.7);
-	margin-left: 20%;
-	padding-top: 15%;
+
+}
+
+/* Changes - added h2 styiling for main */
+main #search h2{
+	font-family: 'Lato', sans-serif;
+	color: gray;
+	font-size: 2.5em;
+	margin: 4%;
 }
 
 main #search input[type=text] {

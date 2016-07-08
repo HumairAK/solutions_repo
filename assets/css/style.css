@@ -1,12 +1,22 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: white;
+}
+
 ul {
 	list-style-type: none;
 }
 
+a {
+	text-decoration: none;
+}
+
 #top-bar{  
-	background-color: #9d9090;
     width: 100%;
     display: flex;
-
     display: -webkit-flex;
     flex-direction: row;
     -webkit-flex-direction: row;
@@ -16,43 +26,99 @@ ul {
     -webkit-align-items: flex-end;
 }
 
-#top-bar nav {
-	flex: 0 1 auto;
-    -webkit-flex: 0 1 auto;
+	#top-bar nav {
+		flex: 0 1 auto;
+	    -webkit-flex: 0 1 auto;
+	    padding-right: 20%;
+
+	}
+
+	#top-bar #logo {
+		padding-left: 20%;
+	}
+
+	#top-bar img {
+		padding: 10%;
+		height: 3%;
+		width: auto;
+	}
+
+
+		#top-bar  nav ul {
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+
+		}
+			#top-bar ul li {
+				float: right;
+			}
+
+				#top-bar ul li a {
+					display: block;
+					color: darkgray;
+					text-align: center;
+					padding: 14px 16px;
+					vertical-align: bottom;
+				}
+
+				#top-bar ul li a:hover {
+					color: lightblue;
+				}
+
+#drop-down {
+	display: none;
 }
 
-#top-bar img {
-	height: 20%;
-	width: auto;
-}
-
-
-#top-bar  nav ul {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #9d9090;
-}
-#top-bar ul li {
-	float: right;
-}
-
-#top-bar ul li a {
-	display: block;
-	color: white;
+main {
+	position: relative;
+	background-image: url("../images/main.jpg");
+	background-size: 250px 250px;
 	text-align: center;
-	padding: 14px 16px;
-	text-decoration: none;
-	vertical-align: bottom;
+	height: 80%;
+	width: 100%;
+	overflow: auto;
 }
 
-#top-bar ul li a:hover {
-	background-color: lightblue;
+main #search {
+	position: absolute;
+	vertical-align: middle;
+	width: 60%;
+	height: 80%;
+	background-color: rgba(235,235,235, 0.7);
+	margin-left: 20%;
+	padding-top: 15%;
 }
 
+main #search input[type=text] {
+	display: inline;
+    width: 250px;
+    height: 40px;
+    text-align: center;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: white;
+    background-image: url('../images/search_icon.png');
+    background-size: 20px 20px;
+    background-position: 9px 9px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
 
+main #search input[type=text]:focus {
+    width: 50%;
+}
 
+main #search img {
+	width: 50px;
+	display: inline;
+}
 
 footer {
 	bottom: 0;
+	background-color: white;
 }

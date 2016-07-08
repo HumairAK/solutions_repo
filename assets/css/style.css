@@ -119,6 +119,30 @@ main #search img {
 }
 
 footer {
+	position: relative;
 	bottom: 0;
 	background-color: white;
+}
+
+footer nav {
+	padding-left: 16%;
+}
+
+footer nav ul li{
+	display: inline-block;
+	float: left;
+}
+
+footer h6 {
+	display: inline-block;
+	float: right;
+	padding-right: 20%;
+}
+
+footer nav ul li a {
+	display: block;
+	color: darkgray;
+	text-align: center;
+	padding: 14px 16px;
+	vertical-align: top;
 }

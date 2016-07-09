@@ -17,6 +17,10 @@ a {
 	text-decoration: none;
 }
 
+h1{
+    color: #333333;
+}
+
 
 /*top_bar.height + main.height + footer.height = 8% + 80% + 12% */
 #top-bar{  
@@ -245,4 +249,23 @@ p.solutions-type{
 
 #solutions-footer{
     height: 13%;
+}
+
+/**********************************************************************************************************************/
+
+.questions-number{
+    font-family: 'Roboto',sans-serif;
+    font-size: large;
+    color: #333333;
+    margin-left: 5%;
+    margin-bottom: 5px;
+    padding-top: 15px;
+}
+.questions-comment{
+    font-family: 'Roboto',sans-serif;
+    font-size: medium;
+    color: dimgrey;
+    margin-left: 5%;
+    margin-top: 0px;
+    padding-bottom: 15px;
 }

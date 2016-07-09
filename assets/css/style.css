@@ -116,7 +116,7 @@ main{
 
 
 /* Changes - search is a flex container for h2 and bar, removed various attributes */
-main #search {
+main .search {
 	flex: 1;
 	width: 60%;
 	height: 100%;
@@ -126,7 +126,7 @@ main #search {
 }
 
 /* Changes - added h2 styiling for main */
-main #search h2{
+main .search h2{
 	font-family: 'Lato', sans-serif;
 	color: gray;
 	font-size: 2.5em;
@@ -134,7 +134,7 @@ main #search h2{
 	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
-main #search input[type=text] {
+main .search input[type=text] {
 	display: inline;
     width: 250px;
     height: 40px;
@@ -153,11 +153,11 @@ main #search input[type=text] {
     transition: width 0.4s ease-in-out;
 }
 
-main #search input[type=text]:focus {
+main .search input[type=text]:focus {
     width: 50%;
 }
 
-main #search img {
+main .search img {
 	width: 50px;
 	display: inline;
 }
@@ -166,7 +166,7 @@ main #search img {
 footer {
 	background-color: #333333;
 	bottom: 0;
-	height: 12%; 
+	height: 12%;
 }
 
 footer #footer-container{
@@ -196,5 +196,53 @@ footer nav a {
 	vertical-align: top;
 }
 
+/***********************************************************************************************************************/
 
+/*THE SOLUTIONS PAGE BEGINS HERE*/
+#solutions-header{
+    color: #333333;
+    font-family: 'Roboto', sans-serif;
+}
+#solutions-main{
+    min-height: 87%;
+}
+/*the section which holds each of the solutions*/
+section.solutions-card{
+    text-align: left;
+    background-color: white;
+    border-radius: 20px;
+    width: 95%;
+    margin-left: 2.5%;
+    cursor: pointer;
+}
+/*the title of the course*/
+h3.solutions-title{
+    font-family: 'Roboto',sans-serif;
+    font-size: large;
+    color: #333333;
+    margin-left: 5%;
+    margin-bottom: 5px;
+    padding-top: 20px;
+}
+/*the time of the examination*/
+p.solutions-time{
+    font-family: 'Roboto',sans-serif;
+    font-size: medium;
+    color: dimgrey;
+    margin-left: 5%;
+    margin-top: 0px;
+    margin-bottom: 2px;
+}
+/*whether its a midterm or final exam*/
+p.solutions-type{
+    font-family: 'Roboto',sans-serif;
+    font-size: medium;
+    color: dimgrey;
+    margin-left: 5%;
+    margin-top: 0px;
+    padding-bottom: 20px;
+}
 
+#solutions-footer{
+    height: 13%;
+}

@@ -19,8 +19,15 @@
 					<a href="#">Courses</a>
 					<nav class="drop-menu">
 						<ul>
-							<li><a href="#">First Year</a></li>
-							<li><a href="#">Second Year</a></li>
+							<li class="side-drop"><a href="#">First Year</a>
+								<div class="side-menu">
+									<a href="">CSC108</a>
+									<a href="">CSC148</a>
+									<a href="">CSC165</a>
+								</div>
+							</li>
+							<li>
+								<a href="#">Second Year</a></li>
 							<li><a href="#">Third Year</a></li>
 							<li><a href="#">Fourth Year</a></li>
 						</ul>	
@@ -36,6 +43,12 @@
 		<div class='search'>
 			<h2>The solutions to all your problems.</h2>
 			<!--<img src="assets/images/down.png">-->
+			<div id="search-select">
+				<select>
+					<option value="courses">Courses</option>
+					<option value="users">Users</option>
+				</select>
+			</div>
 			<input type="text" name="search" placeholder="Enter course name">
 		</div>
 		

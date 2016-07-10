@@ -105,8 +105,14 @@ h1{
 			}
 
 			.drop-down:hover .drop-menu {
-			    display: block;
+				display: block;
+
 			}
+
+			.side-menu {
+				display
+			}
+
 
 
 main {
@@ -135,7 +141,7 @@ main .search {
 	flex: 1;
 	width: 60%;
 	height: 100%;
-	background-color: rgba(235,235,235, 0.7);
+	background-color: rgba(235,235,235, 0.6);
 
 
 }
@@ -149,24 +155,47 @@ main .search h2{
 	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
+main #search-select {
+	display: inline-block;
+}
+
+main #search-select select {
+	color: black;
+	width: 100px;
+    padding: 5px;
+	font-size: 16px;
+	box-sizing: border-box;
+	-webkit-appearance: none;
+	background: url(../images/down.png) no-repeat lightgray;
+	background-size: 20px 20px;
+	background-position: 72px 9px;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	margin-right: -5px;
+}
+
 main .search input[type=text] {
 	display: inline;
     width: 250px;
-    height: 40px;
     text-align: center;
     box-sizing: border-box;
-    border: 2px solid #ccc;
     font-size: 16px;
-    border-radius: 10px;
     background-color: white;
     background-image: url('../images/search_icon.png');
     background-size: 20px 20px;
     background-position: 9px 9px;
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     -webkit-transition: width 0.4s ease-in-out;
     transition: width 0.4s ease-in-out;
+    border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+main .search input[type=text], main #search-select select {
+	height: 40px;
+	border: 2px solid #ccc;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 main .search input[type=text]:focus {

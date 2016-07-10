@@ -224,8 +224,10 @@ footer nav a {
     font-family: 'Roboto', sans-serif;
 }
 #solutions-main{
-    min-height: 87%;
+    min-height: 100%;
+    padding-top: 65px;
 }
+
 /*the section which holds each of the solutions*/
 section.solutions-card{
     text-align: left;

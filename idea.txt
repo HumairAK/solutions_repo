@@ -1,3 +1,40 @@
 This will be the idea page
 
->
+***********************
+Topic
+***********************
+A web app that allows students to share and discuss past test/exam solutions.
+
+***********************
+Description
+***********************
+The current system of U of T exam repository is garbage. Exams can be found through some digging around but even so, there are no solutions posted. 
+
+This model isn't particularly helpful for students who are using the past exams as a studying strategy. 
+
+Often students end of taking these exams and discussing them in some third party forums which are not designed for this specific purpose.
+
+Our app brings this tired model to the internet age. Exams can be accessed via a simple search or category. 
+
+Once the exam is found, questions are listed in order along with the number of "comments" in each. 
+The user can then chose to click on the question they want to get the details of the question and/or view the answers (if) provided by other users. 
+If the user agrees with a solution they can "upvote" it, or if they have an alternative solution, they may upload their solution as an image for other users to see.
+Solutions with the most upvotes will be displayed first. 
+If the user finds that the provided solution is confusing or incomplete, they can post a comment for that solution clarifying that solution. Multiple users can comment on a posted solution.
+
+This comment will be visible to all users and the solutions provider will be notified of the comment posted. 
+
+The questions themselves will be images of the question, provided by us.
+
+
+***********************
+Tasks
+***********************
+
+
+
+
+
+***********************
+Team Members
+***********************

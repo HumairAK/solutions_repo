@@ -207,7 +207,18 @@ main .search img {
 	display: inline;
 }
 
-/*
+main button#add-solution {
+	display: inline-block;
+	border-radius: 10px;
+	background-color: maroon; 
+	color: white;
+	width: 110px;
+
+}
+
+main p {
+	display: inline-block;
+}
 
 footer {
 	background-color: #333333;
@@ -235,15 +246,12 @@ footer h6 {
 	font-style: italic;
 
 }
-*/
-/*
 
 footer nav a {
 	display: block;
 	color: darkgray;
 	vertical-align: top;
 }
-*/
 
 /***********************************************************************************************************************/
 

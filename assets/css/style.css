@@ -210,11 +210,14 @@ main .search img {
 
 /*************************** USER SOLUTIONS - user_solutions.html *********************************/
 
+main div {
+	background: none;
+}
 
 main #solutions button#add-solution {
 	display: inline-block;
 	border-radius: 10px;
-	background-color: #F79F79; 
+	background-color: #87B6A7; 
 	color: white;
 	width: 110px;
 
@@ -223,58 +226,64 @@ main #solutions button#add-solution {
 main p#show-path {
 	display: inline-block;
 	margin-left: 30px;
+
 }
 
 main #solutions {
-	margin-top: 2%;
+	padding-top: 2%;
 	text-align: left; 
 	width: 86%;
 	height: 100%;
-	border-top: 1px solid black;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
 	margin-left: 7%;
+
 }
 
 
-[id^="sol-"] {
-	border-radius: 10px;
-	padding-top: 30px;
+main [id^="sol-"] {
+	color: #333;
+	margin-top: 30px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-[id^="sol-"] .post-info {
+main [id^="sol-"] .post-info {
+	display: flex;
+	justify-content: space-between;
 	background: #F79F79; 
+	padding-top: 2%;
+	border-top-right-radius: 15px;
+	border-top-left-radius: 15px;
+	padding-bottom: 5px;
 }
 
-[id^="sol-"] .left{
+main [id^="sol-"] .left{
 	float: left;
 	display: inline-block;
 }
 
-[id^="sol-"] .right {
+main [id^="sol-"] .right {
 	float: right;
 	display: inline-block;
 }
 
-[id^="sol-"] img.user-image {
+main [id^="sol-"] img.user-image {
 	border-radius: 50%;
 	border: 2px solid darkgray;
 	margin-left: 25px;
 }
 
-[id^="sol-"] img.user-image, [id^="sol-"] p.username {
+main [id^="sol-"] img.user-image, [id^="sol-"] p.username {
 	display: inline-block;	
 }
 
-[id^="sol-"] p.username {
+main [id^="sol-"] p.username {
 	vertical-align: top;
 }
 
-[id^="sol-"] p.num-upvotes, [id^="sol-"] p.num-downvotes, [id^="sol-"] button {
+main [id^="sol-"] p.num-upvotes, [id^="sol-"] p.num-downvotes, [id^="sol-"] button {
 	display: inline-block;
 }
 
-[id^="sol-"] button.upvote, [id^="sol-"] button.downvote {
+main [id^="sol-"] button.upvote, [id^="sol-"] button.downvote {
 	background-color: transparent;
     background-repeat:no-repeat;
     border: none;
@@ -283,24 +292,59 @@ main #solutions {
     outline:none;
 }
 
-[id^="sol-"] button.upvote img, [id^="sol-"] button.downvote img {
+main [id^="sol-"] button.upvote img, [id^="sol-"] button.downvote img {
 	width: 30px;
 	height: 30px;
 }
 
-[id^="sol-"] p.num-downvotes, [id^="sol-"] p.num-upvotes {
+main [id^="sol-"] p.num-downvotes, [id^="sol-"] p.num-upvotes {
 	vertical-align: top;
 }
 
 
-[id^="sol-"] p.username {
+main [id^="sol-"] p.username {
 	margin-left: 10px;
 }
 
-[id^="sol-"] p.num-downvotes {
+main [id^="sol-"] p.num-downvotes {
 	margin-right: 25px;
 }
 
+main [id^="sol-"] div.user-sol h3 {
+	background-color: #f0e9e1;
+	padding: 10px;
+	padding-left: 20px;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+main [id^="sol-"] div.user-sol p{
+	padding: 10px;
+	margin: 0;
+	background-color: white;
+}
+
+main [id^="sol-"] div.user-sol p img {
+	width: 60%;
+	height: auto;
+}
+
+main [id^="sol-"] div.comments { /* BORDER RADIUS ISN'T WORKING - sad :( */
+	background-color: #f0e9e1;
+	border-bottom-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+}
+
+main [id^="sol-"] div.comments:hover {
+
+}
+
+main [id^="sol-"] div.comments h3 { 
+	padding: 10px;
+	padding-left: 20px;
+	margin-top: 0;
+	margin-bottom: 0;
+}
 
 
 

@@ -135,6 +135,7 @@ main{
 	flex-flow: column; /* Makes it grow vertically */
 }
 
+/*************************** SEARCH - index.html *********************************/
 
 /* Changes - search is a flex container for h2 and bar, removed various attributes */
 main .search {
@@ -142,8 +143,6 @@ main .search {
 	width: 60%;
 	height: 100%;
 	background-color: rgba(235,235,235, 0.6);
-
-
 }
 
 /* Changes - added h2 styiling for main */
@@ -207,18 +206,109 @@ main .search img {
 	display: inline;
 }
 
-main button#add-solution {
+/*************************** END OF SEARCH - index.html *********************************/
+
+/*************************** USER SOLUTIONS - user_solutions.html *********************************/
+
+
+main #solutions button#add-solution {
 	display: inline-block;
 	border-radius: 10px;
-	background-color: maroon; 
+	background-color: #F79F79; 
 	color: white;
 	width: 110px;
 
 }
 
-main p {
+main p#show-path {
+	display: inline-block;
+	margin-left: 30px;
+}
+
+main #solutions {
+	margin-top: 2%;
+	text-align: left; 
+	width: 86%;
+	height: 100%;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	margin-left: 7%;
+}
+
+
+[id^="sol-"] {
+	border-radius: 10px;
+	padding-top: 30px;
+}
+
+[id^="sol-"] .post-info {
+	background: #F79F79; 
+}
+
+[id^="sol-"] .left{
+	float: left;
 	display: inline-block;
 }
+
+[id^="sol-"] .right {
+	float: right;
+	display: inline-block;
+}
+
+[id^="sol-"] img.user-image {
+	border-radius: 50%;
+	border: 2px solid darkgray;
+	margin-left: 25px;
+}
+
+[id^="sol-"] img.user-image, [id^="sol-"] p.username {
+	display: inline-block;	
+}
+
+[id^="sol-"] p.username {
+	vertical-align: top;
+}
+
+[id^="sol-"] p.num-upvotes, [id^="sol-"] p.num-downvotes, [id^="sol-"] button {
+	display: inline-block;
+}
+
+[id^="sol-"] button.upvote, [id^="sol-"] button.downvote {
+	background-color: transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+[id^="sol-"] button.upvote img, [id^="sol-"] button.downvote img {
+	width: 30px;
+	height: 30px;
+}
+
+[id^="sol-"] p.num-downvotes, [id^="sol-"] p.num-upvotes {
+	vertical-align: top;
+}
+
+
+[id^="sol-"] p.username {
+	margin-left: 10px;
+}
+
+[id^="sol-"] p.num-downvotes {
+	margin-right: 25px;
+}
+
+
+
+
+
+
+
+
+/*************************** END OF USER SOLUTIONS - user_solutions.html *********************************/
 
 footer {
 	background-color: #333333;

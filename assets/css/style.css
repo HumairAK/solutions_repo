@@ -1,5 +1,6 @@
 
 html, body {
+	width: 100%;
 	height: 100%;
 	font-family: 'Roboto', sans-serif;
 }
@@ -105,15 +106,8 @@ h1{
 			}
 
 			.drop-down:hover .drop-menu {
-				display: block;
-
+			    display: block;
 			}
-
-			.side-menu {
-				/* This line of code is incomplete - Humair */
-				/*display */
-			}
-
 
 
 main {
@@ -134,17 +128,19 @@ main{
 	align-items: center;
 	justify-content: center;
 	flex-flow: column; /* Makes it grow vertically */
+	/*padding-bottom: 5%;
+	padding-top: 5%;*/
 }
 
-/*************************** SEARCH - index.html *********************************/
 
 /* Changes - search is a flex container for h2 and bar, removed various attributes */
 main .search {
 	flex: 1;
 	min-width: 60%;
 	min-height: 100%;
-	background-color: rgba(235,235,235, 0.6);
+	background-color: rgba(235,235,235, 0.7);
 	overflow: auto;
+
 }
 
 /* Changes - added h2 styiling for main */
@@ -156,11 +152,11 @@ main .search h2{
 	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
-main #search-select {
+.search-select {
 	display: inline-block;
 }
 
-main #search-select select {
+.search-select select {
 	color: black;
 	width: 100px;
     padding: 5px;
@@ -175,31 +171,34 @@ main #search-select select {
 	margin-right: -5px;
 }
 
-main .search input[type=text] {
+.search input[type=text] {
 	display: inline;
     width: 250px;
+    height: 40px;
     text-align: center;
     box-sizing: border-box;
+    border: 2px solid #ccc;
     font-size: 16px;
+    border-radius: 10px;
     background-color: white;
     background-image: url('../images/search_icon.png');
     background-size: 20px 20px;
     background-position: 9px 9px;
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     -webkit-transition: width 0.4s ease-in-out;
     transition: width 0.4s ease-in-out;
-    border-top-right-radius: 10px;
-	border-bottom-right-radius: 10px;
 }
 
-main .search input[type=text], main #search-select select {
+
+.search input[type=text], .search-select select {
 	height: 40px;
 	border: 2px solid #ccc;
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
-main .search input[type=text]:focus {
+.search input[type=text]:focus {
     width: 50%;
 }
 
@@ -207,6 +206,9 @@ main .search img {
 	width: 50px;
 	display: inline;
 }
+
+
+
 
 /*************************** END OF SEARCH - index.html *********************************/
 
@@ -398,7 +400,7 @@ main [id^="sol-"] div.comments ul li p.user-comment {
 
 
 /*************************** END OF USER SOLUTIONS - user_solutions.html *********************************/
-
+/*
 footer {
 	background-color: #333333;
 	bottom: 0;
@@ -431,7 +433,7 @@ footer nav a {
 	color: darkgray;
 	vertical-align: top;
 }
-
+*/
 /***********************************************************************************************************************/
 
 /*THE SOLUTIONS PAGE BEGINS HERE*/

@@ -331,4 +331,31 @@ header .header-content .header-content-inner hr {
     margin-top:20px;
 }
 
+/****************************************/
+/* user-profile-nav */
+/* only children of navbar-custom are affected*/
+.navbar-custom{
+    background-color: #ffffff; /* Green */
+    margin: 0 0 3px 0;
+    text-decoration: none;
+    font-size: 1em;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.navbar-custom .navbar-toggle{
+    border-color: #ddd;
+}
+.navbar-custom .navbar-toggle .icon-bar{
+    background-color: #888;
+}
+.navbar-custom li a{
+    padding: 12px;
+}
+.navbar-custom .navbar-nav li a:hover {
+    background-color: #d9edf7;
+    color: #3170a6;
+}
+/********************************************/
 

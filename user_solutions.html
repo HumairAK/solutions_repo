@@ -7,8 +7,11 @@
 
 	<!--ORDER IS IMPORTANT DO NOT SHIFT-->
 
+	<link href="assets/css/style.css" rel="stylesheet" type="text/css">
+
 	<!--Custom CSS Files-->
 	<link href="assets/css/style.css" rel="stylesheet" type="text/css">
+
 
 	<!--Bootstrap File-->
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -75,22 +78,29 @@
 	<!--made the id in to a class-->
 		<div class='search solutions-container container'>
 
-			<div id="solutions">
-				<button id="add-solution"><h3>Add a solution</h3></button>
-				<p id="show-path">CSC148 > Winter 2015 > Question 1</p>
+			<div>
+				<div class="row top-sol">
+					<button class="col-xs-4 col-sm-2 col-md-2 col-lg-2 col-xs-offset-4 col-sm-offset-5 col-md-offset-2 col-lg-offset-2 rounded" id="add-solution"><h3>Add a solution</h3></button>
+					<p class="col-xs-12 col-sm-12 col-md-6 show-path">CSC148 > Winter 2015 > Question 1</p>
+				</div>
 
-				<section id="sol-1">
+				<div class="row">
+				<section id="sol-1" class="col-md-10 col-md-offset-1 rounded">
 					<div class="post-info">
-						<div class="left">
-							<img class="user-image" src="assets/images/misc/user1.jpeg">
+						<div class="">
+							<img class="img-responsive img-circle user-image" src="assets/images/misc/user1.jpeg">
 							<p class="username">jSmith123</p>
 						</div>
 
-						<div class="right">
-							<button class="upvote"><img src="assets/images/up_arrow.png"></button>
-							<p class="num-upvotes">3</p>
-							<button class="downvote"><img src="assets/images/down_arrow.png"></button>
-							<p class="num-downvotes">-1</p>
+						<div class="pull-right">
+							<div class="upvoting">
+								<button class="upvote"><img src="assets/images/up_arrow.png"></button>
+								<p class="upvote num-upvotes">3</p>
+							</div>
+							<div class="downvoting">
+								<button class="downvote"><img src="assets/images/down_arrow.png"></button>
+								<p class=" downvote num-downvotes">-1</p>
+							</div>
 						</div>
 					</div>
 
@@ -100,45 +110,53 @@
 					</div>
 
 					<div class="comments">
-						<h3><span>3</span> comments</h3>
+						<h3><a data-toggle="collapse" href="#com1"><span>3</span> comments <span class="caret"></span></a></h3>
 
-						<ul>
-							<li>
-								<img src="assets/images/misc/user3.jpeg" class="comment-user-img">
+						<div id="com1" class="panel-collapse collapse">
+						<ul class="list-group">
+							<li class="list-group-item">
+								<img src="assets/images/misc/user3.jpeg" class="img-responsive img-circle comment-user-img">
 								<p class="comment-username">janeDoe456</p>
 								<p class="user-comment"> This is a good answer!</p>
 							</li>
 
-							<li>
-								<img src="assets/images/misc/user2.jpeg" class="comment-user-img">
+							<li class="list-group-item">
+								<img src="assets/images/misc/user2.jpeg" class="img-responsive img-circle comment-user-img">
 								<p class="comment-username">BenAfleckIsAnOkActor</p>
 								<p class="user-comment">Ben Affleck is indeed just an ok actor.</p>
 							</li>
 
-							<li>
-								<img src="assets/images/misc/user6.jpeg" class="comment-user-img">
+							<li class="list-group-item">
+								<img src="assets/images/misc/user6.jpeg" class="img-responsive img-circle comment-user-img">
 								<p class="comment-username">morgana254</p>
 								<p class="user-comment">I mean, he's no Casey Affleck.</p>
 							</li>
 
 						</ul>
+						</div>
 
 					</div>
 					
 				</section>
+				</div>
 
-				<section id="sol-2">
+				<div class="row">
+					<section id="sol-1" class="col-md-10 col-md-offset-1 rounded">
 					<div class="post-info">
-						<div class="left">
-							<img class="user-image" src="assets/images/misc/user3.jpeg">
+						<div class="">
+							<img class="img-responsive img-circle user-image" src="assets/images/misc/user3.jpeg">
 							<p class="username">janeDoe456</p>
 						</div>
 
-						<div class="right">
-							<button class="upvote"><img src="assets/images/up_arrow.png"></button>
-							<p class="num-upvotes">4</p>
-							<button class="downvote"><img src="assets/images/down_arrow.png"></button>
-							<p class="num-downvotes">-8</p>
+						<div class="pull-right">
+							<div class="upvoting">
+								<button class="upvote"><img src="assets/images/up_arrow.png"></button>
+								<p class="upvote num-upvotes">4</p>
+							</div>
+							<div class="downvoting">
+								<button class="downvote"><img src="assets/images/down_arrow.png"></button>
+								<p class=" downvote num-downvotes">-8</p>
+							</div>
 						</div>
 					</div>
 
@@ -148,29 +166,28 @@
 					</div>
 
 					<div class="comments">
-						<h3><span>2</span> comments</h3>
 
-						<ul>
-							<li>
-								<img src="assets/images/misc/user5.jpeg" class="comment-user-img">
+						<h3><a data-toggle="collapse" data-target="#com2" href="#com2" aria-expanded="true"><span>2</span> comments <span class="caret"></span></a></h3>
+
+						<div id="com2" class="panel-collapse collapse">
+						<ul class="list-group">
+							<li class="list-group-item">
+								<img src="assets/images/misc/user5.jpeg" class="img-responsive img-circle comment-user-img">
 								<p class="comment-username">catherineTheGreat</p>
 								<p class="user-comment"> As a Portuguese, this was offensive and hilarious.</p>
 							</li>
 
-							<li>
-								<img src="assets/images/user-default.png" class="comment-user-img">
+							<li class="list-group-item">
+								<img src="assets/images/user-default.png" class="img-responsive img-circle comment-user-img">
 								<p class="comment-username">alexStrav748</p>
 								<p class="user-comment">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 							</li>
-
-
-
 						</ul>
-
+						</div>
 					</div>
 					
-				</section>
-
+					</section>
+				</div>
 
 
 			</div>

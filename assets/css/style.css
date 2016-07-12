@@ -121,6 +121,11 @@ main button#add-solution {
 	color: white;
 }
 
+#solutions-main {
+    padding-top: 150px;
+    padding-bottom: 65px;
+}
+
 .top-sol {
     margin-top: 20px;
 }

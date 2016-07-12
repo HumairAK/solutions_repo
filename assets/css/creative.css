@@ -148,7 +148,7 @@ padding-top: 200px;
 header {
     position: relative;
     width: 100%;
-    min-height: auto;
+    min-height: 100%;
     text-align: center;
     /*color: #fff;*/
     background-image: url("../images/main.jpg");
@@ -327,8 +327,8 @@ header .header-content .header-content-inner hr {
 .table-user-information > tbody > tr > td {
     border-top: 0;
 }
-.toppad
-{margin-top:20px;
+.toppad {
+    margin-top:20px;
 }
 
 

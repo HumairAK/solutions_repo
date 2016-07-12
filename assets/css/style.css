@@ -23,93 +23,6 @@ h1{
 }
 
 
-/*top_bar.height + main.height + footer.height = 8% + 80% + 12% */
-#top-bar{  
-    width: 100%;
-    height: 8%;
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    -webkit-flex-direction: row;
-    justify-content: space-between;
-    -webkit-justify-content: space-between;
-    align-items: flex-end;
-    -webkit-align-items: flex-end;
-}
-
-	#top-bar nav {
-		flex: 0 1 auto;
-	    -webkit-flex: 0 1 auto;
-	    padding-right: 20%;
-
-	}
-
-	#top-bar #logo {
-		padding-left: 20%;
-	}
-
-	#top-bar img {
-		padding: 10%;
-		width: auto;
-		/* Humair - I added this because size wasn't working for firefox*/
-		max-width: 150px;  
-	}
-
-
-		#top-bar  nav ul {
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-
-		}
-			#top-bar ul li {
-				float: right;
-			}
-
-				#top-bar ul li a {
-					display: block;
-					color: darkgray;
-					text-align: center;
-					padding: 14px 16px;
-					vertical-align: bottom;
-				}
-
-				#top-bar ul li a:hover {
-					color: lightblue;
-				}
-
-			#top-bar .drop-menu {
-				padding: 0;
-			}
-
-			.drop-menu {
-			    display: none;
-				padding: 0;
-				width: auto;
-			    position: absolute;
-			    background-color: #f9f9f9;
-			    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-			}
-
-			#top-bar .drop-menu li {
-				float: right;
-				text-align: center;
-				clear: both;
-				height: auto;
-				color: black;
-			    text-decoration: none;
-			    display: block;
-			}
-
-			.drop-menu li a {
-				padding: 12px 16px;
-			}
-
-			.drop-down:hover .drop-menu {
-			    display: block;
-			}
-
-
 main {
 	
 	background-image: url("../images/main.jpg");
@@ -400,40 +313,7 @@ main [id^="sol-"] div.comments ul li p.user-comment {
 
 
 /*************************** END OF USER SOLUTIONS - user_solutions.html *********************************/
-/*
-footer {
-	background-color: #333333;
-	bottom: 0;
-	height: 12%;
-}
 
-footer #footer-container{
-	margin-left: 20%;
-	margin-right: 20%;
-	padding: .5%;
-}
-footer nav a{
-	float: left;
-	padding-right: 20px;
-	font-size: 1em;	
-}
-
-footer h6 {
-	margin: 0;
-	color: white;
-	float: right;
-	font-size: 1em;
-	font-weight: normal;
-	font-style: italic;
-
-}
-
-footer nav a {
-	display: block;
-	color: darkgray;
-	vertical-align: top;
-}
-*/
 /***********************************************************************************************************************/
 
 /*THE SOLUTIONS PAGE BEGINS HERE*/

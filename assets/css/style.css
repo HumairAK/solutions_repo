@@ -64,7 +64,6 @@ main .search h2{
 
 
 .search input[type=text] {
-    width: 250px;
     text-align: center;
     box-sizing: border-box;
     background-color: white;
@@ -73,23 +72,32 @@ main .search h2{
     background-position: 9px 9px;
     background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    -webkit-transition: width 0.4s ease-in-out;
-    transition: width 0.4s ease-in-out;
+
+    /*-webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;*/
 }
 
 
-.search input[type=text], .search button {
+.search input[type=text], .search button.search-button {
     font-size: 16px;
 	height: 40px;
     border-radius: 10px;
 	border: 2px solid #ccc;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	
 }
 
-.search input[type=text]:focus {
-    width: 50%;
+.input-group {
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -webkit-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
+
+
+/*.search input[type=text]:focus {
+    width: 100%;
+}*/
 
 main .search img {
 	width: 50px;
@@ -241,18 +249,14 @@ main [id^="sol-"] div.comments ul li img {
 
 main [id^="sol-"] div.comments ul li {
 	background-color: white;
-	border-radius: 10px;
 	background-color: #F7D08A;
 	padding: 10px;
+    border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-webkit-box-shadow: 0 2px 2px 0 #C2C2C2;
 	box-shadow: 0 2px 2px 0 #C2C2C2;
 	margin-bottom: 15px;
-}
-
-.comments ul {
-
 }
 
 main [id^="sol-"] div.comments ul li p.comment-username {

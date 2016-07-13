@@ -1,13 +1,9 @@
-/*div {*/
-    /*box-sizing: border-box;*/
-/*}*/
 main .search {
     width: 60%;
     min-height: 100%;
 }
 
 .search-cover {
-    /*height: auto;*/
     padding-bottom: 10%;
 }
 
@@ -33,12 +29,6 @@ main .search {
     }
 }
 
-
-/*main #solutions {
-    padding-top: 65px;
-}*/
-
-
 h2 {
 font-family: 'Lato', sans-serif;
 color: gray;
@@ -46,6 +36,9 @@ font-size: 2.5em;
 margin: 4%;
 padding-top: 200px;
 }
+
+/*** NAVBAR DEFAULT OVERWRITE ***/
+/* For top navigation panel use */
 
 .navbar-default {
     border-color: rgba(34,34,34,.05);
@@ -64,17 +57,14 @@ padding-top: 200px;
     transition: all .35s;
 }
 
-
 .navbar-default .navbar-header .navbar-brand {
     text-transform: uppercase;
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
-    /*color: #f05f40;*/
 }
 
 .navbar-default .navbar-header .navbar-brand:hover ,
 .navbar-default .navbar-header .navbar-brand:focus {
-    /*color: #eb3812;*/
 }
 
 .navbar-default .nav > li>a,
@@ -87,12 +77,10 @@ padding-top: 200px;
 
 .navbar-default .nav > li>a:hover,
 .navbar-default .nav>li>a:focus:hover {
-    /*color: #f05f40;*/
 }
 
 .navbar-default .nav > li.active>a,
 .navbar-default .nav>li.active>a:focus {
-    /*color: #f05f40!important;*/
     background-color: transparent;
 }
 
@@ -113,14 +101,7 @@ padding-top: 200px;
     margin: 0;
 }
 
-/*.navbar-default .dropdown-submenu .dropdown-menu li a {
-    padding: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin: 0;
-}*/
-
-
+/*** FOOTER DEFAULT OVERWRITE ***/
 footer .navbar-default {
         border-color: rgba(255,255,255,.3);
         background-color: #333333;
@@ -146,26 +127,22 @@ footer .navbar-default .affix .nav>li>a:focus {
     color: #222;
 }
 
+<<<<<<< HEAD
 @media(min-width:768px) {
    
 }
 
 
+=======
+>>>>>>> 952f7cefcd35550bb0930418e56c524f09eca92d
 header {
     position: relative;
     width: 100%;
     min-height: 100%;
     text-align: center;
-    /*color: #fff;*/
     background-image: url("../images/main.jpg");
-    /*background-color: #5bc0de;*/
     background-size: 250px 250px;
     background-position: center;
-    /*-webkit-background-size: cover;*/
-    /*-moz-background-size: cover;*/
-    /*background-size: cover;*/
-    /*-o-background-size: cover;*/
-
 }
 
 header .header-spec {
@@ -190,16 +167,6 @@ header .header-content .header-content-inner hr {
     margin: 30px auto;
 }
 
-/*header .header-content .header-content-inner p {
-    margin-bottom: 50px;
-    font-family: 'Lato', sans-serif;
-    color: red;
-    font-size: 2.5em;
-    /color: #333333
-}*/
-
-
-
 @media (min-width: 320px) {
     header {
         min-height: 100%;
@@ -218,8 +185,6 @@ header .header-content .header-content-inner hr {
         margin-right: auto;
         margin-left: auto;
         max-width: 1000px;
-
-        /* Shift search bar content up */
         padding-top: 14%;
     }
 
@@ -257,7 +222,6 @@ header .header-content .header-content-inner hr {
         margin-right: auto;
         margin-left: auto;
         max-width: 80%;
-        font-size: 32px;
         font-family: 'Lato', sans-serif;
         color: gray;
         font-size: 2.5em;
@@ -278,33 +242,37 @@ header .header-content .header-content-inner hr {
     border-radius: 20px;
 }
 
+/*** SUB-MENU ***/
 .dropdown-submenu {
   position: relative;
 }
+
 .dropdown-submenu > .dropdown-menu {
   top: 0;
   left: 100%;
   margin-top: -6px;
   margin-left: -1px;
 }
+
 .dropdown-submenu:hover > .dropdown-menu {
   display: block;
 }
+
 .dropdown-submenu:hover > a:after {
   border-left-color: #fff;
 }
+
 .dropdown-submenu.pull-left {
   float: none;
 }
+
 .dropdown-submenu.pull-left > .dropdown-menu {
   left: -100%;
   margin-left: 10px;
 }
 
-
-
-/******************************************************/
-
+/* Humair: Cannot find a usage for the styles below (not including user-profile)
+ * Remove if not in use. Remove this comment once done.*/
 
 .user-row {
     margin-bottom: 14px;
@@ -324,6 +292,7 @@ header .header-content .header-content-inner hr {
     cursor: pointer;
 }
 
+/*** USER PROFILE STYLES ***/
 .table-user-information > tbody > tr {
     border-top: 1px solid rgb(221, 221, 221);
 }
@@ -332,17 +301,17 @@ header .header-content .header-content-inner hr {
     border-top: 0;
 }
 
-
 .table-user-information > tbody > tr > td {
     border-top: 0;
 }
+
+/* VERTICAL OFFSET FOR CONTENT CARD */
 .toppad {
     margin-top:20px;
 }
 
-/****************************************/
-/* user-profile-nav */
-/* only children of navbar-custom are affected*/
+/* USER PROFILE CUSTOM NAV */
+/* Note: only children of navbar-custom are affected */
 .navbar-custom{
     background-color: #ffffff; /* Green */
     margin: 0 0 3px 0;
@@ -350,9 +319,8 @@ header .header-content .header-content-inner hr {
     font-size: 1em;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 10px 10px 0 0;
 }
-
 .navbar-custom .navbar-toggle{
     border-color: #ddd;
 }
@@ -366,5 +334,5 @@ header .header-content .header-content-inner hr {
     background-color: #d9edf7;
     color: #3170a6;
 }
-/********************************************/
+
 

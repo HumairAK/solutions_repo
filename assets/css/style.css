@@ -70,7 +70,10 @@ main .search h2{
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-main .search img {width: 50px; display: inline;}
+main .search img {
+    width: 50px;
+    display: inline;
+}
 
 .home-intro{
 	color: #808080;
@@ -81,7 +84,9 @@ main .search img {width: 50px; display: inline;}
 /*** INDEX.HTML END ***/
 
 /*** USER SOLUTIONS ***/
-main div {background: none;}
+main div {
+    background: none;
+}
 
 main button#add-solution {
 	display: inline-block;
@@ -103,9 +108,7 @@ main button#add-solution {
 }
 
 main button#add-solution h3 {
-    margin: 0;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0 10px 0;
     font-size: 1em;
 }
 
@@ -127,7 +130,7 @@ main [id^="sol-"] {
 	color: #333;
 	margin-top: 30px;
 	margin-bottom: 30px;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     padding: 0;
 }
 
@@ -156,8 +159,7 @@ main [id^="sol-"] p.username {
 }
 
 main [id^="sol-"] button.upvote, [id^="sol-"] button.downvote {
-	background-color: transparent;
-    background-repeat:no-repeat;
+	background: transparent no-repeat;
     border: none;
     cursor:pointer;
     overflow: hidden;
@@ -184,8 +186,7 @@ main [id^="sol-"] p.num-downvotes {
 main [id^="sol-"] div.user-sol h3 {
     font-size: 1.17em;
 	background-color: #f0e9e1;
-	padding: 10px;
-	padding-left: 20px;
+	padding: 10px 10px 10px 20px;
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -210,8 +211,7 @@ main [id^="sol-"] div.comments {
 
 main [id^="sol-"] div.comments h3 { 
     font-size: 1.17em;
-	padding: 10px;
-	padding-left: 20px;
+	padding: 10px 10px 10px 20px;
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -222,7 +222,6 @@ main [id^="sol-"] div.comments ul li img {
 }
 
 main [id^="sol-"] div.comments ul li {
-	background-color: white;
 	background-color: #F7D08A;
 	padding: 10px;
     border-radius: 10px;
@@ -316,7 +315,7 @@ p.solutions-time, p.solutions-type, p.exam-instr{
     font-size: medium;
     color: dimgrey;
     margin-left: 5%;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 p.solutions-time {
@@ -354,7 +353,7 @@ section.exam-info em {
 .questions-comment, .questions-sol-num{
     font-size: medium;
     color: dimgrey;
-    margin-top: 0px;
+    margin-top: 0;
     padding-bottom: 15px;
 }
 
@@ -367,18 +366,23 @@ section.exam-info em {
 .user-info-content{
     padding-top: 100px;
 }
+
 .user-info-content img{
     max-width: 100px;
 }
+
 .user-info-content p{
     color: gray;
 }
+
 .prf-sign-off{
     margin: 15px;
 }
+
 .prf-tables{
     text-align: left;
 }
+
 .prf-details{
 	text-align: center;
 }
@@ -386,7 +390,7 @@ section.exam-info em {
 
 /*** ABOUT PAGE  ***/
 .about-p{
-	padding: 30px 30px 0px 30px;
+	padding: 30px 30px 0 30px;
 	font-size: 1.3em;
 	color: #323232;
 	text-align: center;

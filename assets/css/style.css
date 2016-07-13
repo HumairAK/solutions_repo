@@ -1,4 +1,3 @@
-
 html, body {
 	width: 100%;
 	height: 100%;
@@ -22,38 +21,24 @@ h1{
     color: #333333;
 }
 
-
 main {
-	
 	background-image: url("../images/main.jpg");
 	background-size: 250px 250px;
 	text-align: center;
 	width: 100%;
 	min-height: 80%;
-	/*position: relative;
-	height: 80%;
-	overflow: auto;*/
-}
-
-/* Changes - main is a flex container for search content*/
-main{
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-flow: column; /* Makes it grow vertically */
-	/*padding-bottom: 5%;
-	padding-top: 5%;*/
 }
 
-
-/* Changes - search is a flex container for h2 and bar, removed various attributes */
+/*** INDEX.HTML ***/
 main .search {
 	background-color: rgba(235,235,235, 0.7);
 	overflow: auto;
-
 }
 
-/* Changes - added h2 styiling for main */
 main .search h2{
 	font-family: 'Lato', sans-serif;
 	color: gray;
@@ -62,47 +47,30 @@ main .search h2{
 	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
-
 .search input[type=text] {
     text-align: center;
     box-sizing: border-box;
-    background-color: white;
-    background-image: url('../images/search_icon.png');
+    background: white url('../images/search_icon.png') no-repeat 9px 9px;
     background-size: 20px 20px;
-    background-position: 9px 9px;
-    background-repeat: no-repeat;
     padding: 12px 20px 12px 40px;
-
-    /*-webkit-transition: width 0.4s ease-in-out;
-    transition: width 0.4s ease-in-out;*/
 }
-
 
 .search input[type=text], .search button.search-button {
     font-size: 16px;
 	height: 40px;
     border-radius: 10px;
 	border: 2px solid #ccc;
-	
 }
 
 .input-group {
     border-radius: 10px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    -webkit-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-
-/*.search input[type=text]:focus {
-    width: 100%;
-}*/
-
-main .search img {
-	width: 50px;
-	display: inline;
-}
+main .search img {width: 50px; display: inline;}
 
 .home-intro{
 	color: #808080;
@@ -110,17 +78,10 @@ main .search img {
 	font-style: italic;
 	font-size: 1.2em;
 }
+/*** INDEX.HTML END ***/
 
-
-
-
-/*************************** END OF SEARCH - index.html *********************************/
-
-/*************************** USER SOLUTIONS - user_solutions.html *********************************/
-
-main div {
-	background: none;
-}
+/*** USER SOLUTIONS ***/
+main div {background: none;}
 
 main button#add-solution {
 	display: inline-block;
@@ -158,6 +119,8 @@ main #solutions {
 	text-align: left; 
 	margin-left: 7%;
 }
+
+/* General styling for all solution container styles */
 
 main [id^="sol-"] {
     text-align: left;
@@ -209,7 +172,6 @@ main [id^="sol-"] button.upvote img, [id^="sol-"] button.downvote img {
 main [id^="sol-"] p.num-downvotes, [id^="sol-"] p.num-upvotes {
 	vertical-align: bottom;
 }
-
 
 main [id^="sol-"] p.username {
 	margin-left: 10px;
@@ -293,30 +255,25 @@ main [id^="sol-"] div.comments ul li p.user-comment {
 	background-color: white;
 	border-radius: 5px;
 }
+/*** USER SOLUTIONS END***/
 
-
-/*************************** END OF USER SOLUTIONS - user_solutions.html *********************************/
-
-/***********************************************************************************************************************/
-
-/*THE SOLUTIONS PAGE BEGINS HERE*/
+/*** EXAM PAGE ***/
 #solutions-header{
     color: #333333;
     font-family: 'Roboto', sans-serif;
 }
+
 #solutions-main{
     min-height: 100%;
     padding-top: 65px;
     text-align: left;
 }
 
-
 #solutions-main em {
 	font-weight: bold;
 }
 
 /*the section which holds each of the solutions*/
-
 section.solutions-card{
     text-align: left;
     background-color: white;
@@ -353,6 +310,7 @@ h3.solutions-title{
     margin-bottom: 5px;
     padding-top: 20px;
 }
+
 /*the time of the examination*/
 p.solutions-time, p.solutions-type, p.exam-instr{
     font-size: medium;
@@ -360,7 +318,6 @@ p.solutions-time, p.solutions-type, p.exam-instr{
     margin-left: 5%;
     margin-top: 0px;
 }
-/*whether its a midterm or final exam*/
 
 p.solutions-time {
 	margin-bottom: 2px;
@@ -369,10 +326,9 @@ p.solutions-time {
 #solutions-footer{
     height: 13%;
 }
+/*** EXAM PAGE END ***/
 
-/**********************************************************************************************************************/
-
-/*THE EXAM QUESTIONS PAGE BEGINS HERE*/
+/*** EXAM QUESTIONS PAGE ***/
 .exam-info {
 	margin-left: 5%;
 	display: inline-block;
@@ -388,15 +344,13 @@ section.exam-info em {
 	font-weight: bold;
 }
 
-
-
 .questions-number{
     font-size: large;
     color: #333333;
     margin-left: 5%;
     margin-bottom: 5px;
-
 }
+
 .questions-comment, .questions-sol-num{
     font-size: medium;
     color: dimgrey;
@@ -407,8 +361,9 @@ section.exam-info em {
 .questions-sol-num {
 	margin-left: 5%;
 }
+/*** EXAM QUESTIONS PAGE END ***/
 
-/********** user-profile styles  **********/
+/*** USER PROFILE PAGE  ***/
 .user-info-content{
     padding-top: 100px;
 }
@@ -427,20 +382,22 @@ section.exam-info em {
 .prf-details{
 	text-align: center;
 }
-/********** !user-profile styles *********/
-/********** !about_page styles *********/
+/*** USER PROFILE PAGE END ***/
+
+/*** ABOUT PAGE  ***/
 .about-p{
 	padding: 30px 30px 0px 30px;
 	font-size: 1.3em;
 	color: #323232;
 	text-align: center;
 }
+
 .abt-name{
 	padding-top: 15px;
 }
+
 .abt-content{
 	text-align: center;
 	padding: 15px;
 }
-
-/********** !about_page *********/
+/*** ABOUT PAGE END ***/

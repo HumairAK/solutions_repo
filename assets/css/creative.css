@@ -255,6 +255,9 @@ header .header-content .header-content-inner hr {
         margin-right: auto;
         margin-left: auto;
         max-width: 1000px;
+
+        /* Shift search bar content up */
+        padding-top: 14%;
     }
 
     header .header-content .header-content-inner p {

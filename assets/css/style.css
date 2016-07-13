@@ -424,17 +424,22 @@ section.exam-info em {
 .prf-tables{
     text-align: left;
 }
+.prf-details{
+	text-align: center;
+}
 /********** !user-profile styles *********/
 /********** !about_page styles *********/
 .about-p{
 	padding: 30px 30px 0px 30px;
 	font-size: 1.3em;
 	color: #323232;
+	text-align: center;
 }
 .abt-name{
 	padding-top: 15px;
 }
 .abt-content{
+	text-align: center;
 	padding: 15px;
 }
 

@@ -386,3 +386,20 @@ p.solutions-type{
     text-align: left;
 }
 /********** !user-profile styles *********/
+/** about_page **/
+.about-p{
+
+	padding: 30px 30px 0px 30px;
+	font-size: 1.3em;
+	color: #323232;
+
+}
+.abt-name{
+	padding-top: 15px;
+}
+.abt-content{
+	padding: 15px;
+}
+
+
+/** !about_page **/

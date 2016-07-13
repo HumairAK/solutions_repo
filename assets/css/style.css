@@ -407,30 +407,21 @@ section.exam-info em {
 
 /************************** Pop-up Window  *********************************************/
 
-.login-window {
+.login-window, .registration-window {
 	display: inline-block;
 	text-align: left;
 	vertical-align: middle;
-	padding: 15%;
+	padding: 10%;
 }
 
-.login-window h4 {
+.login-window h4, .registration-window {
 	text-transform: uppercase;
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
     color: #666666;
 }
 
-.login-window .modal-header {
+.login-window .modal-header, .registration-window .modal-header {
 	text-align: center;
 }
-
-.login-window input {
-    
-}
-
-.login-window input:focus {
-
-}
-
 

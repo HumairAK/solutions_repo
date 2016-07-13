@@ -307,20 +307,46 @@ main [id^="sol-"] div.comments ul li p.user-comment {
 #solutions-main{
     min-height: 100%;
     padding-top: 65px;
+    text-align: left;
+}
+
+
+#solutions-main em {
+	font-weight: bold;
 }
 
 /*the section which holds each of the solutions*/
+
 section.solutions-card{
     text-align: left;
     background-color: white;
     border-radius: 20px;
     width: 95%;
     margin-left: 2.5%;
+    margin-bottom: 2%;
     cursor: pointer;
+    padding-bottom: 5px;
 }
+
+section.solutions-card .right-arrow {
+	vertical-align: middle;
+}
+
+section.solutions-card img {
+	margin-top: 12px;
+	margin-right: 8px;
+	width: 40px;
+	height: auto;
+}
+
+h4.search-head {
+	margin-left: 5%;
+	margin-top: 2%;
+	color: dimgray;
+}	
+
 /*the title of the course*/
 h3.solutions-title{
-    font-family: 'Roboto',sans-serif;
     font-size: large;
     color: #333333;
     margin-left: 5%;
@@ -328,22 +354,16 @@ h3.solutions-title{
     padding-top: 20px;
 }
 /*the time of the examination*/
-p.solutions-time{
-    font-family: 'Roboto',sans-serif;
+p.solutions-time, p.solutions-type, p.exam-instr{
     font-size: medium;
     color: dimgrey;
     margin-left: 5%;
     margin-top: 0px;
-    margin-bottom: 2px;
 }
 /*whether its a midterm or final exam*/
-p.solutions-type{
-    font-family: 'Roboto',sans-serif;
-    font-size: medium;
-    color: dimgrey;
-    margin-left: 5%;
-    margin-top: 0px;
-    padding-bottom: 20px;
+
+p.solutions-time {
+	margin-bottom: 2px;
 }
 
 #solutions-footer{
@@ -352,21 +372,40 @@ p.solutions-type{
 
 /**********************************************************************************************************************/
 
+/*THE EXAM QUESTIONS PAGE BEGINS HERE*/
+.exam-info {
+	margin-left: 5%;
+	display: inline-block;
+}
+
+img.exam-info {
+	padding: 10px;
+	min-width: 30%;
+	vertical-align: top;
+}
+
+section.exam-info em {
+	font-weight: bold;
+}
+
+
+
 .questions-number{
-    font-family: 'Roboto',sans-serif;
     font-size: large;
     color: #333333;
     margin-left: 5%;
     margin-bottom: 5px;
-    padding-top: 15px;
+
 }
-.questions-comment{
-    font-family: 'Roboto',sans-serif;
+.questions-comment, .questions-sol-num{
     font-size: medium;
     color: dimgrey;
-    margin-left: 5%;
     margin-top: 0px;
     padding-bottom: 15px;
+}
+
+.questions-sol-num {
+	margin-left: 5%;
 }
 
 /********** user-profile styles  **********/

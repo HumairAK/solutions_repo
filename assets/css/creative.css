@@ -146,48 +146,6 @@ footer .navbar-default .affix .nav>li>a:focus {
     color: #222;
 }
 
-/*@media(min-width:768px) {
-    footer .navbar-default {
-        border-color: rgba(255,255,255,.3);
-        background-color: #333333;
-    }
-
-    footer .navbar-default .navbar-header .navbar-brand {
-        color: rgba(255,255,255,.7);
-    }
-
-    footer .navbar-default .navbar-header .navbar-brand:hover ,
-    footer .navbar-default .navbar-header .navbar-brand:focus {
-        color: #fff;
-    }
-
-    footer .navbar-default .nav > li>a,
-    footer .navbar-default .nav>li>a:focus {
-        color: rgba(255,255,255,.7);
-    }
-
-    footer .navbar-default .nav > li>a:hover,
-    footer .navbar-default .nav>li>a:focus:hover {
-        color: #fff;
-    }
-
-    footer .navbar-default .affix {
-        border-color: rgba(34,34,34,.05);
-        background-color: #fff;
-    }
-
-    footer .navbar-default .affix .navbar-header .navbar-brand {
-        font-size: 14px;
-    }
-
-   
-    footer .navbar-default .affix .nav > li>a,
-    footer .navbar-default .affix .nav>li>a:focus {
-        color: #222;
-    }
-}*/
-
-
 header {
     position: relative;
     width: 100%;

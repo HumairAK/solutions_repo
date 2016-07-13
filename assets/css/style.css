@@ -13,8 +13,8 @@ ul {
 	list-style-type: none;
 }
 
-a {
-	text-decoration: none;
+a, a:hover {
+	text-decoration: none!important;
 }
 
 h1{
@@ -280,7 +280,6 @@ section.solutions-card{
     width: 95%;
     margin-left: 2.5%;
     margin-bottom: 2%;
-    cursor: pointer;
     padding-bottom: 5px;
 }
 

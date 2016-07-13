@@ -41,10 +41,10 @@
 			<div class="collapse navbar-collapse"
 				 id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="user_solutions.html">Solutions Page</a></li>
+					<!--<li><a href="user_solutions.html">Solutions Page</a></li>
 					<li><a href="user_profile_alt.html">Profile Page</a></li>
 					<li><a href="questions.html">Questions Page</a></li>
-					<li><a href="exams.html">Exams Pages</a></li>
+					<li><a href="exams.html">Exams Pages</a></li>-->
 
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Courses <span class="caret"></span></a>
@@ -62,8 +62,19 @@
 							<li><a href="#">Fourth Year</a></li>
 						</ul>
 					</li>
-					<li><a href="#">Register</a></li>
 					<li><a href="#">Log In</a></li>
+					<li><a href="#">Register</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Links <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a tabindex="-1" href="user_solutions.html">Solutions Page</a></li>
+							<li><a href="user_profile_alt.html">Profile Page</a></li>
+							<li><a href="questions.html">Questions Page</a></li>
+							<li><a href="exams.html">Exams Pages</a></li>
+						</ul>
+
+					</li>
+					
 
 					<!--<li id="header"><header><a href="#"><img src="assets/images/logo.png"></a></header></li> &ndash;&gt;-->
 				</ul>
@@ -116,7 +127,7 @@
 	</header>
 
 	<footer>
-		<div class="navbar navbar-default navbar-fixed-bottom">
+		<nav class="navbar navbar-default navbar-fixed-bottom">
 			<div class="container-fluid">
 				<div class="navbar-collapse collapse" id="footer-body">
 					<ul class="nav navbar-nav">
@@ -135,14 +146,19 @@
 				</div>
 
 			</div>
-		</div>
+		</nav>
 	</footer>
-
-
-
 
 	<script>
 		$(document).ready(function() {
+
+			$(".dropdown").hover(function(){ 
+  				$(".dropdown-toggle", this).trigger("click"); 
+			});
+
+			$(".dropdown-toggle").click(function() {
+		        $(this).next(".dropdown-menu").fadeToggle(200);
+		    });
 		 
 			// For the Second level Dropdown menu, highlight the parent	
 			$( ".dropdown-menu" )

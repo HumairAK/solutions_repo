@@ -47,7 +47,7 @@ main .search h2{
 	padding-top: 200px; /* Change to move search bar content. Keep as pixel*/
 }
 
-.search input[type=text] {
+.search input {
     text-align: center;
     box-sizing: border-box;
     background: white url('../images/search_icon.png') no-repeat 9px 9px;
@@ -55,7 +55,7 @@ main .search h2{
     padding: 12px 20px 12px 40px;
 }
 
-.search input[type=text], .search button.search-button {
+.search input, .search button.search-button {
     font-size: 16px;
 	height: 40px;
     border-radius: 10px;
@@ -404,3 +404,33 @@ section.exam-info em {
 	padding: 15px;
 }
 /*** ABOUT PAGE END ***/
+
+/************************** Pop-up Window  *********************************************/
+
+.login-window {
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
+	padding: 15%;
+}
+
+.login-window h4 {
+	text-transform: uppercase;
+    font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+    font-weight: 700;
+    color: #666666;
+}
+
+.login-window .modal-header {
+	text-align: center;
+}
+
+.login-window input {
+    
+}
+
+.login-window input:focus {
+
+}
+
+

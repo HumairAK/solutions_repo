@@ -310,6 +310,11 @@ main [id^="sol-"] div.comments ul li p.user-comment {
     text-align: left;
 }
 
+
+#solutions-main em {
+	font-weight: bold;
+}
+
 /*the section which holds each of the solutions*/
 
 section.solutions-card{
@@ -334,9 +339,14 @@ section.solutions-card img {
 	height: auto;
 }
 
+h4.search-head {
+	margin-left: 5%;
+	margin-top: 2%;
+	color: dimgray;
+}	
+
 /*the title of the course*/
 h3.solutions-title{
-    font-family: 'Roboto',sans-serif;
     font-size: large;
     color: #333333;
     margin-left: 5%;
@@ -344,22 +354,16 @@ h3.solutions-title{
     padding-top: 20px;
 }
 /*the time of the examination*/
-p.solutions-time{
-    font-family: 'Roboto',sans-serif;
+p.solutions-time, p.solutions-type, p.exam-instr{
     font-size: medium;
     color: dimgrey;
     margin-left: 5%;
     margin-top: 0px;
-    margin-bottom: 2px;
 }
 /*whether its a midterm or final exam*/
-p.solutions-type{
-    font-family: 'Roboto',sans-serif;
-    font-size: medium;
-    color: dimgrey;
-    margin-left: 5%;
-    margin-top: 0px;
-    padding-bottom: 20px;
+
+p.solutions-time {
+	margin-bottom: 2px;
 }
 
 #solutions-footer{

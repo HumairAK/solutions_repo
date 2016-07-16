@@ -10,6 +10,7 @@ admin, likewise for users. All visitor requests are requests that everyone that
 visits the website can make.
 
 Assume content/data-types are json format (they are omitted).
+Standard serves for styles/images/script files are omitted. 
 
 ******************************** ADMIN ONLY ************************************
 N/A
@@ -125,20 +126,26 @@ Url: '/exam'
 Data: examTitle = {
 	courseCode: 'csc148',
 	termOffered: 'Fall', 		
-	dateOffered: 'June/2014',
+	dateOffered: 'June2014',
 	campus: 'St.George', 
 }
 On Success: Return response such that: 
 response = {
-	courseCode: 
-	instructors: 
-	uploadDate: 
-	
-
-	
+	courseCode: 'csc148'
+	instructors: 'Paul Grieves and Danny Heap',
+	uploadDate: '2014-01-26'
+	pageCouont: 22
+	questionCount: 10 
+	questions: {question1, question2,...},
+	path: '/exams/stgeorge/2014/fall/csc148.png'	
 }
 
-Notes: 
+Where each questionN is a question object such that: 
+questionN = {
+	questionNumber: 1,
+	solutionCount: 2,
+	commentCount: 6
+}
 
 --------------------------------------------------------------------------------
 QUESTION - SOLUTIONS - PAGE

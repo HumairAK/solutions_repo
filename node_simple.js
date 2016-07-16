@@ -1,12 +1,13 @@
 // a simple node server
 /* TO DO:
-* 1. get all exams given course code -- order by year desc ? PENDING
+* 1. get all exams given course code -- order by year desc ? DONE
+* 1B. get the title of the course ? DONE
 * 2. add upload date and user name  ? DONE
 * 3. remove exam ? PENDING
 * 4. questions ? PENDING
 * 5. ....TBD
 * */
-var debug_mode = false;
+const debug_mode = false;
 
 Object.assign = require('object-assign');
 var mongodb = require('mongodb');
@@ -43,8 +44,77 @@ var questions_array = ["this is q1", "this is q2"];
   instructors: ["Faith Ellen", "Tom Fairgreve"]
 };*/
 
+
+/*var course = {
+  course_code: "CSC240",
+  title: "Thry of Computation"
+};*/
+
 // test adding of exams to the database functionality
-add_exam(fields, questions_array);
+//add_exam(fields, questions_array);
+
+//test getting all exams database functionality
+/*get_all_exams("CSC240", function (docs) {
+  if (docs.length == 0){
+    console.log("Nothing was found");
+  }
+  else {
+    console.log(docs);
+  }
+});*/
+
+//test adding course
+// add_course("CSC148", "Intro to Programming");
+
+/*
+ * This function will retrieve all exams in the database given the course code ...
+ * ... ordered by the year of the exam.
+ * Params: course_code - an string of format "CSC309"
+ * */
+function get_all_exams(course_code, callback) {
+
+  // get a connection
+  mongoFactory.getConnection(uri)
+      .then(function(db) {
+
+        // get the exams table
+        var exam_collection = db.collection('exams');
+
+        // search exams table with given course code
+        exam_collection.find(
+            { course_code: course_code }
+        ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
+          if (err) throw err;
+
+          else {    // get the title
+            find_course(course_code, function (result, data) {
+
+              if (result == true) {
+                // append the title from data to each exam object from docs
+                docs.forEach(function (doc) {
+                  doc.title = data[0].title;
+                });
+
+                if (debug_mode == true){
+                  console.log(docs);
+                  console.log(data);
+                }
+                /*callback(docs);     // send back the data*/
+              }
+              else if (result == false) {    // no such course was found
+                console.log("This course has not been added to the database.");
+              }
+              callback(docs);     // send back the data
+
+            });
+          }
+        });
+      })
+      .catch(function(err) {
+        console.error(err);
+      });
+
+}
 
 
 
@@ -60,8 +130,34 @@ add_exam(fields, questions_array);
 * */
 function add_exam(fields, questions_array) {
 
+   // construct an exam object
+   var Data =
+   {
+     course_code: fields[0],
+     year: fields[1],
+     term: fields[2],
+     type: fields[3],
+     instructors: fields[4],
+     page_count: fields[5],
+     questions_count: fields[6],
+     questions_list: [],
+     upload_date: fields[7],
+     uploaded_by: fields[8]
+   };
+
+   // create the questions objects
+   for (var i = 1; i <= Data.questions_count; i++) {
+     Data.questions_list.push(
+        {
+          q_id: i,
+          question: questions_array[i - 1]
+        }
+     );
+   }
+
   // first see if the exam already exists
-  find_exam(fields, questions_array, function(result, Data) {
+  // pass in course_code, year, term and type...
+  find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
 
     if (result == true) {     // meaning that the exam was found
       console.log("This exam already exists in the database");
@@ -95,36 +191,15 @@ function add_exam(fields, questions_array) {
 /*
 * This function will return TRUE if the provided exam info already exists in the database
 * OR FALSE if it does not exist in the database.
-* Params: fields - an array of format ["course_code", year, "term", "type"
-*                 ["instructor1",...,"instructor n"], page_count, question_count,
-*                 "upload_data", "user_name"]
-*         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
+* Params: fields - an array of format ["course_code", year, "term", "type"]
+*
 * */
-function find_exam(fields, questions_array, callback) {
-  // construct an exam object
-  var Data =
-  {
-    course_code: fields[0],
-    year: fields[1],
-    term: fields[2],
-    type: fields[3],
-    instructors: fields[4],
-    page_count: fields[5],
-    questions_count: fields[6],
-    questions_list: [],
-    upload_date: fields[7],
-    uploaded_by: fields[8]
-  };
+function find_exam(fields, callback) {
 
-  // create the questions objects
-  for (var i = 1; i <= Data.questions_count; i++) {
-    Data.questions_list.push(
-        {
-          q_id: i,
-          question: questions_array[i - 1]
-        }
-    );
-  }
+  var course_code = fields[0];
+  var year = fields[1];
+  var term = fields[2];
+  var type = fields[3];
 
   // console.log(Data);
 
@@ -140,16 +215,16 @@ function find_exam(fields, questions_array, callback) {
       // look for the exam
       exams.find(
           {
-            course_code: Data.course_code,
-            year: Data.year,
-            term: Data.term,
-            type: Data.type
+            course_code: course_code,
+            year: year,
+            term: term,
+            type: type
           }
       ).toArray(function (err, docs) {
         if (err) throw err;
 
         if (docs.length == 0) { // if this exam doesnt exist.... add it
-          callback(false, Data);
+          callback(false);
         }
         else {  // exam was found
           callback(true);
@@ -164,6 +239,89 @@ function find_exam(fields, questions_array, callback) {
     .catch(function(err) {
       console.error(err);
     });
+}
+
+/*
+ * This function will add a course to the database UNLESS the course already exists.
+ * If the course table is empty, this will create one and then add the data.
+ * Note: this assumes that (course_codes) are unique.
+ * Params: course_code - an string of format "CSC309"
+ *         title - the course description
+ * */
+function add_course(course_code, title) {
+
+  var courseData = {
+    course_code: course_code,
+    title: title
+  };
+
+  find_course(course_code, function (result, data) {
+
+    if (result == true){
+      console.log("course already exists");
+    }
+    else if (result == false) {    // add it
+      mongoFactory.getConnection(uri)
+          .then(function(db) {
+
+            // find the exams table
+            var courses = db.collection('courses');
+            // insert data into table
+            courses.insert(courseData, function(err) {
+              if (err) throw err;
+              else {
+                console.log("couse added");
+                db.close(function (err) {   // close the connection when done
+                  if (err) throw err;
+                });
+              }
+            });
+          })
+          .catch(function(err) {
+            console.error(err);
+          });
+    }
+  });
+}
+
+/*
+ * This function will return TRUE if the provided course info already exists in the database
+ * OR FALSE if it does not exist in the database.
+ * Params: course code - an string of the format: "CSC309"
+ *
+ * */
+function find_course(course_code, callback) {
+  // check the data to see if this exam exists...
+
+  // first make a connection
+  mongoFactory.getConnection(uri)
+      .then(function(db) {
+
+        // fetch the courses table
+        var courses = db.collection('courses');
+
+        // look for the courses
+        courses.find(
+            { course_code: course_code }
+        ).toArray(function (err, docs) {
+          if (err) throw err;
+
+          if (docs.length == 0) { // if this course doesnt exist.... add it
+            callback(false);
+          }
+          else {  // course was found
+            callback(true, docs);
+          }
+        });
+
+/*              db.close(function (err) {
+         if (err) throw err;
+         });*/
+
+      })
+      .catch(function(err) {
+        console.error(err);
+      });
 }
 
 

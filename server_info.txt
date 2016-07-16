@@ -118,8 +118,8 @@ Notes: 	Might add more fields, will re-visit, design such a way that
 --------------------------------------------------------------------------------
 EXAM - Page
 --------------------------------------------------------------------------------
-Description: The information served when a user does a specific query for an
-exam. 
+Description: The information sent/served when a user does a specific query for
+an exam.
 
 Method: 'GET'
 Url: '/exam'
@@ -134,10 +134,10 @@ response = {
 	courseCode: 'csc148'
 	instructors: 'Paul Grieves and Danny Heap',
 	uploadDate: '2014-01-26'
-	pageCouont: 22
+	pageCount: 22
 	questionCount: 10 
 	questions: {question1, question2,...},
-	path: '/exams/stgeorge/2014/fall/csc148.png'	
+	path: '/exams/stgeorge/2014/fall/csc148.pdf'
 }
 
 Where each questionN is a question object such that: 
@@ -150,12 +150,43 @@ questionN = {
 --------------------------------------------------------------------------------
 QUESTION - SOLUTIONS - PAGE
 --------------------------------------------------------------------------------
-Description: 
-Method: 
-Url: 
-Data: 
-On Success:
-Notes: 
+Description: Page displayed when user queries for a specific exam questions
+solution. Information displayed includes: each submitted solution, where each
+solution contains the user uploader details, date uploaded, up/down score,
+solution plain-text, comments (where each comment contains commenter's info).
+
+Method: 'GET'
+Url: '/solution'
+Data: examTitle = {
+      	courseCode: 'csc148',
+      	termOffered: 'Fall',
+      	dateOffered: 'June2014',
+      	campus: 'St.George',
+      	question: 2
+      }
+On Success: Return a response such that:
+response = {
+    solutions: [solution1, solution2, ....]
+}
+
+Where each solutionN is a solution object such that:
+
+solutionN = {
+    uploaderUsername: 'jSmith123',
+    uploaderAvatarPath: '/assets/images/avatars/jSmith123.png',
+    uploaderUpvotes: 3,
+    uploaderDownvotes: -1,
+    solution: 'In this solution we solve it by doing x then y and ta-da!',
+    comments: [comment1, comment2, ....]
+}
+
+where each commentN is a comment object such that:
+
+commentN = {
+    username: 'janeDoe456',
+    avatarPath: '/assets/images/avatars/janeDoe456.png',
+    comment: 'This is a good answer!'
+}
 
 --------------------------------------------------------------------------------
 -------------------------------- SEARCHING -------------------------------------
@@ -192,7 +223,7 @@ courseN = {
 	solutionCount: '3'
 	termOffered: 'Fall',
 	dateOffered: 'June/2014'
-	camus: 'St.George'  		// Other values: 'Missassauga'/'Scarborough'
+	camus: 'St.George'  		// Other values: 'Mississauga'/'Scarborough'
 }
 
 --------------------------------------------------------------------------------
@@ -213,8 +244,8 @@ response = {
 Where each userN is a user object such that: 
 
 userN = {
-	firstName: 'Intro to Computer Science',
-	avatarPath: '/assets/images/avatar.png', 	// 'N/A' if it does not exist
+	username: 'janeDoe456',
+	avatarPath: '/assets/images/avatars/janeDoe456.png', 	// 'N/A' if it d.n.e.
 	points: 100, 								
 	commentCount: 13, 
 	solutionCount: 3

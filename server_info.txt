@@ -1,0 +1,215 @@
+********************************************************************************
+********************* REQUEST AND SERVE DOCUMENTATION **************************
+********************************************************************************
+This document lays down the pertinent information for requesting and serving 
+data between front-end and server. The structure is styled in a pseudo jquery
+ajax call format with notes provided. 
+
+There are 3 categories. Admin only requests are the requests made only the 
+admin, likewise for users. All visitor requests are requests that everyone that
+visits the website can make.
+
+Assume content/data-types are json format (they are omitted).
+
+******************************** ADMIN ONLY ************************************
+N/A
+
+********************************* USERS ONLY ***********************************
+Requests made by logged in users. User credentials required. 
+
+Note: Look into authenticating users and saving login session data. Probably 
+store session data in database. 
+--------------------------------------------------------------------------------
+LOGIN
+--------------------------------------------------------------------------------
+Description: User login
+Method: 'POST'
+url: '/login'
+Data: userData = {
+	username: 'jsmith85', 	// Consider whether we need to secure this as well
+	password: 'blahblah' 	// Come back to this for a more secure method*
+}
+On Success: Return response such that: 
+
+response = {type: typeOfUser} // Where typeOfUser takes on  'admin' or 'user'
+
+Notes: 	We'll have to save information to keep this user in a login-state
+		There is probably a way to save credentials securely, and then 
+		authenticate  from server for other tasks on the web app. 
+
+--------------------------------------------------------------------------------
+USER-PROFILE - Receive info
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes:  
+
+--------------------------------------------------------------------------------
+USER-PROFILE - Edit info
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes: 
+
+--------------------------------------------------------------------------------
+SOLUTION UPLOAD
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes: 
+
+--------------------------------------------------------------------------------
+COMMENT ON SOLUTION
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes: 
+
+--------------------------------------------------------------------------------
+UP/DOWNVOTE A SOLUTION
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes: 
+
+
+********************************* ALL VISITORS *********************************
+
+Requests made by any users, no credentials required. 
+
+--------------------------------------------------------------------------------
+SIGN UP
+--------------------------------------------------------------------------------
+Description: Post user information filled out from a form to server.
+
+Method: 'POST'
+Url: '/signUp'
+Data: userData = {
+	firstName: 'John',
+	lastName:  'Smith',
+	username:  'jsmith85',
+	password:  'blahblah', 	// Come back to this for a more secure method*
+	University: 'UofT', 	// optional
+	Department: 'Optional' 	// optional
+}
+On success: 
+	- no data required
+
+Notes: 	Might add more fields, will re-visit, design such a way that
+		adding more fields for a user is not difficult to change. 
+
+
+--------------------------------------------------------------------------------
+EXAM - Page
+--------------------------------------------------------------------------------
+Description: The information served when a user does a specific query for an
+exam. 
+
+Method: 'GET'
+Url: '/exam'
+Data: examTitle = {
+	courseCode: 'csc148',
+	termOffered: 'Fall', 		
+	dateOffered: 'June/2014',
+	campus: 'St.George', 
+}
+On Success: Return response such that: 
+response = {
+	courseCode: 
+	instructors: 
+	uploadDate: 
+	
+
+	
+}
+
+Notes: 
+
+--------------------------------------------------------------------------------
+QUESTION - SOLUTIONS - PAGE
+--------------------------------------------------------------------------------
+Description: 
+Method: 
+Url: 
+Data: 
+On Success:
+Notes: 
+
+--------------------------------------------------------------------------------
+-------------------------------- SEARCHING -------------------------------------
+--------------------------------------------------------------------------------
+Search bar requests will be divided into 2 separate types of requests from the 
+server. Each request will be a different ajax call. This is dependent on the the 
+drop-down value on the search bar. 
+	1) Request Users: Serve the users with matching information provided
+	2) Request Courses: Serve the courses with the matching course code 
+
+Users can also request exams for a course via the nav menu. This is essentially
+the same as performing a request for courses through search bar for our purposes
+so we don't need another call for nav. 
+--------------------------------------------------------------------------------
+SEARCH-BAR - Courses
+--------------------------------------------------------------------------------
+Description: Any visitor can do a search by courses, server must respond with
+all exams that are categorized by the course searched (from front end). 
+
+Method: 'GET'
+Url: '/search/courses'
+Data: search = 'abcxzy' //where abc are letters and xzy are integers
+On success: return response such that: 
+response = {
+	courses: [course1, course2, course3]
+}
+
+Where each courseN is a course object such that: 
+
+courseN = {
+	courseName: 'Intro to Computer Science',
+	courseCode: 'CSC148', 
+	commentCount: '13', 
+	solutionCount: '3'
+	termOffered: 'Fall',
+	dateOffered: 'June/2014'
+	camus: 'St.George'  		// Other values: 'Missassauga'/'Scarborough'
+}
+
+--------------------------------------------------------------------------------
+SEARCH-BAR - Users
+--------------------------------------------------------------------------------
+Description: Any visitor can do a search by users, server must respond with
+all users with usernames where the provided keyword (from front-end) is a 
+substring of the username. 
+
+Method: 'GET'
+Url: '/search/users'
+Data: search = 'subString' 
+On Success: return response such that: 
+response = {
+	users: [user1, user2, user3]
+}
+
+Where each userN is a user object such that: 
+
+userN = {
+	firstName: 'Intro to Computer Science',
+	avatarPath: '/assets/images/avatar.png', 	// 'N/A' if it does not exist
+	points: 100, 								
+	commentCount: 13, 
+	solutionCount: 3
+}
+

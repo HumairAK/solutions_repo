@@ -3,8 +3,8 @@
 * 1. get all exams given course code -- order by year desc ? DONE
 * 1B. get the title of the course ? DONE
 * 2. add upload date and user name  ? DONE
-* 3. remove exam ? PENDING
-* 4. questions ? PENDING
+* 3. remove exam ? DONE
+* 4. answers ? CURRENTLY WORKING
 * 5. ....TBD
 * */
 const debug_mode = false;
@@ -12,6 +12,7 @@ const debug_mode = false;
 Object.assign = require('object-assign');
 var mongodb = require('mongodb');
 var mongoFactory = require('mongo-factory');
+var ObjectId = require('mongodb').ObjectID;
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
@@ -33,8 +34,6 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
    uploaded_by: "some user name"
  };
  */
-var fields = ["CSC240", 2016, "fall", "midterm", ["Faith Ellen", "Tom F."], 20, 2, "some date", "some user name"];
-var questions_array = ["this is q1", "this is q2"];
 
 // Eventually this will be a better idea in the long run
 /*var offering = {
@@ -50,10 +49,23 @@ var questions_array = ["this is q1", "this is q2"];
   title: "Thry of Computation"
 };*/
 
+
+//*************************************************************************************
+//************PRELIMINARY TESTING******************************************************
+//*************************************************************************************
+
+// Sample data:
+var fields = ["CSC240", 2016, "fall", "midterm", ["Faith Ellen", "Tom F."], 20, 2, "some date", "some user name"];
+var questions_array = ["this is q1", "this is q2"];
+
 // test adding of exams to the database functionality
 //add_exam(fields, questions_array);
 
-//test getting all exams database functionality
+//test removal of exam from the database functionality
+// remove_exam([fields[0],fields[1],fields[2],fields[3]]);
+
+
+//test getting all exams database functionality -- USE FOR THE EXAMS PAGES maybe?
 /*get_all_exams("CSC240", function (docs) {
   if (docs.length == 0){
     console.log("Nothing was found");
@@ -65,6 +77,50 @@ var questions_array = ["this is q1", "this is q2"];
 
 //test adding course
 // add_course("CSC148", "Intro to Programming");
+
+
+//*************************************************************************************
+//*************************************************************************************
+//*************************************************************************************
+
+//add_solution(["578a44ff71ed097fc3079d6e", 1, "this is the solution to q1"]);
+
+
+
+
+// give me the exam_id , quesiton_id, solution text
+function add_solution(fields) {
+    var Data = {
+        exam_id: fields[0],
+        q_id: fields[1],
+        text: fields[2],
+        votes: 0
+    };
+
+    // establish a connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
+
+            // find the solutions table
+            var solutions = db.collection('solutions');
+            // insert data into table
+            solutions.insert(Data, function(err) {
+                if (err) throw err;
+                else {
+                    console.log("solution added");
+                    db.close(function (err) {   // close the connection when done
+                        if (err) throw err;
+                    });
+                }
+            });
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+
+}
+
+
 
 /*
  * This function will retrieve all exams in the database given the course code ...
@@ -326,7 +382,77 @@ function find_course(course_code, callback) {
 
 
 
-/*    IGNORE BELOW **************
+/*
+ * This function will remove the exam from the database given the combination of (course_code+ year +  term + type)
+ * Params: fields - an array of format ["course_code", year, "term", "type"]
+ *
+ * */
+function remove_exam(fields) {
+
+    var course_code = fields[0];
+    var year = fields[1];
+    var term = fields[2];
+    var type = fields[3];
+
+    // establish connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
+
+            // fetch the exams table
+            var exams = db.collection('exams');
+
+            // look for the specific exam
+            exams.removeOne(
+                {
+                    course_code: course_code,
+                    year: year,
+                    term: term,
+                    type: type
+                }, function (err, docs) {
+                    if (err) throw err;
+                    else {
+                        if (docs.deletedCount == 1) {
+                            console.log("exam was removed");
+                        }
+                        else if (docs.deletedCount == 0) {
+                            console.log("No such exam was found");
+                        }
+                    }
+                }
+            );
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+}
+
+
+//get_exam_byID("578a44ff71ed097fc3079d6e");
+
+
+function get_exam_byID(id) {
+
+    // establish a connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
+
+            // find the solutions table
+            var exams = db.collection('exams');
+            // query
+            exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
+                if  (err) throw err;
+                else {
+                    // console.log(JSON.stringify(docs, null, 2));
+                    console.log(docs);
+                }
+            });
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+}
+
+/*    IGNORE BELOW *********************************************************************************
 
 ONLY FOR SYNTAX REFERENCE
 

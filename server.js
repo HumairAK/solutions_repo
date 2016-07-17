@@ -2,6 +2,10 @@
  * Created by warefhaque on 2016-07-16.
  */
 
+/*change the __dirname statically for now*/
+
+var __dirname = '/Users/warefhaque/CSC309/solutions_repo';
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -11,13 +15,12 @@ var fs = require("fs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static('public'));
+/*LOADS ALL STATIC FILES FROM THE DIRECTORY __dirname*/
+app.use(express.static(__dirname));
 
 app.listen(3000, function() {
-    console.log('listening on 3000');
+    console.log('listening on http://localhost:3000/');
 });
-
-
 
 app.get('/exams',function (req,res) {
     console.log(req.query.search);
@@ -26,11 +29,9 @@ app.get('/exams',function (req,res) {
 });
 
 app.get('/exams.html', function (req,res) {
-    res.sendFile('/Users/warefhaque/CSC309/solutions_repo/exams.html');
-});
-
-app.get("/exams.html/assets/css/style.css",function (req,res) {
-    res.sendFile('/Users/warefhaque/CSC309/solutions_repo/assets/css/style.css');
+    /*LOADS ALL THE STATIC FILES REALTIVE TO THE REDIRECTED URL*/
+    app.use('/exams.html', express.static(__dirname));
+    res.sendFile(__dirname+'/exams.html');
 });
 
 function getExamsForCourseCode(courseCode) {

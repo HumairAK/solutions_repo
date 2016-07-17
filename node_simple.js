@@ -1,4 +1,5 @@
-// a simple node server
+// a simple node driver to interact with mongo database
+
 /* TO DO:
 * 1. get all exams given course code -- order by year desc ? DONE
 * 1B. get the title of the course ? DONE
@@ -20,7 +21,7 @@
 *
 * */
 
-/*Tables schema SO FAR:*/ 
+/*Tables schema SO FAR:*/
 // |======================================================exams==================================================================================|
 // |_________ _id_____________|course_code|year__|term__|type____|instructors|page_count|questions_count|questions_list_|upload_date|uploaded_by_|
 // |==========================|===========|======|======|========|===========|==========|===============|===============|===========|============|
@@ -57,8 +58,7 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 
 //***********************PRELIMINARY TESTING******************************************|
 
-//N/A
-
+/*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
 

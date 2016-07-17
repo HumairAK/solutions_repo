@@ -4,8 +4,11 @@
 * 1B. get the title of the course ? DONE
 * 2. add upload date and user name  ? DONE
 * 3. remove exam ? DONE
-* 4. answers ? CURRENTLY WORKING
-* 5. ....TBD
+* 4a. get all questions for a given exam_id ? PENDING
+* 4b. add exam id to each question returned. ? PENDING
+* 6. get all solutions provided question_id and exam_id ? PENDING
+* 5. answers ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+* 7. ....TBD
 * */
 
 
@@ -16,6 +19,30 @@
 * 4.
 *
 * */
+
+/*Tables schema SO FAR:*/ 
+// |======================================================exams==================================================================================|
+// |_________ _id_____________|course_code|year__|term__|type____|instructors|page_count|questions_count|questions_list_|upload_date|uploaded_by_|
+// |==========================|===========|======|======|========|===========|==========|===============|===============|===========|============|
+// |"578a44ff71ed097fc3079d6e"|"CSC240"   |2016  |"fall"|"final" |["a","b"]  |20        | 10            |[{id,q},{id,q}]| "date"    | "by"       |
+// |..........|
+
+
+// |=======================courses=========================|
+// |_________ _id_____________|course_code|title___________|
+// |==========================|===========|================|
+// |"578a44ff71ed097fc3079d6e"|"CSC240"   |"title"         |
+// |..........|
+
+
+// |================================solutions===================================|
+// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|
+// |==========================|============================|=====|========|=====|
+// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |
+// |..........|
+
+var exports = module.exports = {};
+
 const debug_mode = false;
 
 Object.assign = require('object-assign');
@@ -26,81 +53,14 @@ var ObjectId = require('mongodb').ObjectID;
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
 
-// sample exam data
-// hopefully this will be collected when an admin user fills out a form to create an exam.
-// this looks something like...
-/*
-*   var exam =
- {
-   course_code: "CSC240",
-   year: 2016,
-   term: "fall",
-   type: "midterm",
-   page_count: 20,
-   questions_count: 2,
-   questions_list: [],
-   upload_date: "some date",
-   uploaded_by: "some user name"
- };
- */
-
-// Eventually this will be a better idea in the long run
-/*var offering = {
-  course_code: "CSC240",
-  year: 2016,
-  term: "fall",
-  instructors: ["Faith Ellen", "Tom Fairgreve"]
-};*/
 
 
-/*var course = {
-  course_code: "CSC240",
-  title: "Thry of Computation"
-};*/
+//***********************PRELIMINARY TESTING******************************************|
 
-/*var solution = {
-    exam_id: 578a44ff71ed097fc3079d6e,
-    q_id: 1,
-    text: "this is an answer to qId1",
-    votes: 0
-};*/
+//N/A
 
 
-//*************************************************************************************
-//************PRELIMINARY TESTING******************************************************
-//*************************************************************************************
-
-// Sample data:
-var fields = ["CSC240", 2016, "fall", "midterm", ["Faith Ellen", "Tom F."], 20, 2, "some date", "some user name"];
-var questions_array = ["this is q1", "this is q2"];
-
-// test adding of exams to the database functionality
-//add_exam(fields, questions_array);
-
-//test removal of exam from the database functionality
-// remove_exam([fields[0],fields[1],fields[2],fields[3]]);
-
-
-//test getting all exams database functionality -- USE FOR THE EXAMS PAGES maybe?
-/*get_all_exams("CSC240", function (exams) {
-  if (exams.length == 0){
-    console.log("Nothing was found");
-  }
-  else {
-    console.log(exams);
-  }
-});*/
-
-//test adding course
-// add_course("CSC148", "Intro to Programming");
-
-//test adding solution
-//add_solution(["578a44ff71ed097fc3079d6e", 1, "this is the solution to q1"]);
-
-
-//*************************************************************************************
-//*************************************************************************************
-//*************************************************************************************
+//****************************FUNCTIONS************************************************|
 
 
 
@@ -111,7 +71,7 @@ var questions_array = ["this is q1", "this is q2"];
  *          ... call get_all_exams and look at the output. Looks like: 578a44ff71ed097fc3079d6e
  *       question_id - is unique relevant to 1 exam.
  * */
-function add_solution(fields) {
+exports.add_solution = function (fields) {
     var Data = {
         exam_id: fields[0],
         q_id: fields[1],
@@ -149,7 +109,7 @@ function add_solution(fields) {
  * ... ordered by the year of the exam.
  * Params: course_code - an string of format "CSC309"
  * */
-function get_all_exams(course_code, callback) {
+exports.get_all_exams = function (course_code, callback) {
 
   // get a connection
   mongoFactory.getConnection(uri)
@@ -165,7 +125,7 @@ function get_all_exams(course_code, callback) {
           if (err) throw err;
 
           else {    // get the title
-            find_course(course_code, function (result, data) {
+            exports.find_course(course_code, function (result, data) {
 
               if (result == true) {
                 // append the title from data to each exam object from docs
@@ -206,7 +166,7 @@ function get_all_exams(course_code, callback) {
 *                 "upload_date", "user_name"]
 *         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
 * */
-function add_exam(fields, questions_array) {
+exports.add_exam = function (fields, questions_array) {
 
    // construct an exam object
    var Data =
@@ -235,7 +195,7 @@ function add_exam(fields, questions_array) {
 
   // first see if the exam already exists
   // pass in course_code, year, term and type...
-  find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
+  exports.find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
 
     if (result == true) {     // meaning that the exam was found
       console.log("This exam already exists in the database");
@@ -273,7 +233,7 @@ function add_exam(fields, questions_array) {
 * Params: fields - an array of format ["course_code", year, "term", "type"]
 *
 * */
-function find_exam(fields, callback) {
+exports.find_exam = function (fields, callback) {
 
   var course_code = fields[0];
   var year = fields[1];
@@ -328,14 +288,14 @@ function find_exam(fields, callback) {
  * Params: course_code - an string of format "CSC309"
  *         title - the course description
  * */
-function add_course(course_code, title) {
+exports.add_course = function (course_code, title) {
 
   var courseData = {
     course_code: course_code,
     title: title
   };
 
-  find_course(course_code, function (result, data) {
+  exports.find_course(course_code, function (result) {
 
     if (result == true){
       console.log("course already exists");
@@ -371,7 +331,7 @@ function add_course(course_code, title) {
  * Params: course code - an string of the format: "CSC309"
  *
  * */
-function find_course(course_code, callback) {
+exports.find_course = function (course_code, callback) {
   // check the data to see if this exam exists...
 
   // first make a connection
@@ -411,7 +371,7 @@ function find_course(course_code, callback) {
  * Params: fields - an array of format ["course_code", year, "term", "type"]
  *
  * */
-function remove_exam(fields) {
+exports.remove_exam = function (fields) {
 
     var course_code = fields[0];
     var year = fields[1];
@@ -453,7 +413,7 @@ function remove_exam(fields) {
 
 //get_exam_byID("578a44ff71ed097fc3079d6e");
 
-function get_exam_byID(id) {
+exports.get_exam_byID = function (id) {
 
     // establish a connection
     mongoFactory.getConnection(uri)

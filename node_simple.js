@@ -58,6 +58,13 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
   title: "Thry of Computation"
 };*/
 
+/*var solution = {
+    exam_id: 578a44ff71ed097fc3079d6e,
+    q_id: 1,
+    text: "this is an answer to qId1",
+    votes: 0
+};*/
+
 
 //*************************************************************************************
 //************PRELIMINARY TESTING******************************************************

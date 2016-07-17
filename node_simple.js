@@ -7,6 +7,15 @@
 * 4. answers ? CURRENTLY WORKING
 * 5. ....TBD
 * */
+
+
+/* Tables SO FAR:
+* 1. exams
+* 2. courses
+* 3. solutions
+* 4.
+*
+* */
 const debug_mode = false;
 
 Object.assign = require('object-assign');
@@ -66,29 +75,35 @@ var questions_array = ["this is q1", "this is q2"];
 
 
 //test getting all exams database functionality -- USE FOR THE EXAMS PAGES maybe?
-/*get_all_exams("CSC240", function (docs) {
-  if (docs.length == 0){
+/*get_all_exams("CSC240", function (exams) {
+  if (exams.length == 0){
     console.log("Nothing was found");
   }
   else {
-    console.log(docs);
+    console.log(exams);
   }
 });*/
 
 //test adding course
 // add_course("CSC148", "Intro to Programming");
 
-
-//*************************************************************************************
-//*************************************************************************************
-//*************************************************************************************
-
+//test adding solution
 //add_solution(["578a44ff71ed097fc3079d6e", 1, "this is the solution to q1"]);
 
 
+//*************************************************************************************
+//*************************************************************************************
+//*************************************************************************************
 
 
-// give me the exam_id , quesiton_id, solution text
+
+/*
+ * This function will add a solution to the solutions table in the database .
+ * Params: fields - [exam_id , question_id, solution text]
+ * Note: exam_id - is a unique identifier for each exam in the database. to see an example, ...
+ *          ... call get_all_exams and look at the output. Looks like: 578a44ff71ed097fc3079d6e
+ *       question_id - is unique relevant to 1 exam.
+ * */
 function add_solution(fields) {
     var Data = {
         exam_id: fields[0],
@@ -244,6 +259,7 @@ function add_exam(fields, questions_array) {
   });
 }
 
+
 /*
 * This function will return TRUE if the provided exam info already exists in the database
 * OR FALSE if it does not exist in the database.
@@ -297,6 +313,7 @@ function find_exam(fields, callback) {
     });
 }
 
+
 /*
  * This function will add a course to the database UNLESS the course already exists.
  * If the course table is empty, this will create one and then add the data.
@@ -340,6 +357,7 @@ function add_course(course_code, title) {
   });
 }
 
+
 /*
  * This function will return TRUE if the provided course info already exists in the database
  * OR FALSE if it does not exist in the database.
@@ -379,7 +397,6 @@ function find_course(course_code, callback) {
         console.error(err);
       });
 }
-
 
 
 /*
@@ -428,7 +445,6 @@ function remove_exam(fields) {
 
 
 //get_exam_byID("578a44ff71ed097fc3079d6e");
-
 
 function get_exam_byID(id) {
 

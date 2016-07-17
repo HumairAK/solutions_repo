@@ -1,6 +1,5 @@
 function main(){
 
-
     // User-profile dynamic paging
     var items = [
         $("#profile-general"),
@@ -30,6 +29,7 @@ function main(){
          * from server*/
         switch($(this).text()) {
             case "General":
+                console.log("clicked general");
                 $("#profile-general").show();
                 break;
             case "Follows":

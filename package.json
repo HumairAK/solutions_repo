@@ -25,6 +25,7 @@
     "express-handlebars": "^3.0.0",
     "mongo-factory": "^1.0.0",
     "mongodb": "^2.2.2",
-    "object-assign": "^4.1.0"
+    "object-assign": "^4.1.0",
+    "sanitizer": "^0.1.3"
   }
 }

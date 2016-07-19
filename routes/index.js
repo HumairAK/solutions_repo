@@ -59,7 +59,8 @@ router.get('/exams/:id', function(req, res, next) {
                     term:toProperCase(exams[i].term),
                     instructors:exams[i].instructors,
                     type:toProperCase(exams[i].type) + " Examination",
-                    title:exams[i].title
+                    title:exams[i].title,
+                    id:exams[i]._id
                 };
                 //console.log(minExamInfo);
                 minExamInfoArray.push(minExamInfo);
@@ -90,18 +91,6 @@ app.get('/exams.html', function (req,res) {
     app.use('/exams.html', express.static(__dirname));
     res.sendFile(__dirname+'/exams.html');
 });*/
-
-
-function getExamsForCourseCode(courseCode) {
-    dbFile.get_all_exams(courseCode, function (exams) {
-        if (exams.length == 0){
-            console.log("Nothing was found");
-        }
-        else {
-            console.log(exams);
-        }
-    });
-}
 
 module.exports = router;
 

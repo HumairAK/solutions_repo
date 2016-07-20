@@ -6,6 +6,9 @@ var bodyParser = require('body-parser');
 var hbs = require('express-handlebars');
 var dbFile = require("./node_simple.js");
 var sanitizer  = require ("sanitizer");
+var session = require('express-session');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 var routes = require('./routes/index');
 var app = express();
@@ -23,6 +26,12 @@ app.set('view engine', '.hbs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(session({secret: 'pickbetterlater', resave: false, saveUninitialized: false}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./config/passport'); // simply need to load it
 
 /*LOADS ALL STATIC FILES FROM THE DIRECTORY __dirname*/
 app.use(express.static(__dirname));

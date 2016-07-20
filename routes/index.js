@@ -1,6 +1,11 @@
 var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
+var csrf = require('csurf'); // Cross-Site Request Forgery prevention
+var passport = require('passport');
+
+var csrfProtection = csrf();
+router.use(csrfProtection); // router is protected
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
@@ -40,6 +45,21 @@ router.get('/search', function(req, res, next) {
     res.redirect('/exams/' + courseName);
 });
 
+router.get('/signup', function(req, res, next) {
+    res.render('signup', {csrfToken: req.csrfToken()});
+});
+
+router.post('/signup', function(req, res, next) {
+    res.redirect('/');
+});
+
+/*router.post('/signup', passport.authenticate('local.signup', {
+    sucessRedirect: '/profile',
+    failureRedirect: '/signup',
+    failureFlash: true
+}));*/
+
+
 /*
 app.get('/exams',function (req,res) {
     console.log(req.query.search);
@@ -53,6 +73,8 @@ app.get('/exams.html', function (req,res) {
     app.use('/exams.html', express.static(__dirname));
     res.sendFile(__dirname+'/exams.html');
 });*/
+
+
 
 
 function getExamsForCourseCode(courseCode) {

@@ -67,61 +67,51 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 
 
 
-
-exports.get_exam_info_by_ID = function (exam_id) {
-
-    //first get this exam;
-    // var exam = exports.get_exam_byID(exam_id);
-    // var num_questions = exam[0].questions_count;
-
-    //get how many solutions there are for each question
-
-
+// this function returns an array where is element contains info for a particular question
+// such as the question number (_id), number of solutions (count), and number of comments
+// (comments). [ {_id,count,comments}, {} ...]
+exports.get_exam_info_by_ID = function (exam_id, callback) {
 
     mongoFactory.getConnection(uri)
         .then(function (db) {
 
             var solutions = db.collection('solutions');
 
-            var cursor = solutions.find({ exam_id: exam_id}), i = 0;
+            solutions.aggregate(
+                [
 
-            var count = [];
-            cursor.forEach(function (x) {
-                
-                console.log(x);
-            });
-
-
-/*            var q_count = [];
-
-            for (var i = 1; i <= 2; i++) {
-                solutions.count(
+                    // {$unwind: "$comments"},
+                    { $match: { exam_id: exam_id }},
                     {
-                        exam_id: exam_id,
-                        q_id: i
+                        $project:
+                        {
+                            num_comments: { $size: "$comments" },
+                            _id: "$exam_id",
+                            q_id: "$q_id"
+                        }
+                    },
+                    {
+                        $group : {
+                            _id : "$q_id",
+                            count: { $sum: 1 },
+                            comments: {$sum: "$num_comments"}
+                            // num_comments: { $size: "$comments" }
+
+                        }
                     }
-                    ,function (err, result) {
-                        q_count.push(result);
-                        console.log(q_count);
-
-                        // console.log("found "+ result + " solutions");
-                    }
-                );
-            }*/
 
 
+            ]).toArray(function (err, result) {
+                // console.log(result);
+                callback(result);
+
+            });
         })
         .catch(function (err) {
             console.err(err);
         })
 
 }
-
-
-
-
-
-
 
 
 
@@ -152,7 +142,7 @@ exports.add_comment = function (sol_id, fields) {
 }
 
 // get all solutions given an exam_id and the question number
-exports.get_all_solutions = function (exam_id, q_num) {
+exports.get_all_solutions = function (exam_id, q_num, callback) {
     mongoFactory.getConnection(uri)
         .then(function (db) {
 
@@ -167,6 +157,8 @@ exports.get_all_solutions = function (exam_id, q_num) {
                 if (err) throw err;
                 else {
                     console.log(docs);
+
+                    callback(docs);
                 }
             });
 

@@ -30,10 +30,10 @@ var questions_array = ["this is q1", "this is q2"];
 // dbFile.add_course("CSC148", "Intro to Programming");
 
 //test adding solution
-//dbFile.add_solution(["578a44ff71ed097fc3079d6e", 1, "this is yet another solution to q1"]);
+//dbFile.add_solution(["578a44ff71ed097fc3079d6e", 2, "this is a solution to q2"]);
 
 
-
+// the following just prints the exam to console
 // dbFile.get_exam_byID("578a44ff71ed097fc3079d6e");
 
 //test getting all solutions of a given exam and question number
@@ -41,6 +41,14 @@ var questions_array = ["this is q1", "this is q2"];
 
 
 //test adding of comments given a solution_id, and the comment information as an array
-// dbFile.add_comment("578edba3e5611f0d4e23c65f", ["this is the 2nd comment", "this is the date", "this is the author"]);
+// dbFile.add_comment("578f08e43bba452ee98da444", ["this is asdfasdf", "this is the date", "this is the author"]);
 
-dbFile.get_exam_info_by_ID("578a44ff71ed097fc3079d6e");
+
+dbFile.get_exam_info_by_ID("578a44ff71ed097fc3079d6e", function (result) {
+    if (result.length == 0) {
+        console.log("some error occured");
+    }
+    else {
+        console.log(result);
+    }
+});

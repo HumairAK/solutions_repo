@@ -13,6 +13,8 @@
 * */
 
 
+/* I pass in exam id and you give me the number of questions and the comments and solutions associated with each question?*/
+
 /* Tables SO FAR:
 * 1. exams
 * 2. courses
@@ -36,10 +38,10 @@
 // |..........|
 
 
-// |================================solutions===================================|
-// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|
-// |==========================|============================|=====|========|=====|
-// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |
+// |================================solutions============================================|
+// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|comments|
+// |==========================|============================|=====|========|=====|========|
+// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}] |
 // |..........|
 
 var exports = module.exports = {};
@@ -64,6 +66,119 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 
 
 
+
+
+exports.get_exam_info_by_ID = function (exam_id) {
+
+    //first get this exam;
+    // var exam = exports.get_exam_byID(exam_id);
+    // var num_questions = exam[0].questions_count;
+
+    //get how many solutions there are for each question
+
+
+
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var solutions = db.collection('solutions');
+
+            var cursor = solutions.find({ exam_id: exam_id}), i = 0;
+
+            var count = [];
+            cursor.forEach(function (x) {
+                
+                console.log(x);
+            });
+
+
+/*            var q_count = [];
+
+            for (var i = 1; i <= 2; i++) {
+                solutions.count(
+                    {
+                        exam_id: exam_id,
+                        q_id: i
+                    }
+                    ,function (err, result) {
+                        q_count.push(result);
+                        console.log(q_count);
+
+                        // console.log("found "+ result + " solutions");
+                    }
+                );
+            }*/
+
+
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+
+}
+
+
+
+
+
+
+
+
+
+exports.add_comment = function (sol_id, fields) {
+    var Data = {
+        text: fields[0],
+        date: fields[1],
+        by: fields[2]
+    };
+
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            // find the solutions table
+            var solutions = db.collection('solutions');
+            // insert data into table
+            solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
+                if (err) throw err;
+                else {
+                    console.log("comment added");
+                }
+            });
+
+        })
+        .catch(function (err) {
+            console.error(err);
+        })
+}
+
+// get all solutions given an exam_id and the question number
+exports.get_all_solutions = function (exam_id, q_num) {
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var solutions = db.collection('solutions');
+
+            solutions.find(
+                {
+                    exam_id: exam_id,
+                    q_id: q_num
+                }
+            ).toArray( function (err, docs) {
+                if (err) throw err;
+                else {
+                    console.log(docs);
+                }
+            });
+
+
+        })
+        .catch(function () {
+          console.error(err);
+        })
+
+
+}
+
 /*
  * This function will add a solution to the solutions table in the database .
  * Params: fields - [exam_id , question_id, solution text]
@@ -76,7 +191,8 @@ exports.add_solution = function (fields) {
         exam_id: fields[0],
         q_id: fields[1],
         text: fields[2],
-        votes: 0
+        votes: 0,
+        comments: []
     };
 
     // establish a connection

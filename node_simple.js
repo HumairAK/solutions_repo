@@ -13,6 +13,8 @@
 * */
 
 
+/* I pass in exam id and you give me the number of questions and the comments and solutions associated with each question?*/
+
 /* Tables SO FAR:
 * 1. exams
 * 2. courses
@@ -36,10 +38,10 @@
 // |..........|
 
 
-// |================================solutions===================================|
-// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|
-// |==========================|============================|=====|========|=====|
-// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |
+// |================================solutions============================================|
+// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|comments|
+// |==========================|============================|=====|========|=====|========|
+// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}] |
 // |..........|
 
 var exports = module.exports = {};
@@ -64,6 +66,111 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 
 
 
+
+// this function returns an array where is element contains info for a particular question
+// such as the question number (_id), number of solutions (count), and number of comments
+// (comments). [ {_id,count,comments}, {} ...]
+exports.get_exam_info_by_ID = function (exam_id, callback) {
+
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var solutions = db.collection('solutions');
+
+            solutions.aggregate(
+                [
+
+                    // {$unwind: "$comments"},
+                    { $match: { exam_id: exam_id }},
+                    {
+                        $project:
+                        {
+                            num_comments: { $size: "$comments" },
+                            _id: "$exam_id",
+                            q_id: "$q_id"
+                        }
+                    },
+                    {
+                        $group : {
+                            _id : "$q_id",
+                            count: { $sum: 1 },
+                            comments: {$sum: "$num_comments"}
+                            // num_comments: { $size: "$comments" }
+
+                        }
+                    }
+
+
+            ]).toArray(function (err, result) {
+                // console.log(result);
+                callback(result);
+
+            });
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+
+}
+
+
+
+exports.add_comment = function (sol_id, fields) {
+    var Data = {
+        text: fields[0],
+        date: fields[1],
+        by: fields[2]
+    };
+
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            // find the solutions table
+            var solutions = db.collection('solutions');
+            // insert data into table
+            solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
+                if (err) throw err;
+                else {
+                    console.log("comment added");
+                }
+            });
+
+        })
+        .catch(function (err) {
+            console.error(err);
+        })
+}
+
+// get all solutions given an exam_id and the question number
+exports.get_all_solutions = function (exam_id, q_num, callback) {
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var solutions = db.collection('solutions');
+
+            solutions.find(
+                {
+                    exam_id: exam_id,
+                    q_id: q_num
+                }
+            ).toArray( function (err, docs) {
+                if (err) throw err;
+                else {
+                    console.log(docs);
+
+                    callback(docs);
+                }
+            });
+
+
+        })
+        .catch(function () {
+          console.error(err);
+        })
+
+
+}
+
 /*
  * This function will add a solution to the solutions table in the database .
  * Params: fields - [exam_id , question_id, solution text]
@@ -76,7 +183,8 @@ exports.add_solution = function (fields) {
         exam_id: fields[0],
         q_id: fields[1],
         text: fields[2],
-        votes: 0
+        votes: 0,
+        comments: []
     };
 
     // establish a connection

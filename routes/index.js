@@ -9,7 +9,7 @@ router.use(csrfProtection); // router is protected
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
-    res.render('index', {success: req.session.success, errors: req.session.errors});
+    res.render('index');
     req.session.errors = null;
     req.session.success = null;
 });
@@ -108,7 +108,7 @@ router.get('/questions/:exam_id', function (req,res) {
 });
 
 router.get('/signup', function(req, res, next) {
-    res.render('signup', {csrfToken: req.csrfToken()});
+    res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
 });
 
 router.post('/signup', function(req, res, next) {
@@ -118,6 +118,7 @@ router.post('/signup', function(req, res, next) {
 
     var errors = req.validationErrors();
     if (errors) {
+        console.log(req);
         req.session.errors = errors;
         req.session.success = false;
     } else {

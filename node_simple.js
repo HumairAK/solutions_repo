@@ -52,6 +52,7 @@ Object.assign = require('object-assign');
 var mongodb = require('mongodb');
 var mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
+var assert = require('assert');
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 //var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
@@ -544,6 +545,26 @@ exports.get_exam_byID = function (id) {
 }
 
 /*    IGNORE BELOW *********************************************************************************
+
+
+ /*
+ * userObj = {fs: fs, ls: ls, email: email, username: username, pass_hash: pass_hash, univ: univ, dept: dept}
+ *
+ * */
+exports.addUser = function (userObj) {
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
+            var users = db.collection('users').insertOne(userObj, function (err, result) {
+                assert.equal(null, error);
+                console.log("User inserted");
+                db.close();
+            });
+
+        });
+}
+
+
+exports.findUser = function ()
 
 ONLY FOR SYNTAX REFERENCE
 

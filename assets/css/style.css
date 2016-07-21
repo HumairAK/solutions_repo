@@ -425,3 +425,21 @@ section.exam-info em {
 	text-align: center;
 }
 
+/********* Success and Error messages  **************************/
+
+.error-msgs {
+	background: #e79892;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+.error-msgs ul {
+	list-style: none;
+    padding: 0;
+}
+
+
+.success-msgs {
+	background: #80cca0;
+	padding: 5px;
+}

@@ -86,14 +86,6 @@ router.get('/search', function(req, res, next) {
     res.redirect('/exams/' + courseName);
 });
 
-
-/* REDIRECT - exam -> questions page*/
-router.get('/exam_click',function (req,res) {
-    //TODO:get needs to have exam_id attached
-    var examId = req.query.exam_id;
-    res.redirect('/questions/'+examId);
-});
-
 /*EXAMPLE DATA GIVEN BELOW:
  * questions = [{id,count,comments},{id,count,comments}] --> array of "question" objects
  *
@@ -101,9 +93,10 @@ router.get('/exam_click',function (req,res) {
  * count= number of solutions
  * comments = number of comments*/
 router.get('/questions/:exam_id', function (req,res) {
+    console.log(req.params.exam_id);
     dbFile.get_exam_info_by_ID(req.params.exam_id, function (questions) {
-
         res.render('questions', {query: questions});
+        console.log(questions);
     });
 });
 
@@ -148,7 +141,6 @@ app.get('/exams.html', function (req,res) {
     res.sendFile(__dirname+'/exams.html');
 });*/
 
-
 function getExamsForCourseCode(courseCode) {
     dbFile.get_all_exams(courseCode, function (exams) {
         if (exams.length == 0){
@@ -159,7 +151,6 @@ function getExamsForCourseCode(courseCode) {
         }
     });
 }
-
 
 module.exports = router;
 

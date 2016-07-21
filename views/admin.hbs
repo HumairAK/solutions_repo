@@ -1,0 +1,69 @@
+<main id="solutions-main">
+<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+<h4>Add Exam</h4>
+<form action="/add_exam" method="post">
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="course code"
+               name="course_code">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="year"
+               name="year">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="term"
+               name="term">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="type"
+               name="type">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="instructor1,instructor2,.."
+               name="instructors">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="page count"
+               name="page_count">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="questions count"
+               name="questions_count">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="q1,q2,q3,.."
+               name="questions_list">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="upload date"
+               name="upload_date">
+    </div>
+    <div class="form-group">
+        <input type="text"
+               class="form-control"
+               placeholder="uploader"
+               name="uploaded_by">
+    </div>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+</main>

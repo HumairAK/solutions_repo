@@ -34,6 +34,10 @@ router.get('/questions', function(req, res, next) {
     res.render('questions');
 });
 
+router.get('/admin', function(req,res){
+   res.render('admin');
+});
+
 /* Render/GET exam page */
 /* Render/GET exam page */
 //EXAMPLE EXPECTED DATA GIVEN BELOW:

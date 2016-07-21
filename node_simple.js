@@ -1,27 +1,29 @@
 // a simple node driver to interact with mongo database
 
 /* TO DO:
-* 1. get all exams given course code -- order by year desc ? DONE
-* 1B. get the title of the course ? DONE
-* 2. add upload date and user name  ? DONE
-* 3. remove exam ? DONE
-* 4a. get all questions for a given exam_id ? PENDING
-* 4b. add exam id to each question returned. ? PENDING
-* 6. get all solutions provided question_id and exam_id ? PENDING
-* 5. answers ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
-* 7. ....TBD
-* */
+ * 1. get all exams given course code -- order by year desc ? DONE
+ * 1B. get the title of the course ? DONE
+ * 2. add upload date and user name  ? DONE
+ * 3. remove exam ? DONE
+ * 4a. get all questions for a given exam_id ? PENDING
+ * 4b. add exam id to each question returned. ? PENDING
+ * 6. get all solutions provided question_id and exam_id ? PENDING
+ * 5. answers ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+ * 7. add university field to courses, exams
+ * 8. make a user
+ * */
 
 
 /* I pass in exam id and you give me the number of questions and the comments and solutions associated with each question?*/
 
 /* Tables SO FAR:
-* 1. exams
-* 2. courses
-* 3. solutions
-* 4.
-*
-* */
+ * 1. exams
+ * 2. courses
+ * 3. solutions
+ * 4. users
+ * 5. logins
+ *
+ * */
 
 /*Tables schema SO FAR:*/
 // |======================================================exams==================================================================================|
@@ -44,6 +46,18 @@
 // |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}] |
 // |..........|
 
+// |========================================users===============================================================================|
+// |_______ _id_________|email_________|user_name__|f_name__|l_name__|uni___|departm.|answered|messeges|comments|phone|followers|
+// |====================|==============|===========|========|========|======|========|========|========|========|=====|=========|
+// |"3.....efsdfsdf...."|blah@blah.com |"some_user"|"f.name"|"l.name"|"uofT"|CS      |40      |30      |15      |() - |[{},{}]  |
+// |..........|
+
+// |====================================login===================================|
+// |_________ _id_____________|email____________|user_name|pass_________________|
+// |==========================|=================|=========|=====================|
+// |"askjdfklajsdf..........."|"asdf@asdf.com   |"asdfasd"|(some hasehd thing)  |
+// |..........|
+
 var exports = module.exports = {};
 
 const debug_mode = false;
@@ -55,7 +69,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
-//var uri = 'mongodb://localhost:27017/db';
+
 
 
 //***********************PRELIMINARY TESTING******************************************|
@@ -63,6 +77,137 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
+
+
+
+/*
+ * This function creates and adds a user to users table.
+ * IFF both the email and the user_name are not in the database already.
+ * If either of them exist, the user is NOT added.
+ * Params: fields - [email, user_name, f_name, l_name, uni, department, password]
+ * */
+exports.add_user = function (fields) {
+
+    // create a user object
+    var user_data = {
+        email: fields[0],
+        user_name: fields[1],
+        f_name: fields[2],
+        l_name: fields[3],
+        university: fields[4],
+        department: fields[5],
+        answered: 0,
+        messages: 0,
+        comments: 0,
+        phone_num: "(111) 111-1111",
+        followers: []
+    };
+
+    var login_data = {
+        email: fields[0],
+        user_name: fields[1],
+        password: fields[6]
+    };
+
+    // find out if this user already exists by checking their email
+    exports.find_user( fields[0] , function (result) {
+        if  (result == false) {
+            // console.log("no such user found");
+
+            // find out if the user_name is taken
+            exports.find_user_name( fields[1], function (docs) {
+                if (docs == false) {        // if not ...
+                    // continue
+                    // console.log("user name is valid");
+
+                    // when both are valid add the user to the users and logins table
+                    mongoFactory.getConnection(uri)
+                        .then(function (db) {
+
+                            var users = db.collection('users');
+                            var logins = db.collection('logins');
+
+                            users.insertOne( user_data, function (err) {
+                                if (err) throw err;
+                                else {
+                                    console.log("user has been added to users");
+                                }
+                            });
+
+                            logins.insertOne( login_data, function (err) {
+                                if (err) throw err;
+                                else{
+                                    console.log("login info has been added");
+                                }
+                            });
+
+                            db.close();
+                        })
+                        .catch(function (err) {
+                            console.err(err);
+                        })
+                }
+                else {
+                    console.log("user name is already taken!")
+                }
+            });
+        }
+        else {
+            console.log("user already exists");
+        }
+    });
+};
+
+/*
+ * This (helper) function returns true IFF user_name already exists in the database
+ * Params: user_name - the user name
+ * */
+exports.find_user_name = function (user_name, callback) {
+    // make a connection
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var logins = db.collection('logins');
+            logins.find( { user_name: user_name } ).toArray(function (err, result) {
+                if (err) throw err;
+                else if (result.length == 0) {  // nothing was found  so this user is new
+                    callback(false);
+                }
+                else {
+                    callback(true);
+                }
+            });
+            // db.close();
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+};
+
+/*
+ * This (helper) function returns true IFF email already exists in the database
+ * */
+exports.find_user = function (email, callback) {
+    // make a connection
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+
+            var logins = db.collection('logins');
+            logins.find( { email: email } ).toArray(function (err, result) {
+                if (err) throw err;
+                else if (result.length == 0) {  // nothing was found  so this user is new
+                    callback(false);
+                }
+                else {
+                    callback(true);
+                }
+            });
+            // db.close();
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+};
 
 
 // this function returns an array where is element contains info for a particular question
@@ -99,7 +244,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
                     }
 
 
-            ]).toArray(function (err, result) {
+                ]).toArray(function (err, result) {
                 // console.log(result);
                 callback(result);
 
@@ -109,13 +254,19 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
             console.err(err);
         })
 
-}
+};
 
+
+/*
+ * This function will add a comment to the solutions table
+ * Params: sol_id - id of the solution to which to add the comment
+ *         fields - [text, by]
+ * */
 exports.add_comment = function (sol_id, fields) {
     var Data = {
         text: fields[0],
-        date: fields[1],
-        by: fields[2]
+        date: new Date(),
+        by: fields[1]
     };
 
     mongoFactory.getConnection(uri)
@@ -135,7 +286,9 @@ exports.add_comment = function (sol_id, fields) {
         .catch(function (err) {
             console.error(err);
         })
-}
+};
+
+
 
 // get all solutions given an exam_id and the question number
 exports.get_all_solutions = function (exam_id, q_num, callback) {
@@ -161,11 +314,11 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
 
         })
         .catch(function () {
-          console.error(err);
+            console.error(err);
         })
 
 
-}
+};
 
 /*
  * This function will add a solution to the solutions table in the database .
@@ -204,7 +357,9 @@ exports.add_solution = function (fields) {
             console.error(err);
         });
 
-}
+};
+
+
 
 /*
  * This function will retrieve all exams in the database given the course code ...
@@ -213,171 +368,175 @@ exports.add_solution = function (fields) {
  * */
 exports.get_all_exams = function (course_code, callback) {
 
-  // get a connection
-  mongoFactory.getConnection(uri)
-      .then(function(db) {
+    // get a connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
 
-        // get the exams table
-        var exam_collection = db.collection('exams');
+            // get the exams table
+            var exam_collection = db.collection('exams');
 
-        // search exams table with given course code
-        exam_collection.find(
-            { course_code: course_code }
-        ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
-          if (err) throw err;
+            // search exams table with given course code
+            exam_collection.find(
+                { course_code: course_code }
+            ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
+                if (err) throw err;
 
-          else {    // get the title
-            exports.find_course(course_code, function (result, data) {
+                else {    // get the title
+                    exports.find_course(course_code, function (result, data) {
 
-              if (result == true) {
-                // append the title from data to each exam object from docs
-                docs.forEach(function (doc) {
-                  doc.title = data[0].title;
-                });
+                        if (result == true) {
+                            // append the title from data to each exam object from docs
+                            docs.forEach(function (doc) {
+                                doc.title = data[0].title;
+                            });
 
-                if (debug_mode == true){
-                  console.log(docs);
-                  console.log(data);
+                            if (debug_mode == true){
+                                console.log(docs);
+                                console.log(data);
+                            }
+                            /*callback(docs);     // send back the data*/
+                        }
+                        else if (result == false) {    // no such course was found
+                            console.log("This course has not been added to the database.");
+                        }
+                        callback(docs);     // send back the data
+
+                    });
                 }
-                /*callback(docs);     // send back the data*/
-              }
-              else if (result == false) {    // no such course was found
-                console.log("This course has not been added to the database.");
-              }
-              callback(docs);     // send back the data
-
             });
-          }
+        })
+        .catch(function(err) {
+            console.error(err);
         });
-      })
-      .catch(function(err) {
-        console.error(err);
-      });
 
-}
+};
+
+
 
 /*
-* This function will add an exam to the database UNLESS the exams already exists.
-* If the exams table is empty, this will create one and then add the data.
-* Note: this assumes that (course_code + year + term + type) together form a unique exam.
-* i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
-* Params: fields - an array of format ["course_code", year, "term",
-*                 ["instructor1",...,"instructor n"], page_count, question_count
-*                 "upload_date", "user_name"]
-*         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
-* */
+ * This function will add an exam to the database UNLESS the exams already exists.
+ * If the exams table is empty, this will create one and then add the data.
+ * Note: this assumes that (course_code + year + term + type) together form a unique exam.
+ * i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
+ * Params: fields - an array of format ["course_code", year, "term",
+ *                 ["instructor1",...,"instructor n"], page_count, question_count
+ *                 "upload_date", "user_name"]
+ *         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
+ * */
 exports.add_exam = function (fields, questions_array) {
 
-   // construct an exam object
-   var Data =
-   {
-     course_code: fields[0],
-     year: fields[1],
-     term: fields[2],
-     type: fields[3],
-     instructors: fields[4],
-     page_count: fields[5],
-     questions_count: fields[6],
-     questions_list: [],
-     upload_date: fields[7],
-     uploaded_by: fields[8]
-   };
+    // construct an exam object
+    var Data =
+    {
+        course_code: fields[0],
+        year: fields[1],
+        term: fields[2],
+        type: fields[3],
+        instructors: fields[4],
+        page_count: fields[5],
+        questions_count: fields[6],
+        questions_list: [],
+        upload_date: fields[7],
+        uploaded_by: fields[8]
+    };
 
-   // create the questions objects
-   for (var i = 1; i <= Data.questions_count; i++) {
-     Data.questions_list.push(
-        {
-          q_id: i,
-          question: questions_array[i - 1]
+    // create the questions objects
+    for (var i = 1; i <= Data.questions_count; i++) {
+        Data.questions_list.push(
+            {
+                q_id: i,
+                question: questions_array[i - 1]
+            }
+        );
+    }
+
+    // first see if the exam already exists
+    // pass in course_code, year, term and type...
+    exports.find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
+
+        if (result == true) {     // meaning that the exam was found
+            console.log("This exam already exists in the database");
         }
-     );
-   }
 
-  // first see if the exam already exists
-  // pass in course_code, year, term and type...
-  exports.find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
+        else {    // add Data to the database
+            // make a connection
+            mongoFactory.getConnection(uri)
+                .then(function(db) {
 
-    if (result == true) {     // meaning that the exam was found
-      console.log("This exam already exists in the database");
-    }
-
-    else {    // add Data to the database
-      // make a connection
-      mongoFactory.getConnection(uri)
-          .then(function(db) {
-
-            // find the exams table
-            var exam_collection = db.collection('exams');
-            // insert data into table
-            exam_collection.insert(Data, function(err) {
-              if (err) throw err;
-              else {
-                console.log("exam added");
-                db.close(function (err) {   // close the connection when done
-                  if (err) throw err;
+                    // find the exams table
+                    var exam_collection = db.collection('exams');
+                    // insert data into table
+                    exam_collection.insert(Data, function(err) {
+                        if (err) throw err;
+                        else {
+                            console.log("exam added");
+                            db.close(function (err) {   // close the connection when done
+                                if (err) throw err;
+                            });
+                        }
+                    });
+                })
+                .catch(function(err) {
+                    console.error(err);
                 });
-              }
-            });
-          })
-          .catch(function(err) {
-            console.error(err);
-          });
-    }
-  });
-}
+        }
+    });
+};
+
 
 /*
-* This function will return TRUE if the provided exam info already exists in the database
-* OR FALSE if it does not exist in the database.
-* Params: fields - an array of format ["course_code", year, "term", "type"]
-*
-* */
+ * This function will return TRUE if the provided exam info already exists in the database
+ * OR FALSE if it does not exist in the database.
+ * Params: fields - an array of format ["course_code", year, "term", "type"]
+ *
+ * */
 exports.find_exam = function (fields, callback) {
 
-  var course_code = fields[0];
-  var year = fields[1];
-  var term = fields[2];
-  var type = fields[3];
+    var course_code = fields[0];
+    var year = fields[1];
+    var term = fields[2];
+    var type = fields[3];
 
-  // console.log(Data);
+    // console.log(Data);
 
-  // check the data to see if this exam exists...
+    // check the data to see if this exam exists...
 
-  // first make a connection
-  mongoFactory.getConnection(uri)
-    .then(function(db) {
+    // first make a connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
 
-      // fetch the exams table
-      var exams = db.collection('exams');
+            // fetch the exams table
+            var exams = db.collection('exams');
 
-      // look for the exam
-      exams.find(
-          {
-            course_code: course_code,
-            year: year,
-            term: term,
-            type: type
-          }
-      ).toArray(function (err, docs) {
-        if (err) throw err;
+            // look for the exam
+            exams.find(
+                {
+                    course_code: course_code,
+                    year: year,
+                    term: term,
+                    type: type
+                }
+            ).toArray(function (err, docs) {
+                if (err) throw err;
 
-        if (docs.length == 0) { // if this exam doesnt exist.... add it
-          callback(false);
-        }
-        else {  // exam was found
-          callback(true);
-        }
-      });
+                if (docs.length == 0) { // if this exam doesnt exist.... add it
+                    callback(false);
+                }
+                else {  // exam was found
+                    callback(true);
+                }
+            });
 
-/*      db.close(function (err) {
-        if (err) throw err;
-      });*/
+            /*      db.close(function (err) {
+             if (err) throw err;
+             });*/
 
-    })
-    .catch(function(err) {
-      console.error(err);
-    });
-}
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+};
+
 
 /*
  * This function will add a course to the database UNLESS the course already exists.
@@ -388,39 +547,40 @@ exports.find_exam = function (fields, callback) {
  * */
 exports.add_course = function (course_code, title) {
 
-  var courseData = {
-    course_code: course_code,
-    title: title
-  };
+    var courseData = {
+        course_code: course_code,
+        title: title
+    };
 
-  exports.find_course(course_code, function (result) {
+    exports.find_course(course_code, function (result) {
 
-    if (result == true){
-      console.log("course already exists");
-    }
-    else if (result == false) {    // add it
-      mongoFactory.getConnection(uri)
-          .then(function(db) {
+        if (result == true){
+            console.log("course already exists");
+        }
+        else if (result == false) {    // add it
+            mongoFactory.getConnection(uri)
+                .then(function(db) {
 
-            // find the exams table
-            var courses = db.collection('courses');
-            // insert data into table
-            courses.insert(courseData, function(err) {
-              if (err) throw err;
-              else {
-                console.log("couse added");
-                db.close(function (err) {   // close the connection when done
-                  if (err) throw err;
+                    // find the exams table
+                    var courses = db.collection('courses');
+                    // insert data into table
+                    courses.insert(courseData, function(err) {
+                        if (err) throw err;
+                        else {
+                            console.log("couse added");
+                            db.close(function (err) {   // close the connection when done
+                                if (err) throw err;
+                            });
+                        }
+                    });
+                })
+                .catch(function(err) {
+                    console.error(err);
                 });
-              }
-            });
-          })
-          .catch(function(err) {
-            console.error(err);
-          });
-    }
-  });
-}
+        }
+    });
+};
+
 
 /*
  * This function will return TRUE if the provided course info already exists in the database
@@ -429,38 +589,39 @@ exports.add_course = function (course_code, title) {
  *
  * */
 exports.find_course = function (course_code, callback) {
-  // check the data to see if this exam exists...
+    // check the data to see if this exam exists...
 
-  // first make a connection
-  mongoFactory.getConnection(uri)
-      .then(function(db) {
+    // first make a connection
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
 
-        // fetch the courses table
-        var courses = db.collection('courses');
+            // fetch the courses table
+            var courses = db.collection('courses');
 
-        // look for the courses
-        courses.find(
-            { course_code: course_code }
-        ).toArray(function (err, docs) {
-          if (err) throw err;
+            // look for the courses
+            courses.find(
+                { course_code: course_code }
+            ).toArray(function (err, docs) {
+                if (err) throw err;
 
-          if (docs.length == 0) { // if this course doesnt exist.... add it
-            callback(false);
-          }
-          else {  // course was found
-            callback(true, docs);
-          }
+                if (docs.length == 0) { // if this course doesnt exist.... add it
+                    callback(false);
+                }
+                else {  // course was found
+                    callback(true, docs);
+                }
+            });
+
+            /*              db.close(function (err) {
+             if (err) throw err;
+             });*/
+
+        })
+        .catch(function(err) {
+            console.error(err);
         });
+};
 
-/*              db.close(function (err) {
-         if (err) throw err;
-         });*/
-
-      })
-      .catch(function(err) {
-        console.error(err);
-      });
-}
 
 /*
  * This function will remove the exam from the database given the combination of (course_code+ year +  term + type)
@@ -504,7 +665,8 @@ exports.remove_exam = function (fields) {
         .catch(function(err) {
             console.error(err);
         });
-}
+};
+
 
 //get_exam_byID("578a44ff71ed097fc3079d6e");
 
@@ -528,11 +690,11 @@ exports.get_exam_byID = function (id) {
         .catch(function(err) {
             console.error(err);
         });
-}
+};
 
 /*    IGNORE BELOW *********************************************************************************
 
-ONLY FOR SYNTAX REFERENCE
+ ONLY FOR SYNTAX REFERENCE
 
  /!*
  * Then we need to give Boyz II Men credit for their contribution

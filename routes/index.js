@@ -61,10 +61,11 @@ router.get('/exams/:id', function(req, res, next) {
             //console.log(exams);
             //only pass over the information that is necessary for the exams page
             for (var i = 0; i<exams.length;i++){
+                var getInstructors = exams[i].instructors.join(", ");
                 var minExamInfo = {     courseCode:exams[i].course_code,
                     year:exams[i].year,
                     term:toProperCase(exams[i].term),
-                    instructors:exams[i].instructors,
+                    instructors: getInstructors,
                     type:toProperCase(exams[i].type) + " Examination",
                     title:exams[i].title,
                     id:exams[i]._id
@@ -74,7 +75,7 @@ router.get('/exams/:id', function(req, res, next) {
             }
         }
         console.log(minExamInfoArray);
-        res.render('exams', {query: minExamInfoArray});
+        res.render('exams',  {query: req.params.id, result: minExamInfoArray});
     });
 });
 
@@ -83,6 +84,27 @@ router.get('/search', function(req, res, next) {
     console.log(req.query.search);
     var courseName = req.query.search;
     res.redirect('/exams/' + courseName);
+});
+
+
+/* REDIRECT - exam -> questions page*/
+router.get('/exam_click',function (req,res) {
+    //TODO:get needs to have exam_id attached
+    var examId = req.query.exam_id;
+    res.redirect('/questions/'+examId);
+});
+
+/*EXAMPLE DATA GIVEN BELOW:
+ * questions = [{id,count,comments},{id,count,comments}] --> array of "question" objects
+ *
+ * id = questions number
+ * count= number of solutions
+ * comments = number of comments*/
+router.get('/questions/:exam_id', function (req,res) {
+    dbFile.get_exam_info_by_ID(req.params.exam_id, function (questions) {
+
+        res.render('questions', {query: questions});
+    });
 });
 
 router.get('/signup', function(req, res, next) {

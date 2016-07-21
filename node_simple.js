@@ -54,8 +54,8 @@ var mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
-var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
-
+//var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
+var uri = 'mongodb://localhost:27017/db';
 
 
 //***********************PRELIMINARY TESTING******************************************|

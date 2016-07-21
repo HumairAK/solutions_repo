@@ -5,12 +5,13 @@
  * 1B. get the title of the course ? DONE
  * 2. add upload date and user name  ? DONE
  * 3. remove exam ? DONE
- * 4a. get all questions for a given exam_id ? PENDING
+ * 4a. get all questions for a given exam_id ? DONE
  * 4b. add exam id to each question returned. ? PENDING
- * 6. get all solutions provided question_id and exam_id ? PENDING
- * 5. answers ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
- * 7. add university field to courses, exams
- * 8. make a user
+ * 6. get all solutions provided question_id and exam_id ? DONE
+ * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+ * 7. add university field to courses, exams ? PENDING
+ * 8. make a user ? DONE
+ * 9.
  * */
 
 

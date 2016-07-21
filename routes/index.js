@@ -59,10 +59,11 @@ router.get('/exams/:id', function(req, res, next) {
             //console.log(exams);
             //only pass over the information that is necessary for the exams page
             for (var i = 0; i<exams.length;i++){
+                var getInstructors = exams[i].instructors.join(", ");
                 var minExamInfo = {     courseCode:exams[i].course_code,
                     year:exams[i].year,
                     term:toProperCase(exams[i].term),
-                    instructors:exams[i].instructors,
+                    instructors: getInstructors,
                     type:toProperCase(exams[i].type) + " Examination",
                     title:exams[i].title,
                     id:exams[i]._id
@@ -72,7 +73,7 @@ router.get('/exams/:id', function(req, res, next) {
             }
         }
         console.log(minExamInfoArray);
-        res.render('exams', {query: minExamInfoArray});
+        res.render('exams',  {query: req.params.id, result: minExamInfoArray});
     });
 });
 

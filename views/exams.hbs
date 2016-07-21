@@ -1,40 +1,18 @@
 <main id = 'solutions-main'>
     <div class = 'search container' id = 'solutions-div'>
-            <h4 class='search-head'>Search results for "{{query}}"</h4>
+        <h4 class='search-head'>Search results for "{{query}}"</h4>
+        {{# each result}}
             <a href="/questions">
-            <section class = 'solutions-card'>
-                <h3 class = 'solutions-title'>CSC148 - Introduction to Computer Science</h3>
-                <p class = 'solutions-time' ><em>Term: </em>Winter 2015</p>
-                <p class = 'exam-instr'><em>Instructors: </em>Fairgrieve and Hangerman</p>
-                <p class = 'solutions-type'>Final Examination</p>
-            </section>
+                <section class = 'solutions-card'>
+                    <h3 class = 'solutions-title'>{{this.title}}</h3>
+                    <p class = 'solutions-time' ><em>Term: </em>{{this.term}} {{this.year}}</p>
+                    <p class = 'exam-instr'><em>Instructors: </em>
+                        {{this.instructors}}
+                    </p>
+                    <p class = 'solutions-type'>{{result.type}}</p>
+                </section>
             </a>
+        {{/each}}
 
-            <a href="/questions">
-            <section class = 'solutions-card'>
-                <h3 class = 'solutions-title'>CSC148 - Introduction to Computer Science</h3>
-                <p class = 'solutions-time' ><em>Term: </em>Fall 2014</p>
-                <p class = 'exam-instr'><em>Instructors: </em>Campbell and Fairgrieve</p>
-                <p class = 'solutions-type'>Midterm Examination</p>
-            </section>
-            </a>
-
-            <a href="/questions">
-            <section class = 'solutions-card'>
-                <h3 class = 'solutions-title'>CSC148 - Introduction to Computer Science</h3>
-                <p class = 'solutions-time' ><em>Term: </em>Winter 2014</p>
-                <p class = 'exam-instr'><em>Instructors: </em>Campbell and Papadopoulou</p>
-                <p class = 'solutions-type'>Final Examination</p>
-            </section>
-            </a>
-
-            <a href="/questions">
-            <section class = 'solutions-card'>
-                <h3 class = 'solutions-title'>CSC148 - Introduction to Computer Science</h3>
-                <p class = 'solutions-time' ><em>Term: </em>Fall 2013</p>
-                <p class = 'exam-instr'><em>Instructors: </em>Craig and Gries</p>
-                <p class = 'solutions-type'>Final Examination</p>
-            </section>
-            </a>
     </div>
 </main>

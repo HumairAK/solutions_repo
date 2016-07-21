@@ -71,6 +71,8 @@ var ObjectId = require('mongodb').ObjectID;
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
 
+// Keep this for testing on local machine, do not remove. - Humair
+//var uri = 'mongodb://localhost:27017/db';
 
 
 //***********************PRELIMINARY TESTING******************************************|
@@ -412,8 +414,6 @@ exports.get_all_exams = function (course_code, callback) {
 
 };
 
-
-
 /*
  * This function will add an exam to the database UNLESS the exams already exists.
  * If the exams table is empty, this will create one and then add the data.
@@ -423,8 +423,10 @@ exports.get_all_exams = function (course_code, callback) {
  *                 ["instructor1",...,"instructor n"], page_count, question_count
  *                 "upload_date", "user_name"]
  *         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
- * */
-exports.add_exam = function (fields, questions_array) {
+ *
+ * callback parameter takes a boolean to indicate whether insert was successful
+ * and an output status message.*/
+exports.add_exam = function (fields, questions_array, serverCallback) {
 
     // construct an exam object
     var Data =
@@ -453,9 +455,10 @@ exports.add_exam = function (fields, questions_array) {
 
     // first see if the exam already exists
     // pass in course_code, year, term and type...
-    exports.find_exam([fields[0], fields[1], fields[2], fields[3]], function(result) {
+    exports.find_exam([fields[0], fields[1], fields[2], fields[3]], serverCallback, function(result, serverCallback) {
 
         if (result == true) {     // meaning that the exam was found
+            serverCallback(false, "This exam already exists in the database.");
             console.log("This exam already exists in the database");
         }
 
@@ -468,9 +471,13 @@ exports.add_exam = function (fields, questions_array) {
                     var exam_collection = db.collection('exams');
                     // insert data into table
                     exam_collection.insert(Data, function(err) {
-                        if (err) throw err;
+                        if (err) {
+                            serverCallback(false, "Error: Could not add exam into database.");
+                            throw err;
+                        }
                         else {
                             console.log("exam added");
+                            serverCallback(true, "Exam Successfully added.");
                             db.close(function (err) {   // close the connection when done
                                 if (err) throw err;
                             });
@@ -478,6 +485,7 @@ exports.add_exam = function (fields, questions_array) {
                     });
                 })
                 .catch(function(err) {
+                    serverCallback(false, "Error: Could not establish connection with database.");
                     console.error(err);
                 });
         }
@@ -491,7 +499,7 @@ exports.add_exam = function (fields, questions_array) {
  * Params: fields - an array of format ["course_code", year, "term", "type"]
  *
  * */
-exports.find_exam = function (fields, callback) {
+exports.find_exam = function (fields, serverCallback, callback) {
 
     var course_code = fields[0];
     var year = fields[1];
@@ -521,10 +529,10 @@ exports.find_exam = function (fields, callback) {
                 if (err) throw err;
 
                 if (docs.length == 0) { // if this exam doesnt exist.... add it
-                    callback(false);
+                    callback(false, serverCallback);
                 }
                 else {  // exam was found
-                    callback(true);
+                    callback(true, serverCallback);
                 }
             });
 

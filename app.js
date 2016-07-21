@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var hbs = require('express-handlebars');
 var dbFile = require("./node_simple.js");
 var sanitizer  = require ("sanitizer");
+var expressValidator = require('express-validator');
 var session = require('express-session');
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -25,8 +26,10 @@ app.set('view engine', '.hbs');
 // Middleware initialization, make sure everything is initialized in proper order
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(expressValidator());
 app.use(cookieParser());
-app.use(session({secret: 'pickbetterlater', resave: false, saveUninitialized: false}));
+// session is stored in memory, change to storage in mongo later
+app.use(session({secret: 'pickBetterLater', resave: false, saveUninitialized: false}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());

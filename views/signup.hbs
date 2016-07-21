@@ -1,27 +1,46 @@
 <main id="solutions-main">
+
 <div class="row" id="solutions-main">
-    <div class="col-md-4 col-md-offset-4 col-sm-6 sol-sm-offset-3">
+    {{# if success }}
+        <section class="success">
+            <h2>Successful Validation!</h2>
+        </section>
+    {{ else }}
+        {{# if errors }}
+            <section class="errors">
+                <ul>
+                    {{# each errors }}
+                        <li>{{ this.msg }}</li>
+                    {{/each}}
+                </ul>
+            </section>
+        {{/if}}
+    {{/if}}
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
         <h2><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</h2>
-        <form action="" method="post">
+        <form action="/signup" method="post">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="First Name">
+                <input type="text" class="form-control" placeholder="First Name" name="fname">
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Last Name">
+                <input type="text" class="form-control" placeholder="Last Name" name="lname">
             </div>
 
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="Email">
+                <input type="email" class="form-control" placeholder="Email" name="email">
             </div>
 
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="New Username">
+                <input type="email" class="form-control" placeholder="New Username" name="username">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="New Password">
+                <input type="password" class="form-control" placeholder="New Password" name="password">
             </div>
 
+            <div class="form-group">
+                <input type="password" class="form-control" placeholder="New Password" name="confirmPassword">
+            </div>
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="University (optional)">
             </div>
@@ -30,9 +49,10 @@
                 <input type="text" class="form-control" placeholder="Department (optional)">
             </div>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <button type="signup" class="btn btn-primary">Sign Up</button>
         </form>
     </div>
 
 </div>
+
 </main>

@@ -9,7 +9,9 @@ router.use(csrfProtection); // router is protected
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
-    res.render('index');
+    res.render('index', {success: req.session.success, errors: req.session.errors});
+    req.session.errors = null;
+    req.session.success = null;
 });
 
 /* Render/GET about page */
@@ -88,7 +90,19 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.post('/signup', function(req, res, next) {
-    res.redirect('/');
+    req.check('email', 'Invalid email address').isEmail();
+    req.check('password', "Password is invalid").isLength({min: 4}).equals(req.body.confirmPassword);
+    // password has to be at least 4 characters long
+
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+    } else {
+        req.session.success = true;
+    }
+    res.redirect('/signup');
+
 });
 
 /*router.post('/signup', passport.authenticate('local.signup', {

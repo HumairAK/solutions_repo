@@ -134,19 +134,19 @@ exports.add_user = function (fields, callbackUser) {
 
                             users.insertOne( user_data, function (err) {
                                 if (err) callbackUser(false, true, "Unable to add user.");
-                                else {
+                                /*else {
                                     console.log("user has been added to users");
                                     callbackUser(true, false, "User has been added.");
-                                }
+                                }*/
                             });
 
                             logins.insertOne( login_data, function (err) {
                                 if (err) callbackUser(false, true, "Login has not been added.");
-                                else{
+                                /*else{
                                     callbackUser(true, false,  "Login added.");
-                                }
+                                }*/
                             });
-
+                            callbackUser(true, false, "User has been added.");
                             db.close();
                         })
                         .catch(function (err) {

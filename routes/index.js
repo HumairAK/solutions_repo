@@ -159,7 +159,6 @@ router.get('/signup', function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
 });
 
-
 router.post('/signup', passport.authenticate('local_signup', {
     successRedirect: '/user_profile',
     failureRedirect: '/signup',

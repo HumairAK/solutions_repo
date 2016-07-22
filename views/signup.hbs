@@ -11,7 +11,7 @@
         {{ else }}
             {{# if errors }}
                 <section class="alert alert-danger">
-                    <ul>
+                     <ul>
                         {{# each errors }}
                             <li>{{ this.msg }}</li>
                         {{/each}}
@@ -19,6 +19,13 @@
                 </section>
             {{/if}}
         {{/if}}
+        {{#if flashMsg}}
+        <section class="alert alert-danger">
+            {{flashMsg}}
+        </section>
+        {{/if}}
+
+
 
         <h2><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</h2>
         <form action="/signup" method="post">

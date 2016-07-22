@@ -37,11 +37,11 @@ passport.use('local_signup', new LocalStrategy({
     var fields = [email, req.body.usrname, req.body.fname, req.body.lname, req.body.univ, req.body.dept, hash_pass,
         req.body.phone_num];
 
-    dbFile.add_user(fields, function (success, error,  message) {
+    dbFile.add_user(fields, function (success, error, message) {
 
         if (!success && error) {
             console.log("!success && error");
-            return done(message);
+            return done(null, false, {message:message}); // Review later, need to pass errors
         }
 
         else if (!success && !error) {

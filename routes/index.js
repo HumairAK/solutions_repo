@@ -157,7 +157,19 @@ router.get('/questions/:exam_id', function (req,res) {
 
 router.get('/signup', function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    req.session.errors = null;
 });
+
+router.get('/signup/failed', function(req, res, next) {
+    var msg = req.flash('error');
+    console.log('message is: ' + msg);
+
+    res.render('signup', {csrfToken: req.csrfToken(),
+        success: req.session.success,
+        errors: req.session.errors,
+        flashMsg: msg});
+});
+
 
 
 /*router.post('/signup', passport.authenticate('local_signup', {
@@ -180,7 +192,7 @@ router.post('/signup', function(req, res, next) {
         console.log("GOT SUCCESS");
         passport.authenticate('local_signup', {
             successRedirect: '/user_profile',
-            failureRedirect: '/signup',
+            failureRedirect: '/signup/failed',
             failureFlash: true
         })(req, res);
     }

@@ -113,9 +113,7 @@ exports.add_user = function (fields, callbackUser) {
 
     // find out if this user already exists by checking their email
     exports.find_user( fields[0] ,callbackUser,  function (result, callbackUser) {
-        console.log("inside find_user");
         if  (result == false) {
-            console.log("no such user found");
 
             // find out if the user_name is taken
             exports.find_user_name( fields[1], callbackUser,  function (docs) {
@@ -130,27 +128,27 @@ exports.add_user = function (fields, callbackUser) {
                             var users = db.collection('users');
                             var logins = db.collection('logins');
 
-<<<<<<< HEAD
                             // Add users, and login through callbacks
                             users.insertOne( user_data, function (err) {
                                 if (err) {
                                     callbackUser(false, true, "Error : User has not been added.");
+                                    db.close();
                                 }
 
                                 else {// user insert successfull
                                     logins.insertOne( login_data, function (err) {
                                         if (err) {
                                             callbackUser(false, true, "Error : User has not been added.");
+                                            db.close();
                                         }
 
                                         else {// login insert successfull
                                             callbackUser(true, false, "User has been added.");
+                                            db.close();
                                         }
                                     });
                                 }
                             });
-
-                            db.close();
 
                         })
                         .catch(function (err) {
@@ -199,6 +197,7 @@ exports.find_user_name = function (user_name, callbackUser, callback) {
  * */
 exports.find_user = function (email, callbackUser, callback) {
     // make a connection
+    console.log("inside find_user");
     mongoFactory.getConnection(uri)
         .then(function (db) {
 

@@ -173,6 +173,14 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
     });
 });
 
+router.get('/add_solution',function (req, res) {
+    redirect('/add_solutions_page');
+});
+
+
+router.post('/add_solutions/submit', function (req, res) {
+    //TODO: get the form information for the solutions
+})
 /**** Helpers ****/
 
 function getExamsForCourseCode(courseCode) {

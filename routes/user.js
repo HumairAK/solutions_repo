@@ -98,7 +98,6 @@ router.post('/signin', loggedOut, function(req, res, next) {
 module.exports = router;
 
 
-
 function loggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();

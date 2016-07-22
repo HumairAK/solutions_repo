@@ -13,6 +13,7 @@ var flash = require('connect-flash');
 
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
+var adminRoutes = require('./routes/admin');
 var app = express();
 
 // Templating engine, we are using handlebars
@@ -40,7 +41,6 @@ require('./config/passport'); // simply need to load it
 /*LOADS ALL STATIC FILES FROM THE DIRECTORY __dirname*/
 app.use(express.static(__dirname));
 
-
 // Needed to style the header based on the whether the user is signed in or not
 // Gives errors for admin - need to figure out
 app.use(function(req, res, next) {
@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
 
 // Allows us to customize express routing
 // in a separate file.
+app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 app.use('/', routes);
 

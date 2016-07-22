@@ -114,7 +114,7 @@ exports.add_user = function (fields, callbackUser) {
     };
 
     // find out if this user already exists by checking their email
-    exports.find_user( fields[0] ,callbackUser,  function (result) {
+    exports.find_user( fields[0] ,callbackUser,  function (result, callbackUser) {
         console.log("inside find_user");
         if  (result == false) {
             console.log("no such user found");

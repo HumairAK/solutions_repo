@@ -31,21 +31,7 @@ passport.use('local_signup', new LocalStrategy({
     passReqToCallback: true
 }, function(req, email, password, done){
     console.log("nothing here");
-    /*req.check('email', 'Invalid email address').notEmpty().isEmail();
-    req.check('password', "Password is invalid").notEmpty().isLength({min: 6}).equals(req.body.confirmPassword);
 
-    // password has to be at least 4 characters long
-
-    console.log('validation ERrors');
-    var errors = req.validationErrors();
-    console.log("IN PASSPORT");
-    if (errors) {
-       var messages = [];
-        errors.forEach(function (error) {
-            messages.push(error.msg);
-        });
-        return done(null, false, req.flash('error', messages));
-    }*/
     var hash_pass = encryptPassword(password);
 
     var fields = [email, req.body.usrname, req.body.fname, req.body.lname, req.body.univ, req.body.dept, hash_pass,
@@ -70,37 +56,4 @@ passport.use('local_signup', new LocalStrategy({
         }
     });
 
-    // Check if username already in use
-    // If not, create new user with given info
-    // Encrypt the passport using bcrypt
 }));
-
-/*router.post('/signup', function(req, res, next) {
- req.check('email', 'Invalid email address').isEmail();
- req.check('password', "Password is invalid").isLength({min: 4}).equals(req.body.confirmPassword);
- // password has to be at least 4 characters long
-
- var errors = req.validationErrors();
- if (errors) {
- req.session.errors = errors;
- req.session.success = false;
- console.log("got here");
- res.redirect('/signup');
- } else {
- req.session.success = true;
- console.log("GOT SUCCESS");
- passport.authenticate('local_signup', {
- successRedirect: '/user_profile',
- failureRedirect: '/signup',
- failureFlash: true
- });
- }
- //res.redirect('/signup');
-
- });*/
-
-/*router.post('/signup', passport.authenticate('local.signup', {
- sucessRedirect: '/profile',
- failureRedirect: '/signup',
- failureFlash: true
- }));*/

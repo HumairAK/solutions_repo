@@ -162,14 +162,12 @@ router.get('/signup', function(req, res, next) {
 
 router.get('/signup/failed', function(req, res, next) {
     var msg = req.flash('error');
-    console.log('message is: ' + msg);
 
     res.render('signup', {csrfToken: req.csrfToken(),
         success: req.session.success,
         errors: req.session.errors,
         flashMsg: msg});
 });
-
 
 
 router.get('/signin', function (req, res, next) {

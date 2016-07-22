@@ -77,6 +77,7 @@ router.post('/admin/update/exam', function(req,res){
 router.post('/admin/update/course', function(req,res){
     var course_code = req.body.course_code,
         title = req.body.title;
+
     dbFile.add_course(course_code, title, function(courseAdded, statusMessage){
         if(courseAdded){
             console.log("Success!");

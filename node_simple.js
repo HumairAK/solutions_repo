@@ -81,8 +81,6 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
 
 //****************************FUNCTIONS************************************************|
 
-
-
 /*
  * This function creates and adds a user to users table.
  * IFF both the email and the user_name are not in the database already.
@@ -212,7 +210,6 @@ exports.find_user = function (email, callback) {
         })
 };
 
-
 // this function returns an array where is element contains info for a particular question
 // such as the question number (_id), number of solutions (count), and number of comments
 // (comments). [ {_id,count,comments}, {} ...]
@@ -259,7 +256,6 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 
 };
 
-
 /*
  * This function will add a comment to the solutions table
  * Params: sol_id - id of the solution to which to add the comment
@@ -290,8 +286,6 @@ exports.add_comment = function (sol_id, fields) {
             console.error(err);
         })
 };
-
-
 
 // get all solutions given an exam_id and the question number
 exports.get_all_solutions = function (exam_id, q_num, callback) {
@@ -361,8 +355,6 @@ exports.add_solution = function (fields) {
         });
 
 };
-
-
 
 /*
  * This function will retrieve all exams in the database given the course code ...
@@ -492,7 +484,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
     });
 };
 
-
 /*
  * This function will return TRUE if the provided exam info already exists in the database
  * OR FALSE if it does not exist in the database.
@@ -546,7 +537,6 @@ exports.find_exam = function (fields, serverCallback, callback) {
         });
 };
 
-
 /*
  * This function will add a course to the database UNLESS the course already exists.
  * If the course table is empty, this will create one and then add the data.
@@ -590,7 +580,6 @@ exports.add_course = function (course_code, title) {
     });
 };
 
-
 /*
  * This function will return TRUE if the provided course info already exists in the database
  * OR FALSE if it does not exist in the database.
@@ -630,7 +619,6 @@ exports.find_course = function (course_code, callback) {
             console.error(err);
         });
 };
-
 
 /*
  * This function will remove the exam from the database given the combination of (course_code+ year +  term + type)
@@ -675,7 +663,6 @@ exports.remove_exam = function (fields) {
             console.error(err);
         });
 };
-
 
 //get_exam_byID("578a44ff71ed097fc3079d6e");
 

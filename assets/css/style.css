@@ -32,7 +32,6 @@ main {
 	justify-content: center;
 	flex-flow: column; /* Makes it grow vertically */
 }
-
 /*** INDEX.HTML ***/
 main .search {
 	background-color: rgba(235,235,235, 0.7);
@@ -405,7 +404,7 @@ section.exam-info em {
 }
 /*** ABOUT PAGE END ***/
 
-/************************** Pop-up Window  *********************************************/
+/************************** Pop-up Window  ************************************/
 
 .login-window, .registration-window {
 	display: inline-block;
@@ -423,6 +422,15 @@ section.exam-info em {
 
 .login-window .modal-header, .registration-window .modal-header {
 	text-align: center;
+}
+/** Form Pages for Admin **/
+
+.admin-form{
+	padding: 3px;
+	margin: 3px;
+	border-radius: 10px;
+	background-color: rgba(197, 197, 197, 0.6);
+
 }
 
 /********* Success and Error messages  **************************/

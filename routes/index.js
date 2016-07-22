@@ -211,7 +211,6 @@ function toProperCase(string) {
     return string.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
-
 /* Takes an input string delimited by commas, will split by comma and trim white
  * spaces. Consider callback.
  */

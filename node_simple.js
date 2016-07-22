@@ -130,19 +130,20 @@ exports.add_user = function (fields, callbackUser) {
                             var users = db.collection('users');
                             var logins = db.collection('logins');
 
-                            var error = false;
+<<<<<<< HEAD
+                            // Add users, and login through callbacks
                             users.insertOne( user_data, function (err) {
                                 if (err) {
                                     callbackUser(false, true, "Error : User has not been added.");
                                 }
 
-                                else {
+                                else {// user insert successfull
                                     logins.insertOne( login_data, function (err) {
                                         if (err) {
                                             callbackUser(false, true, "Error : User has not been added.");
                                         }
 
-                                        else {
+                                        else {// login insert successfull
                                             callbackUser(true, false, "User has been added.");
                                         }
                                     });
@@ -150,6 +151,7 @@ exports.add_user = function (fields, callbackUser) {
                             });
 
                             db.close();
+
                         })
                         .catch(function (err) {
                             callbackUser(false, true,  "Unable to connect.");

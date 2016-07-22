@@ -145,7 +145,33 @@ router.get('/questions/:exam_id', function (req,res) {
     });
 });
 
-
+/*GET the solutions for a given exam given the question number and the exam_id*/
+/*EXPECTED DATA GIVEN BELOW:
+array of solutions:
+* solutions = [ {
+    *               _id: "354ff71ed078933079d6467e"
+    *               exam_id: "578a44ff71ed097fc3079d6e"
+    *               q_id: 1  (int)
+    *               text: "answer"
+    *               votes: 1 (int)
+    *               comments: [{}.{}] (just going to be string for now i think)
+    *           }
+    *           {
+    *                _id: ...
+ *                  exam_id:  ..
+ *                  q_id: ...
+ *                  text: ..
+ *                  votes: .. 
+ *                  comments: ..
+    *           
+    *           }
+    *           ]*/
+router.get('/solutions/:exam_id/:q_num', function (req, res) {
+    dbFile.get_all_solutions(req.params.exam_id,req.params.q_num,function (solutions) {
+        res.render('solutions', {query: solutions});
+        console.log(solutions);
+    });
+});
 
 /**** Helpers ****/
 

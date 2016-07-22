@@ -130,7 +130,6 @@ exports.add_user = function (fields, callbackUser) {
                             var users = db.collection('users');
                             var logins = db.collection('logins');
 
-<<<<<<< HEAD
                             // Add users, and login through callbacks
                             users.insertOne( user_data, function (err) {
                                 if (err) {

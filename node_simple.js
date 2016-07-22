@@ -67,6 +67,7 @@ Object.assign = require('object-assign');
 var mongodb = require('mongodb');
 var mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
+var assert = require('assert');
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
@@ -85,10 +86,10 @@ var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo'
  * This function creates and adds a user to users table.
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
- * Params: fields - [email, user_name, f_name, l_name, uni, department, password]
+ * Params: fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
  * */
-exports.add_user = function (fields) {
-
+exports.add_user = function (fields, callbackUser) {
+    console.log("inside add_user");
     // create a user object
     var user_data = {
         email: fields[0],
@@ -100,7 +101,7 @@ exports.add_user = function (fields) {
         answered: 0,
         messages: 0,
         comments: 0,
-        phone_num: "(111) 111-1111",
+        phone_num: fields[7],
         followers: []
     };
 
@@ -111,15 +112,16 @@ exports.add_user = function (fields) {
     };
 
     // find out if this user already exists by checking their email
-    exports.find_user( fields[0] , function (result) {
+    exports.find_user( fields[0] ,callbackUser,  function (result) {
+        console.log("inside find_user");
         if  (result == false) {
-            // console.log("no such user found");
+            console.log("no such user found");
 
             // find out if the user_name is taken
-            exports.find_user_name( fields[1], function (docs) {
+            exports.find_user_name( fields[1], callbackUser,  function (docs) {
                 if (docs == false) {        // if not ...
                     // continue
-                    // console.log("user name is valid");
+                    console.log("user name is valid");
 
                     // when both are valid add the user to the users and logins table
                     mongoFactory.getConnection(uri)
@@ -129,32 +131,33 @@ exports.add_user = function (fields) {
                             var logins = db.collection('logins');
 
                             users.insertOne( user_data, function (err) {
-                                if (err) throw err;
+                                if (err) callbackUser(false, true, "Unable to add user.");
                                 else {
                                     console.log("user has been added to users");
+                                    callbackUser(true, false, "User has been added.");
                                 }
                             });
 
                             logins.insertOne( login_data, function (err) {
-                                if (err) throw err;
+                                if (err) callbackUser(false, true, "Login has not been added.");
                                 else{
-                                    console.log("login info has been added");
+                                    callbackUser(true, false,  "Login added.");
                                 }
                             });
 
                             db.close();
                         })
                         .catch(function (err) {
-                            console.err(err);
+                            callbackUser(false, true,  "Unable to connect.");
                         })
                 }
                 else {
-                    console.log("user name is already taken!")
+                    callbackUser(false, false, "Username is taken.");
                 }
             });
         }
         else {
-            console.log("user already exists");
+            callbackUser(false, false, "User with this email already exists.");
         }
     });
 };
@@ -163,7 +166,7 @@ exports.add_user = function (fields) {
  * This (helper) function returns true IFF user_name already exists in the database
  * Params: user_name - the user name
  * */
-exports.find_user_name = function (user_name, callback) {
+exports.find_user_name = function (user_name, callbackUser, callback) {
     // make a connection
     mongoFactory.getConnection(uri)
         .then(function (db) {
@@ -188,7 +191,7 @@ exports.find_user_name = function (user_name, callback) {
 /*
  * This (helper) function returns true IFF email already exists in the database
  * */
-exports.find_user = function (email, callback) {
+exports.find_user = function (email, callbackUser, callback) {
     // make a connection
     mongoFactory.getConnection(uri)
         .then(function (db) {
@@ -197,10 +200,10 @@ exports.find_user = function (email, callback) {
             logins.find( { email: email } ).toArray(function (err, result) {
                 if (err) throw err;
                 else if (result.length == 0) {  // nothing was found  so this user is new
-                    callback(false);
+                    callback(false, callbackUser);
                 }
                 else {
-                    callback(true);
+                    callback(true, callbackUser);
                 }
             });
             // db.close();
@@ -688,9 +691,28 @@ exports.get_exam_byID = function (id) {
         });
 };
 
+
+/*
+ * userObj = {fs: fs, ls: ls, email: email, username: username, pass_hash: pass_hash, univ: univ, dept: dept}
+ *
+ *
+exports.addUser = function (userObj) {
+    mongoFactory.getConnection(uri)
+        .then(function(db) {
+            var users = db.collection('users').insertOne(userObj, function (err, result) {
+                assert.equal(null, error);
+                console.log("User inserted");
+                db.close();
+            });
+
+        });
+} */
+
+
+
 /*    IGNORE BELOW *********************************************************************************
 
- ONLY FOR SYNTAX REFERENCE
+
 
  /!*
  * Then we need to give Boyz II Men credit for their contribution

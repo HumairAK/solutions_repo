@@ -9,7 +9,7 @@ router.use(csrfProtection); // router is protected
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
-    res.render('index', {success: req.session.success, errors: req.session.errors});
+    res.render('index');
     req.session.errors = null;
     req.session.success = null;
 });
@@ -156,10 +156,17 @@ router.get('/questions/:exam_id', function (req,res) {
 });
 
 router.get('/signup', function(req, res, next) {
-    res.render('signup', {csrfToken: req.csrfToken()});
+    res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
 });
 
-router.post('/signup', function(req, res, next) {
+
+router.post('/signup', passport.authenticate('local_signup', {
+    successRedirect: '/user_profile',
+    failureRedirect: '/signup',
+    failureFlash: true
+}));
+
+/*router.post('/signup', function(req, res, next) {
     req.check('email', 'Invalid email address').isEmail();
     req.check('password', "Password is invalid").isLength({min: 4}).equals(req.body.confirmPassword);
     // password has to be at least 4 characters long
@@ -168,12 +175,20 @@ router.post('/signup', function(req, res, next) {
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
+        console.log("got here");
+        res.redirect('/signup');
     } else {
         req.session.success = true;
+        console.log("GOT SUCCESS");
+        passport.authenticate('local_signup', {
+            successRedirect: '/user_profile',
+            failureRedirect: '/signup',
+            failureFlash: true
+        });
     }
-    res.redirect('/signup');
+    //res.redirect('/signup');
 
-});
+});*/
 
 /*router.post('/signup', passport.authenticate('local.signup', {
     sucessRedirect: '/profile',

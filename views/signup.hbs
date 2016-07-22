@@ -1,22 +1,16 @@
 <main id="solutions-main">
 
 <div class="row" id="solutions-main">
-    {{# if success }}
-        <section class="success">
-            <h2>Successful Validation!</h2>
-        </section>
-    {{ else }}
-        {{# if errors }}
-            <section class="errors">
-                <ul>
-                    {{# each errors }}
-                        <li>{{ this.msg }}</li>
-                    {{/each}}
-                </ul>
-            </section>
-        {{/if}}
-    {{/if}}
+
     <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+
+        {{# if hasErrors}}
+            <div class="alert alert-danger">
+                {{# each messages}}
+                    <p>{{this}}</p>
+                {{/each}}
+            </div>
+        {{/if}}
         <h2><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</h2>
         <form action="/signup" method="post">
             <div class="form-group">
@@ -32,7 +26,7 @@
             </div>
 
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="New Username" name="username">
+                <input type="email" class="form-control" placeholder="New Username" name="usrname">
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" placeholder="New Password" name="password">
@@ -42,11 +36,14 @@
                 <input type="password" class="form-control" placeholder="New Password" name="confirmPassword">
             </div>
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="University (optional)">
+                <input type="number" class="form-control" placeholder="Phone Number (optional)" name="phone_num">
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="University (optional)" name="univ">
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Department (optional)">
+                <input type="text" class="form-control" placeholder="Department (optional)" name="dept">
             </div>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
             <button type="signup" class="btn btn-primary">Sign Up</button>

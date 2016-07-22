@@ -18,13 +18,13 @@ var questions_array = ["this is q1", "this is q2"];
 
 //test getting all exams database functionality -- USE FOR THE EXAMS PAGES maybe?
 /*dbFile.get_all_exams("CSC240", function (exams) {
-     if (exams.length == 0){
-        console.log("Nothing was found");
-    }
-    else {
-        console.log(exams);
-    }
-});*/
+ if (exams.length == 0){
+ console.log("Nothing was found");
+ }
+ else {
+ console.log(exams);
+ }
+ });*/
 
 //test adding course
 // dbFile.add_course("CSC148", "Intro to Programming");
@@ -41,14 +41,38 @@ var questions_array = ["this is q1", "this is q2"];
 
 
 //test adding of comments given a solution_id, and the comment information as an array
-// dbFile.add_comment("578f08e43bba452ee98da444", ["this is asdfasdf", "this is the date", "this is the author"]);
+//dbFile.add_comment("578f08e43bba452ee98da444", ["this is asdfasdf",  "this is the author"]);
 
 
-dbFile.get_exam_info_by_ID("578a44ff71ed097fc3079d6e", function (result) {
-    if (result.length == 0) {
-        console.log("some error occured");
-    }
-    else {
-        console.log(result);
-    }
-});
+/*
+ dbFile.get_exam_info_by_ID("578a44ff71ed097fc3079d6e", function (result) {
+ if (result.length == 0) {
+ console.log("some error occured");
+ }
+ else {
+ console.log(result);
+ }
+ });*/
+
+// dbFile.add_user(["some as email", "some_user names", "kumar", "damani", "uofT", "cs", "some hashed passwd"]);
+
+
+/*
+ dbFile.find_user("some Email", function (result) {
+ if  (result == false) {
+ console.log("no such user found");
+ }
+ else {
+ console.log("user already exists");
+ }
+ });*/
+
+/* dbFile.find_user_name("some_user name", function (result) {
+ if  (result == false) {
+ console.log("no such user_name found");
+ }
+ else {
+ console.log("user_name taken");
+ }
+ });*/
+

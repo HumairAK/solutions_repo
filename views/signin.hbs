@@ -19,6 +19,11 @@
                     </section>
                 {{/if}}
             {{/if}}
+            {{#if flashMsg}}
+                <section class="alert alert-danger">
+                    {{flashMsg}}
+                </section>
+            {{/if}}
 
             <h2><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</h2>
             <form action="/signin" method="post">

@@ -10,7 +10,7 @@ var encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 }
 
-var comparePassword = function (password) {
+var comparePassword = function (password1, password2) {
     return bcrypt.compareSync(password1, password2);
 }
 
@@ -76,7 +76,19 @@ passport.use('local_signin', new LocalStrategy({
 
         else  {
             console.log(user[0]);
-            return done(null, user[0]);
+            dbFile.retrievePassword(usrname, function(success, hash_pwd, message) {
+                if (!success) {
+                    return done(message);
+                } else {
+                    console.log(hash_pwd);
+                    if (comparePassword(password, hash_pwd)) {
+
+                        return done(null, user[0]);
+                    } else {
+                        return done(null, false, {message: 'Password incorrect.'});
+                    }
+                }
+            });
         }
     });
 }));

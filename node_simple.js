@@ -218,7 +218,26 @@ exports.retrieveUser = function (username, callback) {
     });
 }
 
+/*
+ Returns the hashed password given the username. Assume username exists.
+ */
 
+exports.retrievePassword = function (username, callback) {
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        db.collection('logins').find({user_name: username}).toArray(function(err, result) {
+            if (err) {
+                // callback(success, password, message)
+                callback(false, null, "Error : Could not retrieve password.");
+            }
+
+            else {
+                var pwd = result[0].password; //result is an array
+                callback(true, pwd, "Password retrieved");
+            }
+        });
+    });
+}
 
 /*
  * This (helper) function returns true IFF email already exists in the database

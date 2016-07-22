@@ -171,7 +171,8 @@ router.get('/signup/failed', function(req, res, next) {
 
 
 router.get('/signin', function (req, res, next) {
-    res.render('signin', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    var msg = req.flash('error');
+    res.render('signin', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors, flashMsg: msg});
 });
 
 
@@ -179,7 +180,7 @@ router.post('/signup', function(req, res, next) {
     req.check('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
     req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
     req.check('email', 'Enter a valid Email address').notEmpty().withMessage('Email required').isEmail();
-    req.check('usrname', 'Enter a valid username').notEmpty().withMessage('Username required.').isAlphanumeric();
+    req.check('usrname', 'Enter a valid username').notEmpty().withMessage('Username required.');
     req.check('password', "Password should be between 6 and 12 characters.")
                                         .notEmpty().withMessage('Password required').isLength({min: 6, max: 12});
     req.check('password', "The confirmation password doesn't match.").equals(req.body.confirmPassword);

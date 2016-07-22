@@ -130,22 +130,23 @@ exports.add_user = function (fields, callbackUser) {
                             var users = db.collection('users');
                             var logins = db.collection('logins');
 
+                            // Add users, and login through callbacks
                             users.insertOne( user_data, function (err) {
-                                if (err) callbackUser(false, true, "Unable to add user.");
-                                /*else {
-                                    console.log("user has been added to users");
-                                    callbackUser(true, false, "User has been added.");
-                                }*/
+                               if(err){
+                                   callbackUser(false, true, "Unable to add user.");
+                               }else { // user insert successfull
+                                   logins.insertOne(login_data, function (err) {
+                                       if (err) {
+                                           callbackUser(false, true, "Login has not been added.");
+                                       } else { // login insert successfull
+                                           callbackUser(true, false, "User has been added.");
+                                           db.close();
+                                       }
+                                   });
+                               }
                             });
 
-                            logins.insertOne( login_data, function (err) {
-                                if (err) callbackUser(false, true, "Login has not been added.");
-                                /*else{
-                                    callbackUser(true, false,  "Login added.");
-                                }*/
-                            });
-                            callbackUser(true, false, "User has been added.");
-                            db.close();
+
                         })
                         .catch(function (err) {
                             callbackUser(false, true,  "Unable to connect.");

@@ -15,11 +15,11 @@ var comparePassword = function (password) {
 }
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
-    done(err, user);
+passport.deserializeUser(function(user, done) {
+    done(null, user);
 });
 
 
@@ -30,10 +30,13 @@ passport.use('local_signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, function(req, email, password, done){
-    req.check('email', 'Invalid email address').notEmpty().isEmail();
+    console.log("nothing here");
+    /*req.check('email', 'Invalid email address').notEmpty().isEmail();
     req.check('password', "Password is invalid").notEmpty().isLength({min: 6}).equals(req.body.confirmPassword);
+
     // password has to be at least 4 characters long
 
+    console.log('validation ERrors');
     var errors = req.validationErrors();
     console.log("IN PASSPORT");
     if (errors) {
@@ -42,7 +45,7 @@ passport.use('local_signup', new LocalStrategy({
             messages.push(error.msg);
         });
         return done(null, false, req.flash('error', messages));
-    }
+    }*/
     var hash_pass = encryptPassword(password);
 
     var fields = [email, req.body.usrname, req.body.fname, req.body.lname, req.body.univ, req.body.dept, hash_pass,

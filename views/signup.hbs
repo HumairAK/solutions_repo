@@ -3,14 +3,23 @@
 <div class="row" id="solutions-main">
 
     <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
-
-        {{# if hasErrors}}
-            <div class="alert alert-danger">
-                {{# each messages}}
-                    <p>{{this}}</p>
-                {{/each}}
-            </div>
+        {{# if success }}
+            <section class="alert alert-success">
+                <!-- Change those to banners later -->
+                <h2>Signup Successful!</h2>
+            </section>
+        {{ else }}
+            {{# if errors }}
+                <section class="alert alert-danger">
+                    <ul>
+                        {{# each errors }}
+                            <li>{{ this.msg }}</li>
+                        {{/each}}
+                    </ul>
+                </section>
+            {{/if}}
         {{/if}}
+
         <h2><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</h2>
         <form action="/signup" method="post">
             <div class="form-group">

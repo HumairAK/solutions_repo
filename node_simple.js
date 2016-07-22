@@ -112,7 +112,7 @@ exports.add_user = function (fields, callbackUser) {
     };
 
     // find out if this user already exists by checking their email
-    exports.find_user( fields[0] ,callbackUser,  function (result) {
+    exports.find_user( fields[0] ,callbackUser,  function (result, callbackUser) {
         console.log("inside find_user");
         if  (result == false) {
             console.log("no such user found");
@@ -132,19 +132,19 @@ exports.add_user = function (fields, callbackUser) {
 
                             users.insertOne( user_data, function (err) {
                                 if (err) callbackUser(false, true, "Unable to add user.");
-                                else {
+                                /*else {
                                     console.log("user has been added to users");
                                     callbackUser(true, false, "User has been added.");
-                                }
+                                }*/
                             });
 
                             logins.insertOne( login_data, function (err) {
                                 if (err) callbackUser(false, true, "Login has not been added.");
-                                else{
+                                /*else{
                                     callbackUser(true, false,  "Login added.");
-                                }
+                                }*/
                             });
-
+                            callbackUser(true, false, "User has been added.");
                             db.close();
                         })
                         .catch(function (err) {

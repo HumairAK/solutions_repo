@@ -41,6 +41,7 @@ passport.use('local_signup', new LocalStrategy({
 
         if (!success && error) {
             console.log("!success && error");
+            console.log(message);
             return done(message);
         }
 
@@ -56,4 +57,27 @@ passport.use('local_signup', new LocalStrategy({
         }
     });
 
+}));
+
+passport.use('local_signin', new LocalStrategy({
+    usernameField: 'usrname',
+    passwordField: 'password',
+    passReqToCallback: true
+}, function (req, usrname, password, done) {
+
+    dbFile.retrieveUser(usrname, function (success, error, user, message) {
+        if (!success && error) {
+            return done(message);
+        }
+
+        else if (!success && !error) {
+            console.log(message);
+            return done(null, false, {message: message});
+        }
+
+        else  {
+            console.log(user[0]);
+            return done(null, user[0]);
+        }
+    });
 }));

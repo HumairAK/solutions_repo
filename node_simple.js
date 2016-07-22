@@ -137,7 +137,7 @@ exports.add_user = function (fields, callbackUser) {
                                 }
 
                                 else {// user insert successfull
-                                    logins.insertOne( login_data, function (err) {
+                                    logins.insertOne(login_data, function (err) {
                                         if (err) {
                                             callbackUser(false, true, "Error : User has not been added.");
                                         }
@@ -192,6 +192,34 @@ exports.find_user_name = function (user_name, callbackUser, callback) {
             console.err(err);
         })
 };
+
+/*
+  Retrieves the user object based on the username.
+*/
+
+exports.retrieveUser = function (username, callback) {
+    mongoFactory.getConnection(uri).then(function (db) {
+        var users = db.collection('users');
+
+        users.find({user_name: username}).toArray(function (err, result) {
+            if (err) {
+                // callback(success, error, user, message)
+                callback(false, true,  null, "Error : Could not retrieve user.");
+            }
+
+            else if (result.length) {
+                callback(true, false, result, "User retrieved");
+            }
+
+            else {
+                callback(false, false, null, "Username is undefined.");
+            }
+
+        });
+    });
+}
+
+
 
 /*
  * This (helper) function returns true IFF email already exists in the database

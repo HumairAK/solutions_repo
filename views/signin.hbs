@@ -1,0 +1,38 @@
+<main id="solutions-main">
+
+    <div class="row" id="solutions-main">
+
+        <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+            {{# if success }}
+                <section class="alert alert-success">
+                    <!-- Change those to banners later -->
+                    <h2>Signup Successful!</h2>
+                </section>
+            {{ else }}
+                {{# if errors }}
+                    <section class="alert alert-danger">
+                        <ul>
+                            {{# each errors }}
+                                <li>{{ this.msg }}</li>
+                            {{/each}}
+                        </ul>
+                    </section>
+                {{/if}}
+            {{/if}}
+
+            <h2><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</h2>
+            <form action="/signin" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="New Username" name="usrname">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="New Password" name="password">
+                </div>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <button type="signin" class="btn btn-primary">Sign In</button>
+            </form>
+        </div>
+
+    </div>
+
+</main>

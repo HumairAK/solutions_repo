@@ -21,7 +21,7 @@ app.engine('.hbs', hbs({extname: '.hbs', defaultLayout: 'layout',
     partialsDir: __dirname + '/views/partials'})); // Set directory for partials
 
 app.set('views', path.join(__dirname, 'views')); // Our view path
-app.set('view engine', '.hbs');
+app.set('view engine', 'hbs');
 
 // Middleware initialization, make sure everything is initialized in proper order
 app.use(bodyParser.json());

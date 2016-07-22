@@ -38,8 +38,8 @@ router.get('/admin', function(req,res){
     res.render('admin', {csrfToken: req.csrfToken()});
 });
 
-
-router.post('/admin/update', function(req,res){
+/* Adds exam from front-end */
+router.post('/admin/update/exam', function(req,res){
     var course_code = req.body.course_code,
         year = req.body.year,
         type = req.body.type,
@@ -73,6 +73,20 @@ router.post('/admin/update', function(req,res){
     res.redirect('/admin');
 });
 
+/* Adds course from front-end */
+router.post('/admin/update/course', function(req,res){
+    var course_code = req.body.course_code,
+        title = req.body.title;
+    dbFile.add_course(course_code, title, function(courseAdded, statusMessage){
+        if(courseAdded){
+            console.log("Success!");
+        }else{
+            console.log("Failure!");
+        }
+        console.log("Status message: " + statusMessage)
+    });
+    res.redirect('/admin');
+});
 
 //EXAMPLE EXPECTED DATA GIVEN BELOW:
 /*[     {courseCode: 'CSC240',

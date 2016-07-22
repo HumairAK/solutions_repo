@@ -1,6 +1,3 @@
-/**
- * Created by nanalelfe on 2016-07-20.
- */
 var passport = require('passport');
 var dbFile  = require("../node_simple.js");
 var LocalStrategy = require('passport-local').Strategy;
@@ -52,7 +49,20 @@ passport.use('local_signup', new LocalStrategy({
 
         else  {
             console.log("ELSE");
-            return done(null, fields);
+            var user_data = {
+                email: fields[0],
+                user_name: fields[1],
+                f_name: fields[2],
+                l_name: fields[3],
+                university: fields[4],
+                department: fields[5],
+                answered: 0,
+                messages: 0,
+                comments: 0,
+                phone_num: fields[7],
+                followers: []
+            };
+            return done(null, user_data);
         }
     });
 

@@ -1,11 +1,6 @@
 var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
-var csrf = require('csurf'); // Cross-Site Request Forgery prevention
-var passport = require('passport');
-
-var csrfProtection = csrf();
-router.use(csrfProtection); // router is protected
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
@@ -22,11 +17,6 @@ router.get('/about', function(req, res, next) {
 /* Render/GET user_solutions page */
 router.get('/user_solutions', function(req, res, next) {
     res.render('user_solutions');
-});
-
-/* Render/GET user_profile page */
-router.get('/user_profile', function(req, res, next) {
-    res.render('user_profile_alt');
 });
 
 /* Render/GET questions page */
@@ -155,78 +145,7 @@ router.get('/questions/:exam_id', function (req,res) {
     });
 });
 
-router.get('/signup', function(req, res, next) {
-    res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
-    req.session.errors = null;
-});
 
-router.get('/signup/failed', function(req, res, next) {
-    var msg = req.flash('error');
-
-    res.render('signup', {csrfToken: req.csrfToken(),
-        success: req.session.success,
-        errors: req.session.errors,
-        flashMsg: msg});
-});
-
-
-router.get('/signin', function (req, res, next) {
-    var msg = req.flash('error');
-    res.render('signin', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors, flashMsg: msg});
-});
-
-
-router.post('/signup', function(req, res, next) {
-    req.check('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
-    req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
-    req.check('email', 'Enter a valid Email address').notEmpty().withMessage('Email required').isEmail();
-    req.check('usrname', 'Enter a valid username').notEmpty().withMessage('Username required.');
-    req.check('password', "Password should be between 6 and 12 characters.")
-                                        .notEmpty().withMessage('Password required').isLength({min: 6, max: 12});
-    req.check('password', "The confirmation password doesn't match.").equals(req.body.confirmPassword);
-    req.check('phone_num', 'Please enter a valid phone number').optional().isMobilePhone('en-CA');
-    // password has to be at least 4 characters long
-
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/signup');
-    } else {
-        console.log("GOT SUCCESS");
-        passport.authenticate('local_signup', {
-            successRedirect: '/user_profile',
-            failureRedirect: '/signup/failed',
-            failureFlash: true
-        })(req, res);
-
-    }
-    //res.redirect('/signup');
-
-});
-
-router.post('/signin', function(req, res, next) {
-    req.check('usrname', 'Username field is empty.').notEmpty();
-    req.check('password', "Password field is empty.").notEmpty();
-    // password has to be at least 4 characters long
-
-    var errors = req.validationErrors();
-    if (errors) {
-        req.session.errors = errors;
-        req.session.success = false;
-        res.redirect('/signin');
-    } else {
-        console.log("GOT SUCCESS");
-        passport.authenticate('local_signin', {
-            successRedirect: '/user_profile',
-            failureRedirect: '/signin',
-            failureFlash: true
-        })(req, res);
-
-    }
-    //res.redirect('/signup');
-
-});
 
 /**** Helpers ****/
 

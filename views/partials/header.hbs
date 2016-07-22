@@ -36,15 +36,23 @@
                         <li><a href="#">Fourth Year</a></li>
                     </ul>
                 </li>
-                <li><a href="/signin" >Sign In</a></li>
+                {{# if login }}
+                    <li><a href="/user/user_profile">Profile Page</a></li>
+                {{ else }}
+                    <li><a href="/user/signin" >Sign In</a></li>
+                {{/if}}
                 <li><a href="/admin">Admin Panel</a></li>
                 <!--<li><a href="#" data-toggle="modal" data-target=".registration-window">Sign up</a></li>-->
-                <li><a href="/signup" >Sign up</a></li>
+                {{# if login}}
+                    <li><a href="/user/logout">Logout</a> </li>
+                {{ else }}
+                    <li><a href="/user/signup" >Sign up</a></li>
+                {{/if}}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Links <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a tabindex="-1" href="/user_solutions">Solutions Page</a></li>
-                        <li><a href="/user_profile">Profile Page</a></li>
+                        <li><a href="/user/user_profile">Profile Page</a></li>
                         <li><a href="/questions">Questions Page</a></li>
                         <li><a href="/exams">Exams Pages</a></li>
                     </ul>

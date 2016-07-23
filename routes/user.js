@@ -7,7 +7,7 @@ var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
 
-router.get('/logout', function (req, res, next) {
+router.get('/logout', loggedIn, function (req, res, next) {
     req.logout();
     res.redirect('/');
 });
@@ -17,12 +17,12 @@ router.get('/user_profile', loggedIn, function(req, res, next) {
     res.render('user_profile_alt');
 });
 
-router.get('/signup', function(req, res, next) {
+router.get('/signup', loggedOut, function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
 });
 
-router.get('/signup/failed', function(req, res, next) {
+router.get('/signup/failed', loggedOut, function(req, res, next) {
     var msg = req.flash('error');
 
     res.render('signup', {csrfToken: req.csrfToken(),
@@ -31,8 +31,7 @@ router.get('/signup/failed', function(req, res, next) {
         flashMsg: msg});
 });
 
-
-router.get('/signin', function (req, res, next) {
+router.get('/signin', loggedOut, function (req, res, next) {
     var msg = req.flash('error');
     res.render('signin', {
         csrfToken: req.csrfToken(),
@@ -41,7 +40,6 @@ router.get('/signin', function (req, res, next) {
         flashMsg: msg
     });
 });
-
 
 router.post('/signup', loggedOut, function(req, res, next) {
     req.check('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
@@ -97,15 +95,12 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 module.exports = router;
 
-
-
 function loggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
     res.redirect('/');
 }
-
 
 function loggedOut(req, res, next) {
     if (!req.isAuthenticated()) {

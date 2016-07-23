@@ -2,11 +2,17 @@ var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
 
+// Remove later
+var passport_file = require('../config/passport.js');
+var bcrypt = require('bcrypt-nodejs');
+
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
+    addFirstAdmin();
     res.render('index');
     req.session.errors = null;
     req.session.success = null;
+
 });
 
 /* Render/GET about page */
@@ -129,6 +135,24 @@ router.post('/add_solutions/submit', function (req, res) {
 });
 
 /**** Helpers ****/
+
+function addFirstAdmin() {
+    console.log("Inside addFirstAdmin()");
+    //admin_data = {fname: firstname, lname: lastname, username: username, password: password}
+    var password = 'lamptable';
+    var hash_pwd = passport_file.encryptPassword(password);
+    console.log("Admin hashed: " + hash_pwd);
+    var admin_data = {
+        fname: 'Admin',
+        lname: 'Admin',
+        username: 'admin',
+        password: hash_pwd
+    };
+
+    dbFile.addAdmin(admin_data, function (success, error, message) {
+        console.log("admin message: " + message);
+    });
+}
 
 function getExamsForCourseCode(courseCode) {
     dbFile.get_all_exams(courseCode, function (exams) {

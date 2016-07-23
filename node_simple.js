@@ -59,6 +59,17 @@
 // |"askjdfklajsdf..........."|"asdf@asdf.com   |"asdfasd"|(some hasehd thing)  |
 // |..........|
 
+/*
+
+NEW COLLECTIONS:
+
+- sessions: stores user session - no need to keep track
+- admins: stores admin name, username and password only. The logins collection will be reserved for user logins.
+
+ */
+
+
+
 var exports = module.exports = {};
 
 const debug_mode = false;
@@ -291,7 +302,8 @@ exports.retrieveUser = function (username, callback) {
             }
 
             else if (result.length) {
-                callback(true, false, result, "User retrieved");
+                console.log("retreive User: " + result[0]);
+                callback(true, false, result[0], "User retrieved");
             }
 
             else {
@@ -303,19 +315,24 @@ exports.retrieveUser = function (username, callback) {
 }
 
 /*
- Returns the hashed password given the username. Assume username exists.
+ Returns the hashed password given the username. Assume username exists. Used for both admins and users.
+ retrievePassword(String, boolean, function())
  */
 
 exports.retrievePassword = function (username, callback) {
+
     mongoFactory.getConnection(uri).then(function (db) {
 
-        db.collection('logins').find({user_name: username}).toArray(function(err, result) {
+         var collection = db.collection('logins');
+
+        collection.find({user_name: username}).toArray(function(err, result) {
             if (err) {
                 // callback(success, password, message)
                 callback(false, null, "Error : Could not retrieve password.");
             }
 
             else {
+                console.log("NODE SIMPLE result[0]: " + result);
                 var pwd = result[0].password; //result is an array
                 callback(true, pwd, "Password retrieved");
             }
@@ -834,6 +851,81 @@ exports.get_exam_byID = function (id) {
             console.error(err);
         });
 };
+
+
+/******************************  ADMINS *********************************/
+
+/*
+ *   Adds an admin to the admins collection.
+ *   Params: admin_data = {fname: firstname, lname: lastname, username: username, password: password}
+ *   Callback: callback(success, error, message) => callback(boolean, boolean, String)
+ */
+
+exports.addAdmin = function (admin_data, callback) {
+    console.log('addAdmin, admin_data: ' +  admin_data.fname);
+
+    console.log("inside addAdmin");
+
+    // Check if the admin username already exists. If it does, then we don't add the admin_data and return a message.
+    exports.adminExists( admin_data.username , function (error, exists, data, message) {
+            console.log("adminExists: " + message);
+            if (!exists && !error) {
+                mongoFactory.getConnection(uri).then(function (db) {
+
+                    var admins = db.collection('admins');
+
+                    admins.insertOne( admin_data, function (err) {
+                        if (err) {
+                            callback(false, true, message);
+                            db.close();
+                        }
+                        else {
+                            callback(true, false, "Admin added.");
+                            db.close();
+                        }
+                    });
+
+                }).catch(function (err) {
+                    callbackUser(false, true,  "Unable to connect.");
+                })
+            } else {
+                callback(error, exists, message);
+            }
+    });
+
+};
+
+
+/*
+ *  Equivalent of function find_user, but for admins. Calls back true if admin with a
+ *  given username exists. If true, also returns the admin 'object'.
+ *  Callback: callback(error, exists, message)
+ */
+exports.adminExists = function (username, callback) {
+    // make a connection
+    console.log("inside adminExists");
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        var admins = db.collection('admins');
+        admins.find( { username: username } ).toArray(function (err, result) {
+            if (err) {
+                callback(true, false, null, "Error: could not retrieve admin in adminExists().");
+            } else if (result.length) {
+                callback(false, true, result[0], "Admin with given username exists");
+            } else {
+                callback(false, false, null, "Admin with given username does not exist");
+            }
+        });
+    })
+    .catch(function (err) {
+        callback(true, false, "Error: could not connect to the database.");
+    })
+};
+
+
+
+
+
 
 
 /*

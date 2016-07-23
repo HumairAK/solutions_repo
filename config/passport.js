@@ -3,7 +3,9 @@ var dbFile  = require("../node_simple.js");
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt-nodejs');
 
-var encryptPassword = function (password) {
+var exports = module.exports = {};
+
+var encryptPassword = exports.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 }
 
@@ -18,6 +20,7 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function(user, done) {
     done(null, user);
 });
+
 
 
 // fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
@@ -73,27 +76,41 @@ passport.use('local_signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, function (req, usrname, password, done) {
-
     dbFile.retrieveUser(usrname, function (success, error, user, message) {
         if (!success && error) {
             return done(message);
         }
 
-        else if (!success && !error) {
-            console.log(message);
-            return done(null, false, {message: message});
+        else if (!success && !error) { // Username is undefined
+            //return done(null, false, {message: message});
+            // ADMIN
+            dbFile.adminExists(usrname, function (error, exists, data, message) {
+                if (error) {
+                    return done(message);
+                } else if (!error && !exists){
+                    return done(null, false, {message: 'Username does not exist.'});
+                } else {
+                    console.log("data: " + data);
+                    if (comparePassword(password, data.password)) {
+                        return done(null, data);
+                    } else {
+                        return done(null, false, {message: 'Password incorrect.'});
+                    }
+                }
+            });
         }
 
         else  {
-            console.log(user[0]);
+
             dbFile.retrievePassword(usrname, function(success, hash_pwd, message) {
                 if (!success) {
                     return done(message);
                 } else {
                     console.log(hash_pwd);
+                    console.log("compare password: " + comparePassword(password, hash_pwd));
                     if (comparePassword(password, hash_pwd)) {
 
-                        return done(null, user[0]);
+                        return done(null, user);
                     } else {
                         return done(null, false, {message: 'Password incorrect.'});
                     }

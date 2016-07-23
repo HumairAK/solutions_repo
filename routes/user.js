@@ -81,7 +81,6 @@ router.post('/signin', loggedOut, function(req, res, next) {
         req.session.success = false;
         res.redirect('/signin');
     } else {
-        console.log("GOT SUCCESS");
         passport.authenticate('local_signin', {
             successRedirect: '/user/user_profile',
             failureRedirect: '/user/signin',

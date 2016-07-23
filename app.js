@@ -55,7 +55,6 @@ app.use(function(req, res, next) {
     res.locals.login = req.isAuthenticated(); // global variable
     res.locals.session = req.session;
     res.locals.user = req.user;
-    console.log(res.locals.user);
     next();
 });
 

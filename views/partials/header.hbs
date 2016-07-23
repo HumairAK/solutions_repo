@@ -37,13 +37,17 @@
                     </ul>
                 </li>
                 {{# if login }}
-                    <li><a href="/user/user_profile">Profile Page</a></li>
+                    {{# if user.email }}
+                        <li><a href="/user/user_profile">Profile Page</a></li>
+                    {{else}}
+                        <li><a href="/admin">Admin Panel</a></li>
+                    {{/if}}
                 {{ else }}
                     <li><a href="/user/signin" >Sign In</a></li>
                 {{/if}}
-                <li><a href="/admin">Admin Panel</a></li>
+
                 <!--<li><a href="#" data-toggle="modal" data-target=".registration-window">Sign up</a></li>-->
-                {{# if login}}
+                {{# if login }}
                     <li><a href="/user/logout">Logout</a> </li>
                 {{ else }}
                     <li><a href="/user/signup" >Sign up</a></li>

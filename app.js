@@ -11,7 +11,7 @@ var session = require('express-session');
 var passport = require('passport');
 var flash = require('connect-flash');
 
-var mongoStore = require('connect-mongo') (session); //for storing sessions in database
+var MongoStore = require('connect-mongo') (session); //for storing sessions in database
 
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
@@ -37,7 +37,7 @@ app.use(session({
     secret: 'pickBetterLater',
     resave: false,
     saveUninitialized: false,
-    store: new mongoStore({db : dbFile.mongodb}),
+    store: new MongoStore({url : dbFile.uri}),
     cookie: {maxAge: 120 * 60 * 1000} // in milliseconds - 120 mins, expires after this amount of time
 }));
 app.use(flash());

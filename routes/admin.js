@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
 var passport = require('passport');
+var passport_file = require('../config/passport.js');
 
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
@@ -64,6 +65,29 @@ router.post('/add/course', function(req,res){
     res.redirect('/admin');
 });
 
+// Add a new admin, redirect to admin panel
+router.post('/add/admin', function(req,res){
+    var admin_data = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: req.body.username,
+        password: passport_file.encryptPassword(req.body.password)
+    };
+
+    dbFile.addAdmin(admin_data, function(success, error, message){
+        if(success){
+            console.log("Success!");
+        }else if(error){
+            console.log("Error!");
+        }else{
+            console.log("Admin already exists.");
+        }
+        console.log(message);
+    });
+
+    res.redirect('/admin');
+});
+
 router.post('/remove/exam', function(req,res){
     var course_code = req.body.course_code,
         year = req.body.year,
@@ -85,8 +109,6 @@ router.post('/remove/exam', function(req,res){
 
     res.redirect('/admin');
 });
-
-
 
 /* Takes an input string delimited by commas, will split by comma and trim white
  * spaces. Consider callback.

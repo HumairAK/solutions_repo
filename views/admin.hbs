@@ -19,6 +19,7 @@
                 <ul class="nav navbar-nav " >
                     <li><a href="#" class="cpnl-page">Add Exam</a></li>
                     <li><a href="#" class="cpnl-page">Add Course</a></li>
+                    <li><a href="#" class="cpnl-page">Add Admin</a></li>
                     <li><a href="#" class="cpnl-page">Remove Exam</a></li>
                     <li><a href="#" class="cpnl-page">Remove Course</a></li>
                     <li><a href="#" class="cpnl-page">Remove User</a></li>
@@ -127,6 +128,39 @@
                                           class="form-control"
                                           placeholder="e.g. Theory of Computation"
                                           name="title">
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <!--- Add Course --->
+                <div class="row cpnl-container" id="cpnl-addAdmin">
+                    <h4>Add Admin</h4>
+                    <form action="/admin/add/admin" method="post">
+                        <div class="form-group">
+                            First Name: <input type="text"
+                                                class="form-control"
+                                                placeholder="e.g. Robert"
+                                                name="fname">
+                        </div>
+                        <div class="form-group">
+                            Last Name: <input type="text"
+                                          class="form-control"
+                                          placeholder="e.g. Godfried"
+                                          name="lname">
+                        </div>
+                        <div class="form-group">
+                            Username: <input type="text"
+                                          class="form-control"
+                                          placeholder="e.g. robTheFried86"
+                                          name="username">
+                        </div>
+                        <div class="form-group">
+                            Password: <input type="password"
+                                          class="form-control"
+                                          placeholder="e.g. a3e6kk31"
+                                          name="password">
                         </div>
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                         <button type="submit" class="btn btn-primary">Submit</button>

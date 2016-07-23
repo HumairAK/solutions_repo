@@ -53,9 +53,11 @@ function main(){
     var adminOptions = [
         $("#cpnl-addExam"),
         $("#cpnl-addCourse"),
+        $("#cpnl-addAdmin"),
         $("#cpnl-removeExam"),
         $("#cpnl-removeCourse"),
-        $("#cpnl-removeUser")];
+        $("#cpnl-removeUser")
+    ];
 
     function hideCpnlPages(){
         adminOptions.forEach(function(item){
@@ -80,6 +82,9 @@ function main(){
                 break;
             case "Add Course":
                 $("#cpnl-addCourse").show();
+                break;
+            case "Add Admin":
+                $("#cpnl-addAdmin").show();
                 break;
             case "Remove Exam":
                 $("#cpnl-removeExam").show();

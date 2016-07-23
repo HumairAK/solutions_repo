@@ -49,10 +49,11 @@ router.post('/signup', loggedOut, function(req, res, next) {
     req.check('password', "Password should be between 6 and 12 characters.")
         .notEmpty().withMessage('Password required').isLength({min: 6, max: 12});
     req.check('password', "The confirmation password doesn't match.").equals(req.body.confirmPassword);
+
+    // phone number optional
     if (req.body.phone_num){
         req.check('phone_num', 'Please enter a valid phone number').isMobilePhone('en-CA');
     }
-    // password has to be at least 4 characters long
 
     var errors = req.validationErrors();
     if (errors) {
@@ -68,14 +69,11 @@ router.post('/signup', loggedOut, function(req, res, next) {
         })(req, res);
 
     }
-    //res.redirect('/signup');
-
 });
 
 router.post('/signin', loggedOut, function(req, res, next) {
     req.check('usrname', 'Username field is empty.').notEmpty();
     req.check('password', "Password field is empty.").notEmpty();
-    // password has to be at least 4 characters long
 
     var errors = req.validationErrors();
     if (errors) {
@@ -89,8 +87,8 @@ router.post('/signin', loggedOut, function(req, res, next) {
             failureRedirect: '/user/signin',
             failureFlash: true
         })(req, res);
-
     }
+
 
 });
 

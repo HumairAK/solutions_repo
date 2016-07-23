@@ -1,102 +1,206 @@
 <main id="solutions-main">
-<div class="row signup">
-    <div class="col-md-3 col-md-offset-1 admin-form">
-        <h4>Add Exam</h4>
-        <form action="/admin/update/exam" method="post">
-            <div class="form-group">
-                Course Code: <input type="text"
-                       class="form-control"
-                       placeholder="course code"
-                       name="course_code">
-            </div>
-            <div class="form-group">
-                Year of Exam:
-                <input type="text"
-                       class="form-control"
-                       placeholder="year"
-                       name="year">
-            </div>
-            <div class="form-group">
-                Term: <input type="text"
-                       class="form-control"
-                       placeholder="term"
-                       name="term">
-            </div>
-            <div class="form-group">
-                Type of test:
-                <input type="radio" name="type" value="Midterm"> Midterm
-                <input type="radio" name="type" value="Final"> Final
-            </div>
-            <div class="form-group">
-                List all instructors separated by comma:
-                <input type="text"
-                       class="form-control"
-                       placeholder="instructor1,instructor2,.."
-                       name="instructors">
-            </div>
-            <div class="form-group">
-                Page Count:
-                <input type="text"
-                       class="form-control"
-                       placeholder="page count"
-                       name="page_count">
-            </div>
-            <div class="form-group">
-                Questions count:
-                <input type="text"
-                       class="form-control"
-                       placeholder="questions count"
-                       name="questions_count">
-            </div>
-            <div class="form-group">
-                Questions Seperated by Comma
-                <input type="text"
-                       class="form-control"
-                       placeholder="q1,q2,q3,.."
-                       name="questions_list">
-            </div>
+<div class="container">
+<div class="row">
+<!-- Admin control Panel --->
+<div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-xs-offset-0 col-sm-offset-0  toppad cpnl-details">
 
-            <div class="form-group">
-                Upload Date:
-                <input type="text"
-                       class="form-control"
-                       placeholder="yyyy-mm-dd"
-                       name="upload_date">
+    <!-- Admin Control Panel Menu -->
+    <nav class="navbar navbar-custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle"
+                        data-toggle="collapse" data-target="#profile-nav">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
-            <div class="form-group">
-                Your username:
-                <input type="text"
-                       class="form-control"
-                       placeholder="uploader"
-                       name="uploaded_by">
+            <div class="collapse navbar-collapse" id="profile-nav">
+                <ul class="nav navbar-nav " >
+                    <li><a href="#" class="cpnl-page">Add Exam</a></li>
+                    <li><a href="#" class="cpnl-page">Add Course</a></li>
+                    <li><a href="#" class="cpnl-page">Remove Exam</a></li>
+                    <li><a href="#" class="cpnl-page">Remove Course</a></li>
+                    <li><a href="#" class="cpnl-page">Remove User</a></li>
+                </ul>
             </div>
+        </div>
+    </nav>
 
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+    <!-- Admin Control Panel Pages -->
+    <div class="rounded">
+        <div class="panel panel-info rounded">
+            <div class="panel-heading">
+                <h3 class="panel-title">Admin Panel</h3>
+            </div>
+            <div class="panel-body">
+
+                <!--- Add Exam --->
+                <div class="row cpnl-container" id="cpnl-addExam">
+                    <h4>Add Exam</h4>
+                    <form action="/admin/add/exam" method="post">
+                        <div class="form-group">
+                            Course Code: <input type="text"
+                                                class="form-control"
+                                                placeholder="course code"
+                                                name="course_code">
+                        </div>
+                        <div class="form-group">
+                            Year of Exam:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="year"
+                                   name="year">
+                        </div>
+                        <div class="form-group">
+                            Term:
+                            <input type="radio" name="term" value="Fall"> Fall
+                            <input type="radio" name="term" value="Winter"> Winter
+                            <input type="radio" name="term" value="Summer"> Summer
+                        </div>
+                        <div class="form-group">
+                            Type of test:
+                            <input type="radio" name="type" value="Midterm"> Midterm
+                            <input type="radio" name="type" value="Final"> Final
+                        </div>
+                        <div class="form-group">
+                            List all instructors separated by comma:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="instructor1,instructor2,.."
+                                   name="instructors">
+                        </div>
+                        <div class="form-group">
+                            Page Count:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="page count"
+                                   name="page_count">
+                        </div>
+                        <div class="form-group">
+                            Questions count:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="questions count"
+                                   name="questions_count">
+                        </div>
+                        <div class="form-group">
+                            Questions Seperated by Comma
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="q1,q2,q3,.."
+                                   name="questions_list">
+                        </div>
+
+                        <div class="form-group">
+                            Upload Date:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="yyyy-mm-dd"
+                                   name="upload_date">
+                        </div>
+                        <div class="form-group">
+                            Your username:
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="uploader"
+                                   name="uploaded_by">
+                        </div>
+
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <!--- Add Course --->
+                <div class="row cpnl-container" id="cpnl-addCourse">
+                    <h4>Add Course</h4>
+                    <form action="/admin/add/course" method="post">
+                        <div class="form-group">
+                            Course Code: <input type="text"
+                                                class="form-control"
+                                                placeholder="e.g. CSC240"
+                                                name="course_code">
+                        </div>
+                        <div class="form-group">
+                            Title: <input type="text"
+                                          class="form-control"
+                                          placeholder="e.g. Theory of Computation"
+                                          name="title">
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <!--- Remove Exam --->
+                <div class="row cpnl-container" id="cpnl-removeExam">
+                    <h4>Remove Exam</h4>
+                    <form action="/admin/remove/exam" method="post">
+                        <div class="form-group">
+                            Course Code: <input type="text"
+                                                class="form-control"
+                                                placeholder="e.g. CSC240"
+                                                name="course_code">
+                        </div>
+                        <div class="form-group">
+                            Year: <input type="text"
+                                         class="form-control"
+                                         placeholder="e.g. 2015"
+                                         name="year">
+                        </div>
+
+                        <div class="form-group">
+                            Term:
+                            <input type="radio" name="term" value="Fall"> Fall
+                            <input type="radio" name="term" value="Winter"> Winter
+                            <input type="radio" name="term" value="Summer"> Summer
+                        </div>
+
+                        <div class="form-group">
+                            Type of test:
+                            <input type="radio" name="type" value="Midterm"> Midterm
+                            <input type="radio" name="type" value="Final"> Final
+                        </div>
+
+                        <div class="form-group">
+                            <p> Campus: </p>
+                            <input type="radio" name="campus" value="StGeorge"> St. George
+                            <input type="radio" name="campus" value="Scarborough"> Scarborough
+                            <input type="radio" name="campus" value="Mississauga"> Mississauga
+                        </div>
+
+
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+
+                <!--- Remove Course --->
+                <div class="row cpnl-container" id="cpnl-removeCourse">
+                    <h4>Remove Course</h4>
+                    Pending. Need required database functionality.
+                </div>
+
+                <!--- Remove User --->
+                <div class="row cpnl-container" id="cpnl-removeUser">
+                    <h4>Remove User</h4>
+                    Pending. Need required database functionality.
+                </div>
+
+
+                <!-- Date, Edit, Logout (new row) -->
+                <div class="col-md-12 prf-sign-off">
+                    <p class=" text-info"> July 4 2016 </p>
+                    <a href="#">Logout</a>
+                    <br>
+
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-3 admin-form">
-        <h4>Add Course</h4>
-        <form action="/admin/update/course" method="post">
-            <div class="form-group">
-                Course Code: <input type="text"
-                                    class="form-control"
-                                    placeholder="e.g. CSC240"
-                                    name="course_code">
-            </div>
-            <div class="form-group">
-                Title: <input type="text"
-                                    class="form-control"
-                                    placeholder="e.g. Theory of Computation"
-                                    name="title">
-            </div>
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-
-    </div>
-
-
+</div>
+</div>
 </div>
 </main>

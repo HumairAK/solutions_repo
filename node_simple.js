@@ -196,7 +196,7 @@ exports.add_user = function (fields, callbackUser) {
     };
 
     // find out if this user already exists by checking their email
-    exports.find_user( fields[0] ,callbackUser,  function (result, callbackUser) {
+    exports.find_user( fields[0] ,callbackUser, function (result, callbackUser) {
         if  (result == false) {
 
             // find out if the user_name is taken
@@ -685,7 +685,7 @@ exports.find_exam = function (fields, serverCallback, callback) {
  * Params: course_code - an string of format "CSC309"
  *         title - the course description
  * */
-exports.add_course = function (course_code, title) {
+exports.add_course = function (course_code, title, serverCallback) {
 
     var courseData = {
         course_code: course_code,
@@ -695,6 +695,7 @@ exports.add_course = function (course_code, title) {
     exports.find_course(course_code, function (result) {
 
         if (result == true){
+            serverCallback(false, "Course already exists");
             console.log("course already exists");
         }
         else if (result == false) {    // add it
@@ -707,7 +708,8 @@ exports.add_course = function (course_code, title) {
                     courses.insert(courseData, function(err) {
                         if (err) throw err;
                         else {
-                            console.log("couse added");
+                            console.log("course added");
+                            serverCallback(true, "Course added successfully.");
                             db.close(function (err) {   // close the connection when done
                                 if (err) throw err;
                             });
@@ -742,8 +744,8 @@ exports.find_course = function (course_code, callback) {
                 { course_code: course_code }
             ).toArray(function (err, docs) {
                 if (err) throw err;
-
-                if (docs.length == 0) { // if this course doesnt exist.... add it
+                // if this course doesnt exist.... add it (via add_course call)
+                if (docs.length == 0) {
                     callback(false);
                 }
                 else {  // course was found
@@ -766,7 +768,7 @@ exports.find_course = function (course_code, callback) {
  * Params: fields - an array of format ["course_code", year, "term", "type"]
  *
  * */
-exports.remove_exam = function (fields) {
+exports.remove_exam = function (fields, serverCallback) {
 
     var course_code = fields[0];
     var year = fields[1];
@@ -791,10 +793,14 @@ exports.remove_exam = function (fields) {
                     if (err) throw err;
                     else {
                         if (docs.deletedCount == 1) {
-                            console.log("exam was removed");
+                            serverCallback(true, "Exam was removed successfully");
+                            db.close();
+                            //console.log("exam was removed");
                         }
                         else if (docs.deletedCount == 0) {
-                            console.log("No such exam was found");
+                            serverCallback(false, "No such exam was found");
+                            db.close();
+                            //console.log("No such exam was found");
                         }
                     }
                 }

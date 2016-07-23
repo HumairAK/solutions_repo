@@ -65,7 +65,8 @@ router.get('/exams/:id', function(req, res, next) {
                     instructors: getInstructors,
                     type:toProperCase(exams[i].type) + " Examination",
                     title:exams[i].title,
-                    id:exams[i]._id
+                    id:exams[i]._id,
+                    questionCount : exams[i].questions_count
                 };
                 //console.log(minExamInfo);
                 minExamInfoArray.push(minExamInfo);

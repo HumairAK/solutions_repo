@@ -12,7 +12,7 @@ router.get('/', function(req,res){
 });
 
 /* Adds exam from front-end */
-router.post('/update/exam', function(req,res){
+router.post('/add/exam', function(req,res){
     var course_code = req.body.course_code,
         year = req.body.year,
         type = req.body.type,
@@ -27,8 +27,8 @@ router.post('/update/exam', function(req,res){
     var fields = [
         course_code,           // String
         year,                  // Int
-        type,                  // String; Needs to be added to database code
         term,                  // String
+        type,                  // String
         instructors,           // Array of strings
         page_count,            // Int
         questions_count,       // Int
@@ -43,11 +43,11 @@ router.post('/update/exam', function(req,res){
         }
         console.log(statusMessage);
     });
-    res.redirect('/');
+    res.redirect('/admin');
 });
 
 /* Adds course from front-end */
-router.post('/update/course', function(req,res){
+router.post('/add/course', function(req,res){
     var course_code = req.body.course_code,
         title = req.body.title;
 
@@ -59,8 +59,46 @@ router.post('/update/course', function(req,res){
         }
         console.log("Status message: " + statusMessage)
     });
-    res.redirect('/');
+    res.redirect('/admin');
 });
+
+router.post('/remove/exam', function(req,res){
+    var course_code = req.body.course_code,
+        year = req.body.year,
+        term = req.body.term,
+        type = req.body.type,
+        campus = req.body.campus;
+
+    var fields = [course_code, year, term, type];
+    console.log(fields);
+    dbFile.remove_exam(fields,
+        function(examRemoved, statusMessage){
+        if(examRemoved){
+            console.log("Success.");
+        } else {
+            console.log("Failed.");
+        }
+        console.log(statusMessage);
+    });
+
+    res.redirect('/admin');
+});
+
+
+
+/* Takes an input string delimited by commas, will split by comma and trim white
+ * spaces. Consider callback.
+ */
+function parseStringArray(input){
+    var list = input.split(',');
+    var parsedList = [];
+    list.forEach(function(word){
+        if (word != ""){
+            parsedList.push(word.trim());
+        }
+    });
+    return parsedList;
+}
 
 module.exports = router;
 

@@ -451,3 +451,11 @@ section.exam-info em {
 	background: #80cca0;
 	padding: 5px;
 }
+/** Admin C-Panel **/
+.cpnl-details{
+    text-align: left;
+}
+
+.cpnl-container{
+    padding: 4%;
+}

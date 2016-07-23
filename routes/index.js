@@ -19,11 +19,11 @@ router.get('/user_solutions', function(req, res, next) {
     res.render('user_solutions');
 });
 
-/* Render/GET questions page */
+/* Render/GET questions page
 router.get('/questions', function(req, res, next) {
     res.render('questions');
 });
-
+*/
 
 //EXAMPLE EXPECTED DATA GIVEN BELOW:
 /*[     {courseCode: 'CSC240',
@@ -86,8 +86,9 @@ router.get('/search', function(req, res, next) {
 router.get('/questions/:exam_id', function (req,res) {
     console.log(req.params.exam_id);
     dbFile.get_exam_info_by_ID(req.params.exam_id, function (questions) {
-        res.render('questions', {query: questions});
         console.log(questions);
+        res.render('questions', {query: questions});
+
     });
 });
 
@@ -142,20 +143,6 @@ function getExamsForCourseCode(courseCode) {
 
 function toProperCase(string) {
     return string.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}
-
-/* Takes an input string delimited by commas, will split by comma and trim white
- * spaces. Consider callback.
- */
-function parseStringArray(input){
-    var list = input.split(',');
-    var parsedList = [];
-    list.forEach(function(word){
-        if (word != ""){
-            parsedList.push(word.trim());
-        }
-    });
-    return parsedList;
 }
 
 module.exports = router;

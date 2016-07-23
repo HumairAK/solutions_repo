@@ -56,7 +56,7 @@ router.post('/signup', loggedOut, function(req, res, next) {
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
-        res.redirect('/signup');
+        res.redirect('/user/signup');
     } else {
         console.log("GOT SUCCESS");
         passport.authenticate('local_signup', {

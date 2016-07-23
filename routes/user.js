@@ -89,7 +89,6 @@ router.post('/signin', loggedOut, function(req, res, next) {
         })(req, res);
 
     }
-    //res.redirect('/signup');
 
 });
 

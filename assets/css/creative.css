@@ -39,6 +39,7 @@ main .search {
 }*/
 
 
+
 h2 {
 font-family: 'Lato', sans-serif;
 color: gray;
@@ -55,6 +56,12 @@ padding-top: 200px;
     -moz-transition: all .35s;
     transition: all .35s;
 }
+
+.user-navbar {
+    background-color: #f0f5f5;
+}
+
+
 .navbar-default-hi {
     border-color: rgba(34,34,34,.05);
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
@@ -121,28 +128,36 @@ padding-top: 200px;
 }*/
 
 
-footer .navbar-default {
+footer .navbar-default, .admin-navbar {
         border-color: rgba(255,255,255,.3);
         background-color: #333333;
 }
 
-footer .navbar-default .nav > li>a,
-footer .navbar-default .nav>li>a:focus {
+footer .navbar-default .navbar-header .navbar-brand, .admin-navbar .navbar-header .navbar-brand {
     color: rgba(255,255,255,.7);
 }
 
-footer .navbar-default .nav > li>a:hover,
-footer .navbar-default .nav>li>a:focus:hover {
+footer .navbar-default .nav > li>a, .admin-navbar .nav > li>a,
+footer .navbar-default .nav>li>a:focus, .admin-navbar .nav > li> a:focus {
+    color: rgba(255,255,255,.7);
+}
+
+footer .navbar-default .nav > li>a:hover, .admin-navbar .nav > li > a:hover,
+footer .navbar-default .nav>li>a:focus:hover, .admin-navbar .nav>li>a:focus:hover {
     color: #fff;
 }
 
-footer .navbar-default .affix {
+footer .navbar-default .affix, .admin-navbar .affix {
     border-color: rgba(34,34,34,.05);
     background-color: #fff;
 }
 
-footer .navbar-default .affix .nav > li>a,
-footer .navbar-default .affix .nav>li>a:focus {
+footer .navbar-default .affix .navbar-header .navbar-brand, .admin-navbar .affix .navbar-header {
+    font-size: 14px;
+}
+
+footer .navbar-default .affix .nav > li>a, .admin-navbar .affix .nav > li>a,
+footer .navbar-default .affix .nav>li>a:focus, .admin-navbar .affix .nav>li>a:focus {
     color: #222;
 }
 

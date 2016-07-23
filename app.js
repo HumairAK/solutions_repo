@@ -11,6 +11,8 @@ var session = require('express-session');
 var passport = require('passport');
 var flash = require('connect-flash');
 
+var MongoStore = require('connect-mongo') (session); //for storing sessions in database
+
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
 var adminRoutes = require('./routes/admin');
@@ -31,7 +33,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
 app.use(cookieParser());
 // session is stored in memory, change to storage in mongo later
-app.use(session({secret: 'pickBetterLater', resave: false, saveUninitialized: false}));
+app.use(session({
+    secret: 'pickBetterLater',
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({url : dbFile.uri}),
+    cookie: {maxAge: 120 * 60 * 1000} // in milliseconds - 120 mins, expires after this amount of time
+}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
@@ -45,6 +53,7 @@ app.use(express.static(__dirname));
 // Gives errors for admin - need to figure out
 app.use(function(req, res, next) {
     res.locals.login = req.isAuthenticated(); // global variable
+    res.locals.session = req.session;
     next();
 });
 

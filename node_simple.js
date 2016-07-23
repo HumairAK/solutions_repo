@@ -11,7 +11,7 @@
  * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
- * 9.
+ * 9. 
  * */
 
 
@@ -81,6 +81,90 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
+
+
+// will add comments ASAP
+exports.retrieve_userComments_history = function (username, callback) {
+
+    // get a connection
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        var solutions = db.collection('solutions');
+        solutions.aggregate([
+
+            { $match : {
+                "comments.by": username
+            }},
+            { $unwind : "$comments" },
+            { $match : {
+                "comments.by": username
+            }},
+            {$project: {
+                comment: "$comments.text",
+                date: "$comments.date",
+                exam_id: "$exam_id",
+                _id: 0
+            }}
+        ]).toArray(function (err, results) {
+            if (err) callback(false, "Error: some wierd error occured while query");
+            else {
+                callback(true, results);
+            }
+
+        });
+
+        db.close();
+
+    }).catch(function (err) {
+        // console.err(err);
+        callback(false, "Error: failed to connect to db");
+    })
+};
+
+exports.retrieve_userComments_count = function (username, callback) {
+
+    exports.retrieve_userComments_history(username, function (bool, results) {
+        if (!bool) callback(false, "Error: error occured");
+        else {
+            var length = results.length;
+            callback(true, length);
+        }
+    });
+
+};
+
+exports.retrieve_userSolutions_history = function (username, callback) {
+
+    // get a connection
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        var solutions = db.collection('solutions');
+        solutions.find( { author: username } ).toArray(function (err, result) {
+            if (err) callback(false, "Error: problem while looking for stuff");
+            else {
+                callback(true, result);
+            }
+            db.close();
+        });
+
+    }).catch(function (err) {
+        // console.err(err);
+        callback(false, "Error: failed to connect to db");
+    })
+};
+
+exports.retrieve_userSolutions_count = function (username, callback) {
+
+    exports.retrieve_userSolutions_history(username, function (bool, results) {
+        if (!bool) callback(false, "Error: error occured");
+        else {
+            var length = results.length;
+            callback(true, length);
+        }
+    });
+
+};
+
 
 /*
  * This function creates and adds a user to users table.
@@ -374,18 +458,19 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
 
 /*
  * This function will add a solution to the solutions table in the database .
- * Params: fields - [exam_id , question_id, solution text]
+ * Params: fields - [exam_id , question_id, solution text, user_name]
  * Note: exam_id - is a unique identifier for each exam in the database. to see an example, ...
  *          ... call get_all_exams and look at the output. Looks like: 578a44ff71ed097fc3079d6e
  *       question_id - is unique relevant to 1 exam.
  * */
-exports.add_solution = function (fields) {
+exports.add_solution = function (fields, callback) {
     var Data = {
         exam_id: fields[0],
         q_id: fields[1],
         text: fields[2],
         votes: 0,
-        comments: []
+        comments: [],
+        author: fields[3]
     };
 
     // establish a connection
@@ -396,9 +481,10 @@ exports.add_solution = function (fields) {
             var solutions = db.collection('solutions');
             // insert data into table
             solutions.insert(Data, function(err) {
-                if (err) throw err;
+                if (err) callback(false , "Error: Failed to add the solution");
                 else {
-                    console.log("solution added");
+                    // console.log("solution added");
+                    callback(true, "Success: added exam successfully!");
                     db.close(function (err) {   // close the connection when done
                         if (err) throw err;
                     });

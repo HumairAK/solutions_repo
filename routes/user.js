@@ -13,7 +13,7 @@ router.get('/logout', loggedIn, function (req, res, next) {
 });
 
 /* Render/GET user_profile page */
-router.get('/user_profile', loggedIn, function(req, res, next) {
+router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     res.render('user_profile_alt');
 });
 
@@ -93,6 +93,8 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 module.exports = router;
 
+/************** Route protection ********************/
+
 function loggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -105,4 +107,11 @@ function loggedOut(req, res, next) {
         return next();
     }
     res.redirect('/');
+}
+
+function isUser(req, res, next) {
+    if (req.user.email) {
+        return next();
+    }
+    res.redirect('/admin');
 }

@@ -7,7 +7,9 @@ var passport = require('passport');
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
-router.get('/', function(req,res){
+
+
+router.get('/', isAdmin, function(req,res){
     res.render('admin', {csrfToken: req.csrfToken()});
 });
 
@@ -101,4 +103,14 @@ function parseStringArray(input){
 }
 
 module.exports = router;
+
+
+/************** Route protection ********************/
+
+function isAdmin(req, res, next) {
+    if (!req.user.email){
+        return next();
+    }
+    res.redirect('/');
+}
 

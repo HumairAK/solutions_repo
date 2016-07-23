@@ -64,13 +64,13 @@ var exports = module.exports = {};
 const debug_mode = false;
 
 Object.assign = require('object-assign');
-var mongodb = require('mongodb');
-var mongoFactory = require('mongo-factory');
+var mongodb = exports.mongodb =  require('mongodb');
+var mongoFactory = exports.mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
-var uri = 'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
+var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
 
 // Keep this for testing on local machine, do not remove. - Humair
 //var uri = 'mongodb://localhost:27017/db';

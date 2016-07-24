@@ -841,9 +841,13 @@ exports.get_all_exams = function (course_code, callback) {
             // get the exams table
             var exam_collection = db.collection('exams');
 
+            exam_collection.createIndex(          // make the following fields searchable
+                {
+                    "course_code":"text"
+                });
             // search exams table with given course code
             exam_collection.find(
-                { course_code: course_code }
+                { $text: { $search: course_code } }
             ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
                 if (err) throw err;
 
@@ -1085,10 +1089,13 @@ exports.find_course = function (course_code, callback) {
 
             // fetch the courses table
             var courses = db.collection('courses');
-
+            courses.createIndex(          // make the following fields searchable
+                {
+                    "course_code":"text"
+                });
             // look for the courses
             courses.find(
-                { course_code: course_code }
+                { $text: { $search: course_code } }
             ).toArray(function (err, docs) {
                 if (err) throw err;
                 // if this course doesnt exist.... add it (via add_course call)

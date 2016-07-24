@@ -115,12 +115,12 @@ dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
  });*/
 
 
-dbFile.followExam("nanalelfe@gmail.com", "578a44ff71ed097fc3079d6e", function (bool, mssg) {
+/*dbFile.followExam("nanalelfe@gmail.com", "578a44ff71ed097fc3079d6e", function (bool, mssg) {
    if (!bool) console.log(mssg);
     else {
        console.log(mssg);
    }
-});
+});*/
 
 /*
 dbFile.retrieveFollows("some_user names", function (bool, result) {
@@ -129,3 +129,8 @@ dbFile.retrieveFollows("some_user names", function (bool, result) {
         console.log(result);
     }
  });*/
+
+
+/*dbFile.vote_solution("5792d8a970040378d4e4b389" , "down", function (bool, mssg) {
+   console.log(mssg);
+});*/

@@ -6,12 +6,16 @@
  * 2. add upload date and user name  ? DONE
  * 3. remove exam ? DONE
  * 4a. get all questions for a given exam_id ? DONE
- * 4b. add exam id to each question returned. ? PENDING
+ * 4b. add exam id to each question returned. ? NO NEED
  * 6. get all solutions provided question_id and exam_id ? DONE
- * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+ * 5. solutions ? DONE -- need to add field for solutions provider, and updating. DONE
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
- * 9. 
+ * 9. update user info when they comment or post a solution  ? PENDING
+ * 10. comment_history ? DONE
+ * 11. solutions_history ? DONE
+ * 12. voting for solutions ? DONE
+ * 
  * */
 
 
@@ -82,6 +86,7 @@ var assert = require('assert');
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
+
 
 // Keep this for testing on local machine, do not remove. - Humair
 //var uri = 'mongodb://localhost:27017/db';
@@ -482,7 +487,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 /*
  * This function will add a comment to the solutions table
  * Params: sol_id - id of the solution to which to add the comment
- *         fields - [text, by]
+ *         fields - [text, by_username]
  * */
 exports.add_comment = function (sol_id, fields) {
     var Data = {
@@ -534,8 +539,6 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
         .catch(function () {
             console.error(err);
         })
-
-
 };
 
 /*
@@ -580,6 +583,32 @@ exports.add_solution = function (fields, callback) {
         });
     console.log("CHECK 5");
 };
+
+
+
+
+exports.vote_solution = function (sol_id, upORdown , callback) {
+    var vote = (upORdown == "up") ? 1 : -1;
+
+    mongoFactory.getConnection(uri).then(function (db) {
+       var solutions = db.collection('solutions');
+        solutions.updateOne(
+            {_id: ObjectId(sol_id) },
+            { $inc: { votes: vote} }, function (err) {
+                // if (err) throw err;
+                if (err) callback(false, "Error: couldnt update the vote count");
+                else {
+                    callback(true, "Success: updated vote count");
+                }
+        });
+        db.close();
+    }).catch(function (err) {
+        console.log(err);
+    });
+};
+
+
+
 
 /*
  * This function will retrieve all exams in the database given the course code ...

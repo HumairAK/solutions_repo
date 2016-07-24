@@ -134,3 +134,8 @@ dbFile.retrieveFollows("some_user names", function (bool, result) {
 /*dbFile.vote_solution("5792d8a970040378d4e4b389" , "down", function (bool, mssg) {
    console.log(mssg);
 });*/
+
+
+dbFile.search_users("david", function (bool, mssg) {
+    if (mssg.length != 0) console.log(mssg);
+});

@@ -187,7 +187,9 @@
                                 </div>
                             </div>
                             <div class="row" id="profile-comments">
-                                <h3>Comment History</h3>
+
+                                {{# if comments }}
+                                    <h3>Comment History</h3>
                                 <div class="col-sm-10 col-sm-offset-1 prf-tables">
                                 <table class="table">
                                     <thead>
@@ -198,30 +200,23 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>2016-05-01</td>
-                                        <td>Use BFS! Not DFS!</td>
-                                        <td>CSC148 > Winter 2014</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2016-04-05</td>
-                                        <td>Use a heap!</td>
-                                        <td>CSC263 > Fall 2015</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2016-02-30</td>
-                                        <td>I love python!</td>
-                                        <td>CSC108 > Winter 2015</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2016-01-15</td>
-                                        <td>I hate verilog!</td>
-                                        <td>CSC258 > Fall 2015</td>
-                                    </tr>
-                                    </tbody>
+                                    {{# each comments }}
+                                        <tr>
+                                            <td>{{ this.date }}</td>
+                                            <td>{{ this.comment }}</td>
+                                            <td>{{ this.exam_info.course_code }} > {{ this.exam_info.term }}
+                                                {{ this.exam_info.year }}</td>
+                                        </tr>
+                                    {{/each}}
 
                                 </table>
+
+
                                 </div>
+                                {{else}}
+                                    <h3>No Comments.</h3>
+                                {{/if}}
+
                             </div>
 
                             <!-- Date, Edit, Logout (new row) -->

@@ -3,6 +3,8 @@ var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
 var passport = require('passport');
 
+var dbFile  = require("../node_simple.js");
+
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
@@ -14,7 +16,45 @@ router.get('/logout', loggedIn, function (req, res, next) {
 
 /* Render/GET user_profile page */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
-    res.render('user_profile_alt');
+    // GET COMMENTS
+    var comments = [];
+    dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
+        if (!success) {
+            // Need to redirect to an error page instead.
+            console.log("Could not retrieve comments.");
+        } else if (object){
+            comments = object;
+            for (var comment in comments) {
+                dbFile.get_exam_byID(comment.exam_id, function(success, error, data) {
+                    if (success) {
+                        comment.exam_info = {
+                            course_code : data.course_code,
+                            term: data.term,
+                            year : data.year
+                        };
+                    }
+                });
+            }
+
+        }
+    });
+    // For testing purposes, remove later:
+    if (!comments.length) {
+        var obj = {
+            comment: 'Use a heap!',
+            date: '2016-04-05',
+            exam_id: 'some id',
+            exam_info : {
+                course_code : 'CSC263',
+                term: 'Fall',
+                year : 2016
+            }
+        };
+        comments.push(obj);
+        comments.push(obj);
+    }
+
+    res.render('user_profile_alt', {comments : comments});
 });
 
 router.get('/signup', loggedOut, function(req, res, next) {

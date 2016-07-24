@@ -1,0 +1,18 @@
+<main id="solutions-main">
+
+<div class="row" id="solutions-main">
+
+<div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+    <h3><i class="fa fa-wpforms" aria-hidden="true"></i> Add Solution </h3>
+    <form action="/user/submit_solution/{{examID}}/{{qID}}" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="Enter Solution" name="solution">
+        </div>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+</div>
+
+</main>

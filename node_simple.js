@@ -11,13 +11,13 @@
  * 5. solutions ? DONE -- need to add field for solutions provider, and updating. DONE
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
- * 9. update user info when they comment or post a solution  ? PENDING
+ * 9. update user info when they comment or post a solution  ? DONE
  * 10. comment_history ? DONE
  * 11. solutions_history ? DONE
  * 12. voting for solutions ? DONE
  * 13. A search users function ? DONE
  * 14. remove user ? DONE (mostly) wat about sessions?
- * 15. remove course ? PENDING
+ * 15. remove course ? DONE
  * 16.
  * */
 
@@ -71,10 +71,10 @@
 
 /*
 
-NEW COLLECTIONS:
+ NEW COLLECTIONS:
 
-- sessions: stores user session - no need to keep track
-- admins: stores admin name, username and password only. The logins collection will be reserved for user logins.
+ - sessions: stores user session - no need to keep track
+ - admins: stores admin name, username and password only. The logins collection will be reserved for user logins.
 
  */
 
@@ -104,23 +104,59 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 
 //****************************FUNCTIONS************************************************|
 
-/*DONT KNOW IF WE NEED THIS */
+/**
+ * Remvove a course from ONLY the courses table IN CASE of accidental
+ * addition.
+ *
+ * @param {string}   course_code: the course code
+ * @param {function} callback: 2 args: (boolean, <string>),
+ *                             where <boolean> : err ? false : true
+ *                             where <string> : error ? error_mssg : success_mssg
+ */
 exports.remove_course = function (course_code, callback) {
 
+    mongoFactory.getConnection(uri).then(function(db) {
+
+        // fetch the exams table
+        var courses = db.collection('courses');
+
+        courses.createIndex(          // make the following fields searchable
+            {
+                "course_code":"text"
+            });
+        // look for the specific course
+        courses.removeOne( { $text: { $search: course_code } }, function (err, docs) {
+            // if (err) throw err;
+            if (err) callback(false, "Error: Failed to remove the course.");
+
+            else if (docs.deletedCount == 1) {
+                callback(true, "Course was removed successfully from JUST courses");
+                db.close();
+            }
+            else if (docs.deletedCount == 0) {
+                callback(false, "No such user was found");
+                db.close();
+                //console.log("No such exam was found");
+            }
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
 };
 
 
-/*This function will remove the user given user_name from the users table
-* and the logins table. So far.
-* IF there is a sessions table, we need to remove it from there as well.
-* We can leave it in the mail table (involves another user).
-* We can leave it in the solutions table (solution may still be valid).
-*
-* Params: username - <string> the unique user_name for the user
-*         callback - <function> function with 2 args: (boolean, <string>),
-*                       where <boolean> : err ? false : true
-*                       where <string> : error ? error_mssg : success_mssg
-* */
+/**
+ * This function will remove the user given user_name from the users table
+ * and the logins table. So far.
+ * IF there is a sessions table, we need to remove it from there as well.
+ * We can leave it in the mail table (involves another user).
+ * We can leave it in the solutions table (solution may still be valid).
+ *
+ * @param {string}    username: the unique user_name for the user
+ * @param  {function} callback: 2 args: (boolean, <string>),
+ *                              where <boolean> : err ? false : true
+ *                              where <string> : error ? error_mssg : success_mssg
+ */
 exports.remove_user = function (username, callback) {
 
     mongoFactory.getConnection(uri).then(function(db) {
@@ -154,18 +190,18 @@ exports.remove_user = function (username, callback) {
 };
 
 
-/*
-* This function will search through the users table to look for 'token'.
-* It will search the user_name, f_name, l_name fields of the table.
-* Do not worry about case sensitivity. Malicious string is a possibility though.
-* Returns a [] of user object(s)
-*
-* Params: token - <string> the search token (hopefully user info) <string>
-*         callback - <function> with 2 args: (boolean, <string>),
-*                       where <boolean> : err ? false : true
-*                       where <string> can be error message
-*                           OR on success <[Objs]> RESULT
-* */
+/**
+ * This function will search through the users table to look for 'token'.
+ * It will search the user_name, f_name, l_name fields of the table.
+ * Do not worry about case sensitivity. Malicious string is a possibility though.
+ * Returns a [] of user object(s)
+ *
+ * @params {string}   token: search term (hopefully user info)
+ * @params {function} callback: with 2 args: (boolean, <string>),
+ *                              where <boolean> : err ? false : true
+ *                              where <string> can be error message
+ *                              OR on success <[Objs]> RESULT
+ * */
 exports.search_users = function ( token, callback ) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -195,20 +231,20 @@ exports.search_users = function ( token, callback ) {
 };
 
 
-/*
-* This function will add the given exam_id to the given user's followers list.
-* It simply appends the exam_id to the list and nothing else.
-* If the exam_id already exists in the user's followers list, false will be returned, and
-* nothing will be added.
-*
-* Ideally the user shouldnt even be able to attempt to follow an exam twice.
-*
-* Params: user_name - <string> the unique user name for the user
-*         exam_id - <string> the _id of the exam TO follow
-*         callback - <function> with 2 args: (boolean, <string>),
-*                       where <boolean> : err ? false : true
-*                       where <string> : error ? err_message : success_message
-* */
+/**
+ * This function will add the given exam_id to the given user's followers list.
+ * It simply appends the exam_id to the list and nothing else.
+ * If the exam_id already exists in the user's followers list,
+ * false will be returned, andnothing will be added.
+ *
+ * Ideally the user shouldnt even be able to attempt to follow an exam twice.
+ *
+ * @param {string}   user_name: the unique user name for the user
+ * @param {string}   exam_id: the _id of the exam TO follow
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where <boolean> : err ? false : true
+ *                             where <string> : error ? err_messg : success_messg
+ **/
 exports.followExam = function (user_name, exam_id, callback) {
 
     exports.retrieveFollows(user_name, function (bool, result) {
@@ -251,16 +287,16 @@ exports.followExam = function (user_name, exam_id, callback) {
 };
 
 
-/*
-* This function will return a list of followers of user i.e. a list of
-* exam_ids that the user has chosen to follow
-*
-* Params: user_name - the unique user name for the user
-*         callback - function with 2 args: (boolean, <string>),
-*                       where boolean is false if err OR true if no error
-*                       where <string> can be error message
-*                           OR on success <[<strings>]> RESULT
-* */
+/**
+ * This function will return a list of followers of user i.e. a list of
+ * exam_ids that the user has chosen to follow
+ *
+ * @param {string}   user_name: the unique user name for the user
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where boolean : err ? false : true
+ *                             where <string> can be error message
+ *                             OR on success <[<strings>]> RESULT
+ **/
 exports.retrieveFollows = function (user_name, callback) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -283,17 +319,17 @@ exports.retrieveFollows = function (user_name, callback) {
 };
 
 
-/*
-* This function will retrieve ALL the comments a user has ever made.
-* It returns an array containing objects of the form: {exam_id, comment, date}.
-* Note: a comment should only exist IF a solution exists.
-*
-* Params: user_name - the unique user name for the user
-*         callback - function with 2 args: (boolean, <string>),
-*                       where boolean is false if err OR true if no error
-*                       where <string> can be error message
-*                           OR on success <[Objs]> RESULT
-* */
+/**
+ * This function will retrieve ALL the comments a user has ever made.
+ * It returns an array containing objects of the form: {exam_id, comment, date}.
+ * Note: a comment should only exist IF a solution exists.
+ *
+ * @param {string}   user_name: the unique user name for the user
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where boolean : err ? false : true
+ *                             where <string> can be error message
+ *                             OR on success <[Objs]> RESULT
+ **/
 exports.retrieve_userComments_history = function (username, callback) {
 
     // get a connection
@@ -332,16 +368,16 @@ exports.retrieve_userComments_history = function (username, callback) {
 };
 
 
-/* We CAN use this. IF we do, we should remove the comments_count field from a user
-* IF we dont wanna go that route, need to update these fields whenever they are altered
-* by the user manually.
-*
-* Params: user_name - <string> the unique user name for the user
-*         callback - <function> with 2 args: (boolean, <string>),
-*                       where boolean is false if err OR true if no error
-*                       where <string> can be error message
-*                           OR on success <int> RESULT
-* */
+/** We CAN use this. IF we do, we should remove the comments_count field from a user
+ * IF we dont wanna go that route, need to update these fields whenever they are altered
+ * by the user manually.
+ *
+ * @param {string}   user_name: the unique user name for the user
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where boolean : err ? false : true
+ *                             where <string> can be error message
+ *                             OR on success <int> RESULT
+ **/
 exports.retrieve_userComments_count = function (username, callback) {
 
     exports.retrieve_userComments_history(username, function (bool, results) {
@@ -355,16 +391,16 @@ exports.retrieve_userComments_count = function (username, callback) {
 };
 
 
-/*
+/**
  * This function will retrieve ALL the solutions a user has ever provided.
  * It returns an array containing objects of the solution form.
  *
- * Params: user_name - <string> the unique user name for the user
- *         callback - <function> with 2 args: (boolean, <string>),
- *                       where boolean is false if err OR true if no error
- *                       where <string> can be error message
- *                          OR on success <[Objs]> RESULT
- * */
+ * @param {string}   user_name: the unique user name for the user
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where boolean : err ? false : true
+ *                             where <string> can be error message
+ *                             OR on success <[Objs]> RESULT
+ **/
 exports.retrieve_userSolutions_history = function (username, callback) {
 
     // get a connection
@@ -386,16 +422,16 @@ exports.retrieve_userSolutions_history = function (username, callback) {
 };
 
 
-/* We CAN use this. IF we do, we should remove the solutions_count field from a user
+/** We CAN use this. IF we do, we should remove the solutions_count field from a user
  * IF we dont wanna go that route, need to update these fields whenever they are altered
  * by the user manually.
  *
- * Params: user_name - <string> the unique user name for the user
- *         callback - <function> function with 2 args: (boolean, <string>),
- *                      where boolean is false if err OR true if no error
- *                      where <string> can be error message
- *                          OR on success <int> RESULT
- * */
+ * @param {string}   user_name: the unique user name for the user
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where boolean is false if err OR true if no error
+ *                             where <string> can be error message
+ *                             OR on success <int> RESULT
+ **/
 exports.retrieve_userSolutions_count = function (username, callback) {
 
     exports.retrieve_userSolutions_history(username, function (bool, results) {
@@ -409,16 +445,17 @@ exports.retrieve_userSolutions_count = function (username, callback) {
 };
 
 
-/*
+/**
  * This function creates and adds a user to users table.
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
- * Params: fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
- *          callbackUser - <function> of the form (<boolean1>, <boolean2>, <string>)
- *                          where, <boolean1> -
- *                                 <boolean2> -
- *                                 <string> - error ? error_mssg : success_mssg
- * */
+ *
+ * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num]
+ * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>)
+ *                                  where, <boolean1> -
+ *                                   <boolean2> -
+ *                                   <string> - error ? error_mssg : success_mssg
+ **/
 exports.add_user = function (fields, callbackUser) {
     console.log("inside add_user");
     // create a user object
@@ -498,11 +535,12 @@ exports.add_user = function (fields, callbackUser) {
 };
 
 
-/*
+/**
  * This (helper) function returns true IFF user_name already exists in the database
- * Params: user_name - <string> the user name
- *         callback - <function> of the arg (bool)
- *                      where <bool> : found ? true : false
+ *
+ * @param {string}   user_name: the user name
+ * @param {function} callback: of the arg (bool)
+ *                              where <bool> : found ? true : false
  * */
 exports.find_user_name = function (user_name, callback) {
     // make a connection
@@ -527,16 +565,16 @@ exports.find_user_name = function (user_name, callback) {
 };
 
 
-/*
-* This function retrieves the user object given their user_name
-*
-* Params: username - <string> the user name
-*         callback - <function> with args (<bool1>,<bool2>,<string1>,<string2>)
-*                       where, <bool1> : success ? true : false
-*                       where, <bool2> : error ? true : false
-*                       where, <string1> : success ? {Obj} : null
-*                       where, <string2> : success ? success_mssg : err_mssg
-* */
+/**
+ * This function retrieves the user object given their user_name
+ *
+ * @param {string}   username: the user name
+ * @param {function} callback: with args (<bool1>,<bool2>,<string1>,<string2>)
+ *                            where, <bool1> : success ? true : false
+ *                            where, <bool2> : error ? true : false
+ *                            where, <string1> : success ? {Obj} : null
+ *                            where, <string2> : success ? success_mssg : err_mssg
+ * */
 exports.retrieveUser = function (username, callback) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -562,24 +600,21 @@ exports.retrieveUser = function (username, callback) {
 }
 
 
-/*
- Returns the hashed password given the username. Assume username exists. Used for both admins and users.
- retrievePassword(String, boolean, function())
- */
-/*
-* Returns the hashed password given the username. Assume username exists.
-* Used for both admins and users.
-*
-* Params: username - <string> the user name
-*         callback - <function> with args (<bool>,<string>,<string>)
-*                       where, <bool> : success ? true : false
-*                       where, <string> : success ? "pwd" : null
- *                      where, <string> : success ? success_mssg : err_mssg
-* */
+
+/**
+ * Returns the hashed password given the username. Assume username exists.
+ * Used for both admins and users.
+ *
+ * @param {string}   username: the user name
+ * @param {function} callback: with args (<bool>,<string>,<string>)
+ *                           where, <bool> : success ? true : false
+ *                           where, <string> : success ? "pwd" : null
+ *                           where, <string> : success ? success_mssg : err_mssg
+ * */
 exports.retrievePassword = function (username, callback) {
     mongoFactory.getConnection(uri).then(function (db) {
 
-         var collection = db.collection('logins');
+        var collection = db.collection('logins');
 
         collection.find({user_name: username}).toArray(function(err, result) {
             if (err) {
@@ -597,11 +632,11 @@ exports.retrievePassword = function (username, callback) {
 }
 
 
-/*
+/**
  * This (helper) function returns true IFF email already exists in the database
  *
- * Params: email - <string> unique email of the user
- *         callback - <bool> : found ? true : false
+ * @param {string}   email: unique email of the user
+ * @param {function} callback: <bool> : found ? true : false
  * */
 exports.find_user = function (email, callback) {
     // make a connection
@@ -627,14 +662,14 @@ exports.find_user = function (email, callback) {
 };
 
 
-/*
-* This function returns an array where each element contains info for a particular question
-* such as the question number (_id), number of solutions (count), and number of comments
-* (comments). [ {_id,count,comments}, {} , ...]
-*
-* Params: exam_id - <string> the exam_id of which the info is required
-*         callback - <function> with arg (<[Objs]>) - RESULT
-* */
+/**
+ * This function returns an array where each element contains info for a particular question
+ * such as the question number (_id), number of solutions (count), and number of comments
+ * (comments). [ {_id,count,comments}, {} , ...]
+ *
+ * @param {string}   exam_id: the exam_id of which the info is required
+ * @param {function} callback: with arg (<[Objs]>) - RESULT
+ * */
 exports.get_exam_info_by_ID = function (exam_id, callback) {
 
     mongoFactory.getConnection(uri)
@@ -679,10 +714,15 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 };
 
 
-/*
+/**
+ * CALLBACK ADDED RECENTLY, BEWARE WHEN CALLING IT
  * This function will add a comment to the solutions table
- * Params: sol_id - <string> id of the solution to which to add the comment
- *         fields - <[text, by_username]>
+ *
+ * @param {string}   sol_id: id of the solution to which to add the comment
+ * @param {string[]} fields: <[text, by_username]>
+ * @param {function} callback: with args (<bool>,<string>)
+ *                              where <bool> : err ? false : true
+ *                              where <string> : err ? err_mssg : success_mssg
  * */
 exports.add_comment = function (sol_id, fields, serverCallback) {
     var Data = {
@@ -696,15 +736,24 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
 
             // find the solutions table
             var solutions = db.collection('solutions');
+            var users = db.collection('users');
             // insert data into table
             solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
                 if (err) {
-                    ServerCallback(false, "Error: Solution found, but could not update comments.");
+                    serverCallback(false, "Error: Solution found, but could not update comments.");
                     throw err;
                 }
                 else {
-                    serverCallback(true, "Comment added successfully");
-                    console.log("comment added");
+                    users.updateOne( { user_name: fields[1] }, { $inc: { comments: 1} }, function (err) {
+                        if (err) callback(false, "Error: Some error occured while updating user info");
+                        // if (err) throw err;
+                        else {
+                            callback(true, "Success: comment added successfully");
+                            // console.log("user updated");
+
+                        }
+                        db.close();
+                    });
                 }
             });
 
@@ -716,13 +765,13 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
 };
 
 
-/*
-* This function will get all the solution for a given exam_id and q_num
-*
-* Params: exam_id - <string> - exam_id for which the info is required.
-*         q_num - <string> - the question number for which solutions are required.
-*         callback - <[Objs]> - RESULT
-* */
+/**
+ * This function will get all the solution for a given exam_id and q_num
+ *
+ * @param {string}   exam_id: exam_id for which the info is required.
+ * @param {int}      q_num: the question number for which solutions are required.
+ * @param {function} callback: <[Objs]> - RESULT
+ * */
 exports.get_all_solutions = function (exam_id, q_num, callback) {
     mongoFactory.getConnection(uri)
         .then(function (db) {
@@ -749,14 +798,15 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
 };
 
 
-/*
-* This function will add a solution to the solutions table in the database.
-*
-* Params: fields - [exam_id , question_id, solution text, user_name]
-*         callback - <function> with args (bool, string)
-*                       where, <bool>: err ? false : true
-*                       where, <string>: err ? err_mssg : success_mssg
-* */
+/**
+ * CALLBACK ADDED RECENTLY, BEWARE WHEN CALLING IT
+ * This function will add a solution to the solutions table in the database.
+ *
+ * @param {string[]} fields: [exam_id , question_id, solution text, user_name]
+ * @param {function} callback: with args (bool, string)
+ *                       where, <bool>: err ? false : true
+ *                       where, <string>: err ? err_mssg : success_mssg
+ * */
 exports.add_solution = function (fields, callback) {
     var Data = {
         exam_id: fields[0],
@@ -768,38 +818,42 @@ exports.add_solution = function (fields, callback) {
     };
 
     // establish a connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
+    mongoFactory.getConnection(uri).then(function(db) {
 
-            // find the solutions table
-            var solutions = db.collection('solutions');
-            // insert data into table
-            solutions.insert(Data, function(err) {
-                if (err) callback(false , "Error: Failed to add the solution");
-                else {
-
-                    // console.log("solution added");
-                    callback(true, "Success: added solution successfully!");
+        // find the solutions table
+        var solutions = db.collection('solutions');
+        var users = db.collection('users');
+        // insert data into table
+        solutions.insert(Data, function(err) {
+            if (err) callback(false , "Error: Failed to add the solution");
+            else {
+                users.updateOne( { user_name: fields[3] }, { $inc: { answered: 1} }, function (err) {
+                    if (err) callback(false, "Error: Failed to update the user solution count");
+                    else {
+                        // console.log("solution added");
+                        callback(true, "Success: added solution successfully!");
+                    }
                     db.close(function (err) {   // close the connection when done
                         if (err) throw err;
                     });
-
-                }
-            });
-        })
-        .catch(function(err) {
-            console.error(err);
+                });
+            }
         });
+
+
+    }).catch(function(err) {
+        console.error(err);
+    });
 
 };
 
 
-/*
+/**
  * This function will update the vote count of a solution.
  *
- * Params: sol_id - <string> the sol_id of the solution to vote
- *         upORdown - <string> : up_vote ? "up" : "down"
- *         callback - <function> with args (bool, string)
+ * @param {string}   sol_id: the sol_id of the solution to vote
+ * @param {string}   upORdown: <string> : up_vote ? "up" : "down"
+ * @param {function} callback: with args (bool, string)
  *                       where, <bool>: err ? false : true
  *                       where, <string>: err ? err_mssg : success_mssg
  * */
@@ -807,7 +861,7 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
     var vote = (upORdown == "up") ? 1 : -1;
 
     mongoFactory.getConnection(uri).then(function (db) {
-       var solutions = db.collection('solutions');
+        var solutions = db.collection('solutions');
         solutions.updateOne(
             {_id: ObjectId(sol_id) },
             { $inc: { votes: vote} }, function (err) {
@@ -816,7 +870,7 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
                 else {
                     callback(true, "Success: updated vote count");
                 }
-        });
+            });
         db.close();
     }).catch(function (err) {
         console.log(err);
@@ -824,12 +878,12 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
 };
 
 
-/*
+/**
  * This function will retrieve all exams in the database given the course code ...
  * ... ordered by the year of the exam.
  *
- * Params: course_code - <string> the course code to get all the exams for
- *         callback - <function> with args (<string>)
+ * @param {string}   course_code: the course code to get all the exams for
+ * @param {function} callback: with args (<string>)
  *                      where on success is <[Objs]>
  * */
 exports.get_all_exams = function (course_code, callback) {
@@ -882,21 +936,21 @@ exports.get_all_exams = function (course_code, callback) {
 };
 
 
-/*
-* This function will add an exam to the database UNLESS the exams already exists.
-* If the exams table is empty, this will create one and then add the data.
-* Note: this assumes that (course_code + year + term + type) together form a unique exam.
-* i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
-*
-* Params: fields - an array of format ["course_code", year, "term",
-*                 ["instructor1",...,"instructor n"], page_count, question_count
-*                 "upload_date", "user_name"]
-*         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
-*         serverCallback - <function> with args (<bool>, <string>)
-*                      where <bool> : err ? false : true
-*                      where <string> : err ? err_mssg : success_mssg
-*
-* */
+/**
+ * This function will add an exam to the database UNLESS the exams already exists.
+ * If the exams table is empty, this will create one and then add the data.
+ * Note: this assumes that (course_code + year + term + type) together form a unique exam.
+ * i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
+ *
+ * @param {string[]} fields: an array of format ["course_code", year, "term",
+ *                       ["instructor1",...,"instructor n"], page_count, question_count
+ *                       "upload_date", "user_name"]
+ * @param {string[]} questions_array: a array by format ["q_1", "q_2", ... , "q_question_count"]
+ * @param {function} serverCallback: with args (<bool>, <string>)
+ *                      where <bool> : err ? false : true
+ *                      where <string> : err ? err_mssg : success_mssg
+ *
+ * */
 exports.add_exam = function (fields, questions_array, serverCallback) {
 
     // construct an exam object
@@ -964,13 +1018,13 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
 };
 
 
-/*
+/**
  * This function will return TRUE if the provided exam info already exists in the database
  * OR FALSE if it does not exist in the database.
  *
- * Params: fields - an array of format ["course_code", year, "term", "type"]
- *         serverCallback - <function> ...
- *         callback - <function> with args (<bool>, ...)
+ * @param {string[]} fields: an array of format ["course_code", year, "term", "type"]
+ * @param {fucntion} serverCallback: ...
+ * @param {function} callback: with args (<bool>, ...)
  *                      where <bool> : found ? true : false
  * */
 exports.find_exam = function (fields, serverCallback, callback) {
@@ -1021,14 +1075,14 @@ exports.find_exam = function (fields, serverCallback, callback) {
 };
 
 
-/*
+/**
  * This function will add a course to the database UNLESS the course already exists.
  * If the course table is empty, this will create one and then add the data.
  * Note: this assumes that (course_codes) are unique.
  *
- * Params: course_code - <string> the course code
- *         title - <string> the course description
- *         serverCallback - <function> with args (<bool>, <string>)
+ * @param {string}   course_code: the course code
+ * @param {string}   title: the course description
+ * @param {function} serverCallback: with args (<bool>, <string>)
  *                          where <bool> : err ? false : true
  *                          where <string> : err ? err_mssg : success_mssg
  * */
@@ -1071,12 +1125,12 @@ exports.add_course = function (course_code, title, serverCallback) {
 };
 
 
-/*
+/**
  * This function will return TRUE if the provided course info already exists in the database
  * OR FALSE if it does not exist in the database.
  *
- * Params: course_code - <string> the course code
- *         callback - <function> with args (<bool>, <string>)
+ * @param {string}   course_code: the course code
+ * @param {function} callback: with args (<bool>, <string>)
  *                          where <bool> : found ? true : false
  *                          where <string> : found ? null : [{Obj}]
  * */
@@ -1118,11 +1172,12 @@ exports.find_course = function (course_code, callback) {
 };
 
 
-/*
- * This function will remove the exam from the database given the combination of (course_code+ year +  term + type)
+/**
+ * This function will remove the exam from the database given the combination
+ * of (course_code+ year +  term + type)
  *
- * Params: fields - an array of format ["course_code", year, "term", "type"]
- *         serverCallback - <function> with args (<bool>, <string>)
+ * @param {string[]} fields: an array of format ["course_code", year, "term", "type"]
+ * @param {function} serverCallback: with args (<bool>, <string>)
  *                              where <bool> : success ? true : false
  *                              where <string> : success ? success_mssg ? err_mssg
  *
@@ -1171,15 +1226,15 @@ exports.remove_exam = function (fields, serverCallback) {
 };
 
 
-/*
-* This function will get the specific exam object given its ID.
-*
-* Params: id - <string> the exma_id
-*         callback - <function> with args (<bool>,<bool>,<string>)
-*                       where, <bool> : success ? true : false
-*                       where, <bool> : error ? true : false
-*                       where, <string> : success ? {Obj}
-* */
+/**
+ * This function will get the specific exam object given its ID.
+ *
+ * @param {string}   id: the exma_id
+ * @param {function} callback: with args (<bool>,<bool>,<string>)
+ *                       where, <bool> : success ? true : false
+ *                       where, <bool> : error ? true : false
+ *                       where, <string> : success ? {Obj}
+ * */
 exports.get_exam_byID = function (id, callback) {
 
     // establish a connection
@@ -1222,29 +1277,29 @@ exports.addAdmin = function (admin_data, callback) {
 
     // Check if the admin username already exists. Also check for user username. If it does, then we don't add the admin_data and return a message.
     exports.adminExists( admin_data.username , function (error, exists, data, message) {
-            console.log("adminExists: " + message);
-            if (!exists && !error) {
-                mongoFactory.getConnection(uri).then(function (db) {
+        console.log("adminExists: " + message);
+        if (!exists && !error) {
+            mongoFactory.getConnection(uri).then(function (db) {
 
-                    var admins = db.collection('admins');
+                var admins = db.collection('admins');
 
-                    admins.insertOne( admin_data, function (err) {
-                        if (err) {
-                            callback(false, true, message);
-                            db.close();
-                        }
-                        else {
-                            callback(true, false, "Admin added.");
-                            db.close();
-                        }
-                    });
+                admins.insertOne( admin_data, function (err) {
+                    if (err) {
+                        callback(false, true, message);
+                        db.close();
+                    }
+                    else {
+                        callback(true, false, "Admin added.");
+                        db.close();
+                    }
+                });
 
-                }).catch(function (err) {
-                    callbackUser(false, true,  "Unable to connect.");
-                })
-            } else {
-                callback(error, exists, message);
-            }
+            }).catch(function (err) {
+                callbackUser(false, true,  "Unable to connect.");
+            })
+        } else {
+            callback(error, exists, message);
+        }
     });
 
 };
@@ -1271,9 +1326,9 @@ exports.adminExists = function (username, callback) {
             }
         });
     })
-    .catch(function (err) {
-        callback(true, false, "Error: could not connect to the database.");
-    })
+        .catch(function (err) {
+            callback(true, false, "Error: could not connect to the database.");
+        })
 };
 
 
@@ -1365,17 +1420,17 @@ exports.findUserByID = function (id, callback) {
  * userObj = {fs: fs, ls: ls, email: email, username: username, pass_hash: pass_hash, univ: univ, dept: dept}
  *
  *
-exports.addUser = function (userObj) {
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
-            var users = db.collection('users').insertOne(userObj, function (err, result) {
-                assert.equal(null, error);
-                console.log("User inserted");
-                db.close();
-            });
+ exports.addUser = function (userObj) {
+ mongoFactory.getConnection(uri)
+ .then(function(db) {
+ var users = db.collection('users').insertOne(userObj, function (err, result) {
+ assert.equal(null, error);
+ console.log("User inserted");
+ db.close();
+ });
 
-        });
-} */
+ });
+ } */
 
 
 

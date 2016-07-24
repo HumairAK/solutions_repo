@@ -79,6 +79,59 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     res.render('user_profile_alt', {comments : comments, inbox: inbox});
 });
 
+/* Adds a solution into the database, redirect to exam/question/solution page */
+router.post('/submit_solution/:examID/:qID', function(req,res){
+    // Get required fields from body
+    // Populate this data
+    /* var Data = {
+     exam_id: fields[0],
+     q_id: fields[1],
+     text: fields[2],
+     votes: 0,
+     comments: [],
+     author: fields[3]
+     };*/
+
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+
+    var text = req.body.solution,
+        votes = 0,
+        comments = [],
+        author = req.user.user_name;
+
+    var fields = [examID, qID, text, votes, comments, author];
+    console.log(fields);
+    // Add to database
+    dbFile.add_solution(fields, function(addedSolution, statusMsg){
+        if(addedSolution){
+            console.log("Success!");
+        }else{
+            console.log("Failed to add solution!");
+        }
+        console.log(statusMsg);
+
+        //Redirect to solutions page again
+        res.redirect('/solutions/' + examID + '/' + qID);
+        
+    });
+
+});
+
+/* Routed here from Solutions page (add solution button)
+*  Renders add_solution page for response.*/
+router.get('/add_solution/:examID/:qID', function (req, res, next) {
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+
+    // Must be a logged in user to access
+    if(req.isAuthenticated()){
+        res.render('add_solutions', {csrfToken: req.csrfToken(), examID: examID, qID: qID});
+    } else {
+        res.redirect('/'); // Change this to go back to the solutions page
+    }
+
+});
 
 router.get('/signup', loggedOut, function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});

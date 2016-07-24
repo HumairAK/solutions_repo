@@ -6,12 +6,16 @@
  * 2. add upload date and user name  ? DONE
  * 3. remove exam ? DONE
  * 4a. get all questions for a given exam_id ? DONE
- * 4b. add exam id to each question returned. ? PENDING
+ * 4b. add exam id to each question returned. ? NO NEED
  * 6. get all solutions provided question_id and exam_id ? DONE
- * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+ * 5. solutions ? DONE -- need to add field for solutions provider, and updating. DONE
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
  * 9. update user info when they comment or post a solution  ? PENDING
+ * 10. comment_history ? DONE
+ * 11. solutions_history ? DONE
+ * 12. voting for solutions ? DONE
+ * 
  * */
 
 
@@ -41,10 +45,10 @@
 // |..........|
 
 
-// |================================solutions============================================|
-// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|comments|
-// |==========================|============================|=====|========|=====|========|
-// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}] |
+// |================================solutions========================================================|
+// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|comments   | author |
+// |==========================|============================|=====|========|=====|===========|========|
+// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}]    |  joe   |
 // |..........|
 
 // |========================================users===============================================================================|
@@ -525,8 +529,6 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
             ).toArray( function (err, docs) {
                 if (err) throw err;
                 else {
-                    console.log(docs);
-
                     callback(docs);
                 }
             });
@@ -565,11 +567,13 @@ exports.add_solution = function (fields, callback) {
             solutions.insert(Data, function(err) {
                 if (err) callback(false , "Error: Failed to add the solution");
                 else {
+
                     // console.log("solution added");
-                    callback(true, "Success: added exam successfully!");
+                    callback(true, "Success: added solution successfully!");
                     db.close(function (err) {   // close the connection when done
                         if (err) throw err;
                     });
+
                 }
             });
         })

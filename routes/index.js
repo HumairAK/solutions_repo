@@ -1,6 +1,9 @@
 var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
+var csrf = require('csurf'); // Cross-Site Request Forgery prevention
+var csrfProtection = csrf();
+router.use(csrfProtection); // router is protected
 
 // Remove later
 var passport_file = require('../config/passport.js');
@@ -158,6 +161,7 @@ router.get('/questions/:exam_id', function (req,res) {
     *               text: "answer"
     *               votes: 1 (int)
     *               comments: [{}.{}] (just going to be string for now i think)
+    *               author : "text"
     *           }
     *           {
     *                _id: ...
@@ -166,18 +170,31 @@ router.get('/questions/:exam_id', function (req,res) {
     *               text: ..
     *               votes: ..
                     comments: ..
+                    author : "text"
     *           
     *           }
-    *           ]*/
+    *           ]
+    *            "comments": []
+    *
+     A comment:
+     {
+     "text": "this is asdfasdf",
+     "date": {"$date": "2016-07-23T03:55:34.906Z"},
+     "by": "some_user name"
+     },
+    *
+    */
+
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
-    dbFile.get_all_solutions(req.params.exam_id,req.params.q_num,function (solutions) {
-        res.render('user_solutions', {query: solutions});
+    var examID = req.params.exam_id;
+    var qID = req.params.q_num;
+    dbFile.get_all_solutions(examID, qID, function (solutions) {
+        solutions.forEach(function(soln){
+            soln.commentCount = soln.comments.length;
+        });
+        res.render('user_solutions', {query: solutions, examID: examID, qID: qID});
         console.log(solutions);
     });
-});
-
-router.get('/add_solution',function (req, res) {
-    redirect('/add_solutions_page');
 });
 
 router.post('/add_solutions/submit', function (req, res) {

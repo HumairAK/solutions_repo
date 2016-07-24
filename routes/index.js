@@ -11,7 +11,7 @@ var bcrypt = require('bcrypt-nodejs');
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
-    addFirstAdmin();
+    //addFirstAdmin();
     res.render('index');
     req.session.errors = null;
     req.session.success = null;
@@ -75,7 +75,6 @@ router.get('/exams/:id', function(req, res, next) {
                 minExamInfoArray.push(minExamInfo);
             }
         }
-        console.log(minExamInfoArray);
         res.render('exams',  {query: req.params.id, result: minExamInfoArray});
     });
 });
@@ -137,9 +136,6 @@ router.get('/questions/:exam_id', function (req,res) {
             };
             res.render('questions', {query: qList, examInfo: examInfo});
         });
-
-
-        console.log(exam);
     });
 
     /*dbFile.get_exam_info_by_ID(examID, function (questions) {
@@ -193,7 +189,6 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
             soln.commentCount = soln.comments.length;
         });
         res.render('user_solutions', {query: solutions, examID: examID, qID: qID});
-        console.log(solutions);
     });
 });
 
@@ -204,11 +199,11 @@ router.post('/add_solutions/submit', function (req, res) {
 /**** Helpers ****/
 
 function addFirstAdmin() {
-    console.log("Inside addFirstAdmin()");
+    //console.log("Inside addFirstAdmin()");
     //admin_data = {fname: firstname, lname: lastname, username: username, password: password}
     var password = 'lamptable';
     var hash_pwd = passport_file.encryptPassword(password);
-    console.log("Admin hashed: " + hash_pwd);
+    //console.log("Admin hashed: " + hash_pwd);
     var admin_data = {
         fname: 'Admin',
         lname: 'Admin',

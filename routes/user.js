@@ -91,7 +91,7 @@ router.post('/submit_solution/:examID/:qID', function(req,res){
 
         //Redirect to solutions page again
         res.redirect('/solutions/' + examID + '/' + qID);
-        
+
     });
 
 });

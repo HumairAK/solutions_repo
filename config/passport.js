@@ -7,19 +7,38 @@ var exports = module.exports = {};
 
 var encryptPassword = exports.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
-}
+};
 
 var comparePassword = function (password1, password2) {
     return bcrypt.compareSync(password1, password2);
-}
+};
+
 
 passport.serializeUser(function (user, done) {
+    console.log("In serialize User");
+    console.log(user);
     done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
+    console.log("In de-serialize User: " + user.email);
     done(null, user);
 });
+
+/*
+passport.serializeUser(function (user, done) {
+    console.log("In serialize User");
+    console.log(user);
+    done(null, user._id);
+});
+
+
+passport.deserializeUser(function(id, done) {
+    console.log("In de-serialize User");
+    dbFile.findUserByID(id, function(err, user){
+        done(err, user);
+    });
+});*/
 
 
 

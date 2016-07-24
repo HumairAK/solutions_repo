@@ -6,12 +6,16 @@
  * 2. add upload date and user name  ? DONE
  * 3. remove exam ? DONE
  * 4a. get all questions for a given exam_id ? DONE
- * 4b. add exam id to each question returned. ? PENDING
+ * 4b. add exam id to each question returned. ? NO NEED
  * 6. get all solutions provided question_id and exam_id ? DONE
- * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
+ * 5. solutions ? DONE -- need to add field for solutions provider, and updating. DONE
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
  * 9. update user info when they comment or post a solution  ? PENDING
+ * 10. comment_history ? DONE
+ * 11. solutions_history ? DONE
+ * 12. voting for solutions ? DONE
+ * 
  * */
 
 

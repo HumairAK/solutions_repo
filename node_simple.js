@@ -15,8 +15,10 @@
  * 10. comment_history ? DONE
  * 11. solutions_history ? DONE
  * 12. voting for solutions ? DONE
- * 23. A search users function ? DONE
- * 
+ * 13. A search users function ? DONE
+ * 14. remove user ? DONE (mostly) wat about sessions?
+ * 15. remove course ? PENDING
+ * 16.
  * */
 
 
@@ -28,6 +30,9 @@
  * 3. solutions
  * 4. users
  * 5. logins
+ * 6. admins
+ * 7. sessions
+ * 8. mail
  *
  * */
 
@@ -99,6 +104,68 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 
 //****************************FUNCTIONS************************************************|
 
+/*DONT KNOW IF WE NEED THIS */
+exports.remove_course = function (course_code, callback) {
+
+};
+
+
+/*This function will remove the user given user_name from the users table
+* and the logins table. So far.
+* IF there is a sessions table, we need to remove it from there as well.
+* We can leave it in the mail table (involves another user).
+* We can leave it in the solutions table (solution may still be valid).
+*
+* Params: username - <string> the unique user_name for the user
+*         callback - <function> function with 2 args: (boolean, <string>),
+*                       where <boolean> : err ? false : true
+*                       where <string> : error ? error_mssg : success_mssg
+* */
+exports.remove_user = function (username, callback) {
+
+    mongoFactory.getConnection(uri).then(function(db) {
+
+        // fetch the exams table
+        var users = db.collection('users');
+        var logins = db.collection('logins');
+
+        // look for the specific user
+        users.removeOne( { user_name: username }, function (err, docs) {
+            if (err) throw err;
+            else if (docs.deletedCount == 1) {
+                // now remove it from logins ....
+                logins.removeOne( { user_name: username }, function (err, result) {
+                    if (err) throw err;
+                    else if (result.deletedCount == 1) {
+                        callback(true, "User was removed successfully from both tables");
+                        db.close();
+                    }
+                });
+            }
+            else if (docs.deletedCount == 0) {
+                callback(false, "No such user was found");
+                db.close();
+                //console.log("No such exam was found");
+            }
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
+};
+
+
+/*
+* This function will search through the users table to look for 'token'.
+* It will search the user_name, f_name, l_name fields of the table.
+* Do not worry about case sensitivity. Malicious string is a possibility though.
+* Returns a [] of user object(s)
+*
+* Params: token - <string> the search token (hopefully user info) <string>
+*         callback - <function> with 2 args: (boolean, <string>),
+*                       where <boolean> : err ? false : true
+*                       where <string> can be error message
+*                           OR on success <[Objs]> RESULT
+* */
 exports.search_users = function ( token, callback ) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -113,7 +180,7 @@ exports.search_users = function ( token, callback ) {
             { $text: { $search: token } },
             { score: { $meta: "textScore" } }
         ).sort( { score: { $meta:"textScore" } } ).toArray(function (err, docs) {
-            if (err) callback(false, "Error: some error while searhing");
+            if (err) callback(false, "Error: some error while searching");
             else {
                 // console.log(docs);
                 callback(true, docs);
@@ -128,6 +195,20 @@ exports.search_users = function ( token, callback ) {
 };
 
 
+/*
+* This function will add the given exam_id to the given user's followers list.
+* It simply appends the exam_id to the list and nothing else.
+* If the exam_id already exists in the user's followers list, false will be returned, and
+* nothing will be added.
+*
+* Ideally the user shouldnt even be able to attempt to follow an exam twice.
+*
+* Params: user_name - <string> the unique user name for the user
+*         exam_id - <string> the _id of the exam TO follow
+*         callback - <function> with 2 args: (boolean, <string>),
+*                       where <boolean> : err ? false : true
+*                       where <string> : error ? err_message : success_message
+* */
 exports.followExam = function (user_name, exam_id, callback) {
 
     exports.retrieveFollows(user_name, function (bool, result) {
@@ -170,6 +251,16 @@ exports.followExam = function (user_name, exam_id, callback) {
 };
 
 
+/*
+* This function will return a list of followers of user i.e. a list of
+* exam_ids that the user has chosen to follow
+*
+* Params: user_name - the unique user name for the user
+*         callback - function with 2 args: (boolean, <string>),
+*                       where boolean is false if err OR true if no error
+*                       where <string> can be error message
+*                           OR on success <[<strings>]> RESULT
+* */
 exports.retrieveFollows = function (user_name, callback) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -191,11 +282,18 @@ exports.retrieveFollows = function (user_name, callback) {
     });
 };
 
-// will add comments ASAP
-/*  callback(success, data/message) => callback(boolean, object/String);
- *
- *
- */
+
+/*
+* This function will retrieve ALL the comments a user has ever made.
+* It returns an array containing objects of the form: {exam_id, comment, date}.
+* Note: a comment should only exist IF a solution exists.
+*
+* Params: user_name - the unique user name for the user
+*         callback - function with 2 args: (boolean, <string>),
+*                       where boolean is false if err OR true if no error
+*                       where <string> can be error message
+*                           OR on success <[Objs]> RESULT
+* */
 exports.retrieve_userComments_history = function (username, callback) {
 
     // get a connection
@@ -233,6 +331,17 @@ exports.retrieve_userComments_history = function (username, callback) {
     })
 };
 
+
+/* We CAN use this. IF we do, we should remove the comments_count field from a user
+* IF we dont wanna go that route, need to update these fields whenever they are altered
+* by the user manually.
+*
+* Params: user_name - <string> the unique user name for the user
+*         callback - <function> with 2 args: (boolean, <string>),
+*                       where boolean is false if err OR true if no error
+*                       where <string> can be error message
+*                           OR on success <int> RESULT
+* */
 exports.retrieve_userComments_count = function (username, callback) {
 
     exports.retrieve_userComments_history(username, function (bool, results) {
@@ -245,6 +354,17 @@ exports.retrieve_userComments_count = function (username, callback) {
 
 };
 
+
+/*
+ * This function will retrieve ALL the solutions a user has ever provided.
+ * It returns an array containing objects of the solution form.
+ *
+ * Params: user_name - <string> the unique user name for the user
+ *         callback - <function> with 2 args: (boolean, <string>),
+ *                       where boolean is false if err OR true if no error
+ *                       where <string> can be error message
+ *                          OR on success <[Objs]> RESULT
+ * */
 exports.retrieve_userSolutions_history = function (username, callback) {
 
     // get a connection
@@ -265,6 +385,17 @@ exports.retrieve_userSolutions_history = function (username, callback) {
     })
 };
 
+
+/* We CAN use this. IF we do, we should remove the solutions_count field from a user
+ * IF we dont wanna go that route, need to update these fields whenever they are altered
+ * by the user manually.
+ *
+ * Params: user_name - <string> the unique user name for the user
+ *         callback - <function> function with 2 args: (boolean, <string>),
+ *                      where boolean is false if err OR true if no error
+ *                      where <string> can be error message
+ *                          OR on success <int> RESULT
+ * */
 exports.retrieve_userSolutions_count = function (username, callback) {
 
     exports.retrieve_userSolutions_history(username, function (bool, results) {
@@ -283,6 +414,10 @@ exports.retrieve_userSolutions_count = function (username, callback) {
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
  * Params: fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
+ *          callbackUser - <function> of the form (<boolean1>, <boolean2>, <string>)
+ *                          where, <boolean1> -
+ *                                 <boolean2> -
+ *                                 <string> - error ? error_mssg : success_mssg
  * */
 exports.add_user = function (fields, callbackUser) {
     console.log("inside add_user");
@@ -362,9 +497,12 @@ exports.add_user = function (fields, callbackUser) {
     });
 };
 
+
 /*
  * This (helper) function returns true IFF user_name already exists in the database
- * Params: user_name - the user name
+ * Params: user_name - <string> the user name
+ *         callback - <function> of the arg (bool)
+ *                      where <bool> : found ? true : false
  * */
 exports.find_user_name = function (user_name, callback) {
     // make a connection
@@ -388,10 +526,17 @@ exports.find_user_name = function (user_name, callback) {
         })
 };
 
-/*
-  Retrieves the user object based on the username.
-*/
 
+/*
+* This function retrieves the user object given their user_name
+*
+* Params: username - <string> the user name
+*         callback - <function> with args (<bool1>,<bool2>,<string1>,<string2>)
+*                       where, <bool1> : success ? true : false
+*                       where, <bool2> : error ? true : false
+*                       where, <string1> : success ? {Obj} : null
+*                       where, <string2> : success ? success_mssg : err_mssg
+* */
 exports.retrieveUser = function (username, callback) {
 
     mongoFactory.getConnection(uri).then(function (db) {
@@ -416,11 +561,21 @@ exports.retrieveUser = function (username, callback) {
     });
 }
 
+
 /*
  Returns the hashed password given the username. Assume username exists. Used for both admins and users.
  retrievePassword(String, boolean, function())
  */
-
+/*
+* Returns the hashed password given the username. Assume username exists.
+* Used for both admins and users.
+*
+* Params: username - <string> the user name
+*         callback - <function> with args (<bool>,<string>,<string>)
+*                       where, <bool> : success ? true : false
+*                       where, <string> : success ? "pwd" : null
+ *                      where, <string> : success ? success_mssg : err_mssg
+* */
 exports.retrievePassword = function (username, callback) {
     mongoFactory.getConnection(uri).then(function (db) {
 
@@ -441,8 +596,12 @@ exports.retrievePassword = function (username, callback) {
     });
 }
 
+
 /*
  * This (helper) function returns true IFF email already exists in the database
+ *
+ * Params: email - <string> unique email of the user
+ *         callback - <bool> : found ? true : false
  * */
 exports.find_user = function (email, callback) {
     // make a connection
@@ -467,9 +626,15 @@ exports.find_user = function (email, callback) {
         })
 };
 
-// this function returns an array where is element contains info for a particular question
-// such as the question number (_id), number of solutions (count), and number of comments
-// (comments). [ {_id,count,comments}, {} ...]
+
+/*
+* This function returns an array where each element contains info for a particular question
+* such as the question number (_id), number of solutions (count), and number of comments
+* (comments). [ {_id,count,comments}, {} , ...]
+*
+* Params: exam_id - <string> the exam_id of which the info is required
+*         callback - <function> with arg (<[Objs]>) - RESULT
+* */
 exports.get_exam_info_by_ID = function (exam_id, callback) {
 
     mongoFactory.getConnection(uri)
@@ -513,10 +678,11 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 
 };
 
+
 /*
  * This function will add a comment to the solutions table
- * Params: sol_id - id of the solution to which to add the comment
- *         fields - [text, by_username]
+ * Params: sol_id - <string> id of the solution to which to add the comment
+ *         fields - <[text, by_username]>
  * */
 exports.add_comment = function (sol_id, fields) {
     var Data = {
@@ -544,7 +710,14 @@ exports.add_comment = function (sol_id, fields) {
         })
 };
 
-// get all solutions given an exam_id and the question number
+
+/*
+* This function will get all the solution for a given exam_id and q_num
+*
+* Params: exam_id - <string> - exam_id for which the info is required.
+*         q_num - <string> - the question number for which solutions are required.
+*         callback - <[Objs]> - RESULT
+* */
 exports.get_all_solutions = function (exam_id, q_num, callback) {
     mongoFactory.getConnection(uri)
         .then(function (db) {
@@ -570,13 +743,15 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
         })
 };
 
+
 /*
- * This function will add a solution to the solutions table in the database .
- * Params: fields - [exam_id , question_id, solution text, user_name]
- * Note: exam_id - is a unique identifier for each exam in the database. to see an example, ...
- *          ... call get_all_exams and look at the output. Looks like: 578a44ff71ed097fc3079d6e
- *       question_id - is unique relevant to 1 exam.
- * */
+* This function will add a solution to the solutions table in the database.
+*
+* Params: fields - [exam_id , question_id, solution text, user_name]
+*         callback - <function> with args (bool, string)
+*                       where, <bool>: err ? false : true
+*                       where, <string>: err ? err_mssg : success_mssg
+* */
 exports.add_solution = function (fields, callback) {
     var Data = {
         exam_id: fields[0],
@@ -614,8 +789,15 @@ exports.add_solution = function (fields, callback) {
 };
 
 
-
-
+/*
+ * This function will update the vote count of a solution.
+ *
+ * Params: sol_id - <string> the sol_id of the solution to vote
+ *         upORdown - <string> : up_vote ? "up" : "down"
+ *         callback - <function> with args (bool, string)
+ *                       where, <bool>: err ? false : true
+ *                       where, <string>: err ? err_mssg : success_mssg
+ * */
 exports.vote_solution = function (sol_id, upORdown , callback) {
     var vote = (upORdown == "up") ? 1 : -1;
 
@@ -637,12 +819,13 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
 };
 
 
-
-
 /*
  * This function will retrieve all exams in the database given the course code ...
  * ... ordered by the year of the exam.
- * Params: course_code - an string of format "CSC309"
+ *
+ * Params: course_code - <string> the course code to get all the exams for
+ *         callback - <function> with args (<string>)
+ *                      where on success is <[Objs]>
  * */
 exports.get_all_exams = function (course_code, callback) {
 
@@ -689,18 +872,22 @@ exports.get_all_exams = function (course_code, callback) {
 
 };
 
+
 /*
- * This function will add an exam to the database UNLESS the exams already exists.
- * If the exams table is empty, this will create one and then add the data.
- * Note: this assumes that (course_code + year + term + type) together form a unique exam.
- * i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
- * Params: fields - an array of format ["course_code", year, "term",
- *                 ["instructor1",...,"instructor n"], page_count, question_count
- *                 "upload_date", "user_name"]
- *         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
- *
- * callback parameter takes a boolean to indicate whether insert was successful
- * and an output status message.*/
+* This function will add an exam to the database UNLESS the exams already exists.
+* If the exams table is empty, this will create one and then add the data.
+* Note: this assumes that (course_code + year + term + type) together form a unique exam.
+* i.e there can't be two exams occurring for the same course in the same year in the same term with the same type.
+*
+* Params: fields - an array of format ["course_code", year, "term",
+*                 ["instructor1",...,"instructor n"], page_count, question_count
+*                 "upload_date", "user_name"]
+*         questions_array - a array by format ["q_1", "q_2", ... , "q_question_count"]
+*         serverCallback - <function> with args (<bool>, <string>)
+*                      where <bool> : err ? false : true
+*                      where <string> : err ? err_mssg : success_mssg
+*
+* */
 exports.add_exam = function (fields, questions_array, serverCallback) {
 
     // construct an exam object
@@ -767,11 +954,15 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
     });
 };
 
+
 /*
  * This function will return TRUE if the provided exam info already exists in the database
  * OR FALSE if it does not exist in the database.
- * Params: fields - an array of format ["course_code", year, "term", "type"]
  *
+ * Params: fields - an array of format ["course_code", year, "term", "type"]
+ *         serverCallback - <function> ...
+ *         callback - <function> with args (<bool>, ...)
+ *                      where <bool> : found ? true : false
  * */
 exports.find_exam = function (fields, serverCallback, callback) {
 
@@ -820,12 +1011,17 @@ exports.find_exam = function (fields, serverCallback, callback) {
         });
 };
 
+
 /*
  * This function will add a course to the database UNLESS the course already exists.
  * If the course table is empty, this will create one and then add the data.
  * Note: this assumes that (course_codes) are unique.
- * Params: course_code - an string of format "CSC309"
- *         title - the course description
+ *
+ * Params: course_code - <string> the course code
+ *         title - <string> the course description
+ *         serverCallback - <function> with args (<bool>, <string>)
+ *                          where <bool> : err ? false : true
+ *                          where <string> : err ? err_mssg : success_mssg
  * */
 exports.add_course = function (course_code, title, serverCallback) {
 
@@ -865,11 +1061,15 @@ exports.add_course = function (course_code, title, serverCallback) {
     });
 };
 
+
 /*
  * This function will return TRUE if the provided course info already exists in the database
  * OR FALSE if it does not exist in the database.
- * Params: course code - an string of the format: "CSC309"
  *
+ * Params: course_code - <string> the course code
+ *         callback - <function> with args (<bool>, <string>)
+ *                          where <bool> : found ? true : false
+ *                          where <string> : found ? null : [{Obj}]
  * */
 exports.find_course = function (course_code, callback) {
     // check the data to see if this exam exists...
@@ -905,9 +1105,14 @@ exports.find_course = function (course_code, callback) {
         });
 };
 
+
 /*
  * This function will remove the exam from the database given the combination of (course_code+ year +  term + type)
+ *
  * Params: fields - an array of format ["course_code", year, "term", "type"]
+ *         serverCallback - <function> with args (<bool>, <string>)
+ *                              where <bool> : success ? true : false
+ *                              where <string> : success ? success_mssg ? err_mssg
  *
  * */
 exports.remove_exam = function (fields, serverCallback) {
@@ -953,7 +1158,16 @@ exports.remove_exam = function (fields, serverCallback) {
         });
 };
 
-// callback(success, error, data)
+
+/*
+* This function will get the specific exam object given its ID.
+*
+* Params: id - <string> the exma_id
+*         callback - <function> with args (<bool>,<bool>,<string>)
+*                       where, <bool> : success ? true : false
+*                       where, <bool> : error ? true : false
+*                       where, <string> : success ? {Obj}
+* */
 exports.get_exam_byID = function (id, callback) {
 
     // establish a connection

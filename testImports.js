@@ -30,7 +30,7 @@ var questions_array = ["this is q1", "this is q2"];
 // dbFile.add_course("CSC148", "Intro to Programming");
 
 //test adding solution
-/*dbFile.add_solution(["578a44ff71ed097fc3079d6e", 2, "this is a solution to q2", "some_user name"], function (bool, mssg) {
+/*dbFile.add_solution(["57917d4d2a73c0224fb6e763", 2, "this is a solution to q2", "some_user name"], function (bool, mssg) {
 
     console.log(mssg);
 
@@ -40,7 +40,7 @@ var questions_array = ["this is q1", "this is q2"];
 
 });*/
 
-/*dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
+dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
     if (bool == false) {
         console.log(result);
     }
@@ -49,7 +49,7 @@ var questions_array = ["this is q1", "this is q2"];
     }
 });
 
-dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
+/*dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
     if (!bool) console.log(result);
     else {  // bool is true i.e no error occured. result contains an integer
         console.log(result);
@@ -79,7 +79,7 @@ dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
 
 
 //test adding of comments given a solution_id, and the comment information as an array
-// dbFile.add_comment("5792d8a970040378d4e4b389", ["this is asdfasdasdfasdff",  "some_user name"]);
+/*dbFile.add_comment("5794c63ba930e20485a376a0", ["this is asdfasdasdfasdff",  "some_user name"]);*/
 
 
 /*
@@ -92,7 +92,9 @@ dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
  }
  });*/
 
-// dbFile.add_user(["some as email", "some_user names", "kumar", "damani", "uofT", "cs", "some hashed passwd"]);
+/*dbFile.add_user(["some as email", "some_user names", "kumar", "damani", "uofT", "cs", "some hashed passwd", "12312312312"], function (bool1, bool2, mssg) {
+    console.log(mssg);
+});*/
 
 
 /*
@@ -136,6 +138,10 @@ dbFile.retrieveFollows("some_user names", function (bool, result) {
 });*/
 
 
-dbFile.search_users("david", function (bool, mssg) {
+/*dbFile.search_users("kumar", function (bool, mssg) {
     if (mssg.length != 0) console.log(mssg);
-});
+});*/
+
+/*dbFile.remove_user("some_user name", function (bool, mssg) {
+    console.log(mssg);
+});*/

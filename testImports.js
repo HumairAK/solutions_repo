@@ -40,7 +40,7 @@ var questions_array = ["this is q1", "this is q2"];
 
 });*/
 
-dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
+/*dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
     if (bool == false) {
         console.log(result);
     }
@@ -54,7 +54,7 @@ dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
     else {  // bool is true i.e no error occured. result contains an integer
         console.log(result);
     }
-});
+});*/
 
 /*dbFile.retrieve_userComments_history("some_user name", function (bool, results) {
    if (!bool) console.log(results);
@@ -114,3 +114,23 @@ dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
  }
  });*/
 
+
+/*dbFile.followExam("nanalelfe@gmail.com", "578a44ff71ed097fc3079d6e", function (bool, mssg) {
+   if (!bool) console.log(mssg);
+    else {
+       console.log(mssg);
+   }
+});*/
+
+/*
+dbFile.retrieveFollows("some_user names", function (bool, result) {
+    if (!bool) console.log(result);
+    else {
+        console.log(result);
+    }
+ });*/
+
+
+/*dbFile.vote_solution("5792d8a970040378d4e4b389" , "down", function (bool, mssg) {
+   console.log(mssg);
+});*/

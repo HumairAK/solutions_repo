@@ -11,7 +11,7 @@
  * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
- * 9. 
+ * 9. update user info when they comment or post a solution  ? PENDING
  * */
 
 
@@ -93,6 +93,69 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
+
+exports.followExam = function (user_name, exam_id, callback) {
+
+    exports.retrieveFollows(user_name, function (bool, result) {
+        if (!bool) console.log(result);
+        else {      // no err occured so far...
+
+            var found = false;
+            for (var i = 0; i < result.length; i++) {       // search through the list of exams followed
+                if (result[i] == exam_id) {
+                    found = true;
+                }
+            }
+
+            if (found) {    // means exam is already followed by user
+                callback(false, "user is already following this exam");
+            }
+
+            else {      // add it to the user follower list
+                mongoFactory.getConnection(uri).then(function (db) {
+
+                    // find the user table
+                    var users = db.collection('users');
+                    // insert data into table
+                    users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
+                        // if (err) throw err;
+                        if (err) callback(false, "Error: some error occurred while following the exam");
+                        else {
+                            // console.log("user is following this exam");
+                            callback(true, "Success: user is following this exam");
+                        }
+                    });
+                    db.close();
+
+                }).catch(function (err) {
+                    console.error(err);
+                });
+            }
+        }
+    });
+};
+
+
+exports.retrieveFollows = function (user_name, callback) {
+
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        // find the solutions table
+        var users = db.collection('users');
+        // insert data into table
+        users.find( {user_name: user_name} ).toArray(function (err, docs) {
+            // if (err) throw err;
+            if (err) callback(false, "Error: followers could not be retrieved for some reason");
+            else {
+                callback(true, docs[0].followers);
+            }
+        });
+
+        // db.close();
+    }).catch(function (err) {
+        console.error(err);
+    });
+};
 
 
 // will add comments ASAP
@@ -420,7 +483,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 /*
  * This function will add a comment to the solutions table
  * Params: sol_id - id of the solution to which to add the comment
- *         fields - [text, by]
+ *         fields - [text, by_username]
  * */
 exports.add_comment = function (sol_id, fields) {
     var Data = {
@@ -516,6 +579,32 @@ exports.add_solution = function (fields, callback) {
         });
 
 };
+
+
+
+
+exports.vote_solution = function (sol_id, upORdown , callback) {
+    var vote = (upORdown == "up") ? 1 : -1;
+
+    mongoFactory.getConnection(uri).then(function (db) {
+       var solutions = db.collection('solutions');
+        solutions.updateOne(
+            {_id: ObjectId(sol_id) },
+            { $inc: { votes: vote} }, function (err) {
+                // if (err) throw err;
+                if (err) callback(false, "Error: couldnt update the vote count");
+                else {
+                    callback(true, "Success: updated vote count");
+                }
+        });
+        db.close();
+    }).catch(function (err) {
+        console.log(err);
+    });
+};
+
+
+
 
 /*
  * This function will retrieve all exams in the database given the course code ...

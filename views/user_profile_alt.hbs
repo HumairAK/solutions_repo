@@ -20,8 +20,9 @@
                         <div class="collapse navbar-collapse" id="profile-nav">
                             <ul class="nav navbar-nav " >
                                 <li><a href="#" class="prf-page">General</a></li>
-                                <li><a href="#" class="prf-page">Follows</a></li>
+                                <li><a href="#" class="prf-page">Following</a></li>
                                 <li><a href="#" class="prf-page">Friends</a></li>
+                                <li><a href="#" class="prf-page">Send Message</a></li>
                                 <li><a href="#" class="prf-page">Inbox</a></li>
                                 <li><a href="#" class="prf-page">Comments</a></li>
                             </ul>
@@ -150,7 +151,36 @@
                                     </table>
                                 </div>
                             </div>
+                            {{# if success }}
+                                <section class="alert alert-success">
+                                    <!-- Change those to banners later -->
+                                    <h2>{{ success }}</h2>
+                                </section>
+                            {{ else }}
+                                {{# if error }}
+                                    <section class="alert alert-danger">
+                                        <h2>{{ error }}</h2>
+                                    </section>
+                                {{/if}}
+                            {{/if}}
+                            <div class="row" id="profile-send-message">
+                                <h3>Send Message</h3>
+                                <div class="col-xs-offset-1 col-sm-offset-3 col-xs-10 col-sm-6">
+                                    <form action="/user_profile/send_message" method="GET">
+                                        <div class="form-group">
+                                            <label for="receiver">Send To:</label>
+                                            <input type="text" class="form-control" placeholder="Username" name="receiver_username">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sending-message">Message:</label>
+                                            <textarea class="form-control" rows="3" name="message"></textarea>
+                                        </div>
+                                        <button class="btn btn-primary">Send Message</button>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="row" id="profile-inbox">
+                                {{# if inbox }}
                                 <h3>Inbox</h3>
                                 <div class="col-sm-10 col-sm-offset-1 prf-tables">
                                     <table class="table">
@@ -162,29 +192,19 @@
                                         </tr>
                                         </thead>
                                         <tbody>
+                                        {{# each inbox }}
                                             <tr>
-                                                <td>2016-05-01</td>
-                                                <td>Great Solution!1</td>
-                                                <td>The Dude</td>
+                                                <td>{{ this.date }}</td>
+                                                <td>{{ this.message }}</td>
+                                                <td>{{ this.sender }}</td>
                                             </tr>
-                                            <tr>
-                                                <td>2016-04-05</td>
-                                                <td>Woah look at this</td>
-                                                <td>Lady Lips</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2016-02-30</td>
-                                                <td>I don't get this, help!</td>
-                                                <td>The Dude</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2016-01-15</td>
-                                                <td>I solved your problem</td>
-                                                <td>Lisa</td>
-                                            </tr>
+                                        {{/each}}
                                         </tbody>
                                     </table>
                                 </div>
+                                {{ else }}
+                                    <h3>No Messages.</h3>
+                                {{/if}}
                             </div>
                             <div class="row" id="profile-comments">
 

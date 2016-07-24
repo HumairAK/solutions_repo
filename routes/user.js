@@ -54,8 +54,31 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         comments.push(obj);
     }
 
-    res.render('user_profile_alt', {comments : comments});
+    // GET INBOX
+    var inbox = [];
+    dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
+        if (success) {
+            inbox = data;
+        } else if (error) {
+            // Need to redirect to an error page instead.
+            console.log("Could not retrieve mail.");
+        }
+    });
+
+    // For testing purposes, remove later:
+    if (!inbox.length) {
+        var mail_data = {
+            sender: 'The Dude', receiver: req.user.user_name,
+            message: 'Whoa look at this',
+            date: '2016-04-05'
+        }
+    }
+        inbox.push(mail_data);
+        inbox.push(mail_data);
+
+    res.render('user_profile_alt', {comments : comments, inbox: inbox});
 });
+
 
 router.get('/signup', loggedOut, function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
@@ -131,6 +154,29 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 });
 
+router.get('/user_profile/send_message/:id', loggedIn, function(req, res, next) {
+    var date = new Date();
+    var current_date = date.toString().slice(0, 24);
+    var mail_data = {
+        sender: req.user.user_name,
+        receiver: req.body.receiver_username,
+        message: req.body.message,
+        date: current_date
+    }
+
+    dbFile.sendMail(mail_data, function(success, error, message) {
+        if ((!success && !error) || (error)) {
+            res.redirect('/user/user_profile', {error: message});
+            $('#profile-send-message').show();
+        }  else {
+            res.redirect('/user/user_profile', {success: message});
+            $('#profile-send-message').show();
+        }
+    });
+
+    //res.redirect('/user/user_profile');
+});
+
 module.exports = router;
 
 /************** Route protection ********************/
@@ -150,8 +196,9 @@ function loggedOut(req, res, next) {
 }
 
 function isUser(req, res, next) {
-    if (req.user.email) {
+    if (req.user && req.user.email) {
         return next();
     }
     res.redirect('/admin');
 }
+

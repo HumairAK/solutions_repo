@@ -182,9 +182,11 @@ router.get('/questions/:exam_id', function (req,res) {
     */
 
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
+    console.log("index.js::Getting solutions");
     var examID = req.params.exam_id;
     var qID = req.params.q_num;
     dbFile.get_all_solutions(examID, qID, function (solutions) {
+        console.log("index.js::GOT solutions");
         solutions.forEach(function(soln){
             soln.commentCount = soln.comments.length;
         });

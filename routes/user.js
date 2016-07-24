@@ -257,10 +257,27 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     }
 });
 
+router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
+    var vote = req.body.vote;
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+    var solutionID = req.params.solID;
+    dbFile.vote_solution(solutionID, vote, function(voteCounted, statusMsg){
+        if(voteCounted){
+            console.log("Success!");
+        }else{
+            console.log("Action failed!");
+        }
+        console.log(statusMsg); // Change to display message above
+        res.redirect('/solutions/' + examID + '/' + qID);
+    });
+
+
+});
+
 module.exports = router;
 
 /************** Route protection ********************/
-
 function loggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();

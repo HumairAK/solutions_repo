@@ -19,7 +19,6 @@
 </div>
 
 <!-- Solution 1 Example -->
-
 {{#each query}}
     <div class="row">
         <section id="sol-" class="col-md-10 col-md-offset-1 rounded">
@@ -30,13 +29,18 @@
                 </div>
 
                 <div class="pull-right">
-                    <div class="upvoting">
-                        <button class="upvote"><img src="/assets/images/up_arrow.png"></button>
-                        <p class="upvote num-upvotes">{{this.votes}}</p>
-                    </div>
-                    <div class="downvoting">
-                        <button class="downvote"><img src="/assets/images/down_arrow.png"></button>
-                        <p class=" downvote num-downvotes">-1</p>
+                    <div class="voting">
+                        <form action="/user/solution/vote/{{../examID}}/{{../qID}}/{{this._id}}" method="post">
+                            <input type="hidden" name="vote" value="up"/>
+                            <button class="upvote" type="submit"><img src="/assets/images/up_arrow.png"></button>
+                            <input type="hidden" name="_csrf" value="{{../csrfToken }}">
+                        </form>
+                        <form action="/user/solution/vote/{{../examID}}/{{../qID}}/{{this._id}}" method="post">
+                            <input type="hidden" name="vote" value="down"/>
+                            <button class="downvote"><img src="/assets/images/down_arrow.png"></button>
+                            <input type="hidden" name="_csrf" value="{{../csrfToken }}">
+                        </form>
+                        <p class="num-votes">{{this.votes}}</p>
                     </div>
                 </div>
             </div>

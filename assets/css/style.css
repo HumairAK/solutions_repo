@@ -149,7 +149,7 @@ main [id^="sol-"] img.user-image {
 	margin-left: 25px;
 }
 
-.upvoting, .downvoting, .upvote, .downvote, .user-image, .username {
+.upvoting, .downvoting, .upvote, .downvote, .user-image, .username, .num-votes{
     display: inline-block;
 }
 
@@ -181,6 +181,10 @@ main [id^="sol-"] p.username {
 main [id^="sol-"] p.num-downvotes {
 	margin-right: 25px;
 }
+main [id^="sol-"] .voting{
+	margin-right: 25px;
+}
+
 
 main [id^="sol-"] div.user-sol h3 {
     font-size: 1.17em;
@@ -252,6 +256,10 @@ main [id^="sol-"] div.comments ul li p.user-comment {
 	margin: 0;
 	background-color: white;
 	border-radius: 5px;
+}
+
+main [id^="sol-"] .voting form{
+	display: inline;
 }
 /*** USER SOLUTIONS END***/
 

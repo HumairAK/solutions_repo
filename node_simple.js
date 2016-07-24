@@ -191,7 +191,6 @@ exports.retrieveFollows = function (user_name, callback) {
     });
 };
 
-
 // will add comments ASAP
 /*  callback(success, data/message) => callback(boolean, object/String);
  *
@@ -309,11 +308,11 @@ exports.add_user = function (fields, callbackUser) {
     };
 
     // find out if this user already exists by checking their email
-    exports.find_user( fields[0] ,callbackUser, function (result, callbackUser) {
+    exports.find_user( fields[0], function (result) {
         if  (result == false) {
 
             // find out if the user_name is taken
-            exports.find_user_name( fields[1], callbackUser,  function (docs) {
+            exports.find_user_name( fields[1], function (docs) {
                 if (docs == false) {        // if not ...
                     // continue
                     console.log("user name is valid");
@@ -367,7 +366,7 @@ exports.add_user = function (fields, callbackUser) {
  * This (helper) function returns true IFF user_name already exists in the database
  * Params: user_name - the user name
  * */
-exports.find_user_name = function (user_name, callbackUser, callback) {
+exports.find_user_name = function (user_name, callback) {
     // make a connection
     mongoFactory.getConnection(uri)
         .then(function (db) {
@@ -394,6 +393,7 @@ exports.find_user_name = function (user_name, callbackUser, callback) {
 */
 
 exports.retrieveUser = function (username, callback) {
+
     mongoFactory.getConnection(uri).then(function (db) {
         var users = db.collection('users');
 
@@ -422,7 +422,6 @@ exports.retrieveUser = function (username, callback) {
  */
 
 exports.retrievePassword = function (username, callback) {
-
     mongoFactory.getConnection(uri).then(function (db) {
 
          var collection = db.collection('logins');
@@ -445,7 +444,7 @@ exports.retrievePassword = function (username, callback) {
 /*
  * This (helper) function returns true IFF email already exists in the database
  * */
-exports.find_user = function (email, callbackUser, callback) {
+exports.find_user = function (email, callback) {
     // make a connection
     console.log("inside find_user");
     mongoFactory.getConnection(uri)
@@ -455,10 +454,10 @@ exports.find_user = function (email, callbackUser, callback) {
             logins.find( { email: email } ).toArray(function (err, result) {
                 if (err) throw err;
                 else if (result.length == 0) {  // nothing was found  so this user is new
-                    callback(false, callbackUser);
+                    callback(false);
                 }
                 else {
-                    callback(true, callbackUser);
+                    callback(true);
                 }
             });
             // db.close();
@@ -995,7 +994,7 @@ exports.addAdmin = function (admin_data, callback) {
 
     console.log("inside addAdmin");
 
-    // Check if the admin username already exists. If it does, then we don't add the admin_data and return a message.
+    // Check if the admin username already exists. Also check for user username. If it does, then we don't add the admin_data and return a message.
     exports.adminExists( admin_data.username , function (error, exists, data, message) {
             console.log("adminExists: " + message);
             if (!exists && !error) {
@@ -1052,7 +1051,86 @@ exports.adminExists = function (username, callback) {
 };
 
 
+/******************************  MAIL *********************************/
 
+/*
+ * mail_data = {
+ *      sender: sender_username,
+ *      receiver: receiver_username,
+ *      message: message,
+ *      date: date,
+ * }
+ *
+ * callback(success, error, message)
+ *
+ */
+
+exports.sendMail = function (mail_data, callback) {
+    exports.find_user_name(mail_data.receiver, function (exist){
+        if (exist) {
+            mongoFactory.getConnection(uri).then(function(db) {
+                var mail = db.collection('mail');
+
+                mail.insertOne(mail_data, function(err) {
+                    if (err) {
+                        callback(false, true, 'Error: could not send message.');
+                        db.close();
+                    }
+                    else {
+                        callback(true, false, "Message sent.");
+                        db.close();
+                    }
+                });
+            });
+        } else {
+            callback(false, false, 'The receiver\'s  username is undefined.');
+        }
+    });
+}
+
+
+/*
+ *
+ * callback(success, error, data, message)
+ * Returns the user's inbox (array of message objects)
+ *
+ */
+
+exports.checkMailbox = function (username, callback) {
+
+    mongoFactory.getConnection(uri).then(function(db) {
+
+        var mail = db.collection('mail');
+
+        mail.find({receiver: username}).toArray(function (err, data) {
+            if (err) {
+                callback(false, true, null, 'Error: could not retrieve inbox messages.');
+            } else if (!data) {
+                callback(false, false, null, 'No inbox.');
+            } else {
+                callback(true, false, data, 'Retrieved inbox');
+            }
+        });
+    });
+
+}
+
+//testing
+exports.findUserByID = function (id, callback) {
+    // make a connection
+    console.log("inside findUserByID");
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+            var logins = db.collection('logins');
+            logins.find( { _id : id }, function (err, result) {
+                callback(err, result);
+                db.close();
+            });
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+};
 
 
 

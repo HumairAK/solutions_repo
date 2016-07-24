@@ -7,19 +7,24 @@ var exports = module.exports = {};
 
 var encryptPassword = exports.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
-}
+};
 
 var comparePassword = function (password1, password2) {
     return bcrypt.compareSync(password1, password2);
-}
+};
+
 
 passport.serializeUser(function (user, done) {
+    
     done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
+
     done(null, user);
 });
+
+
 
 
 

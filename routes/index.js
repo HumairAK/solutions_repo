@@ -96,7 +96,7 @@ router.get('/search', function(req, res, next) {
 router.get('/questions/:exam_id', function (req,res) {
     var examID = req.params.exam_id;
     console.log(examID);
-    dbFile.get_exam_byID(examID, function(exam){
+    dbFile.get_exam_byID(examID, function(success, error, exam){
 
         /* [
          { q_id: 1, question: 'this is q1' },

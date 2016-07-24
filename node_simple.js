@@ -95,6 +95,10 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 
 
 // will add comments ASAP
+/*  callback(success, data/message) => callback(boolean, object/String);
+ *
+ *
+ */
 exports.retrieve_userComments_history = function (username, callback) {
 
     // get a connection
@@ -117,7 +121,7 @@ exports.retrieve_userComments_history = function (username, callback) {
                 _id: 0
             }}
         ]).toArray(function (err, results) {
-            if (err) callback(false, "Error: some wierd error occured while query");
+            if (err) callback(false, "Error: some weird error occurred while query");
             else {
                 callback(true, results);
             }
@@ -135,7 +139,7 @@ exports.retrieve_userComments_history = function (username, callback) {
 exports.retrieve_userComments_count = function (username, callback) {
 
     exports.retrieve_userComments_history(username, function (bool, results) {
-        if (!bool) callback(false, "Error: error occured");
+        if (!bool) callback(false, "Error: error occurred");
         else {
             var length = results.length;
             callback(true, length);
@@ -828,9 +832,10 @@ exports.remove_exam = function (fields, serverCallback) {
         });
 };
 
-//get_exam_byID("578a44ff71ed097fc3079d6e");
 
-exports.get_exam_byID = function (id) {
+
+// callback(success, error, data)
+exports.get_exam_byID = function (id, callback) {
 
     // establish a connection
     mongoFactory.getConnection(uri)
@@ -840,15 +845,20 @@ exports.get_exam_byID = function (id) {
             var exams = db.collection('exams');
             // query
             exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
-                if  (err) throw err;
+                if  (err) {
+                    callback(false, true,  null);
+                } else if (!docs) {
+                    callback(false, false, null);
+                }
                 else {
                     // console.log(JSON.stringify(docs, null, 2));
-                    console.log(docs);
+                    //console.log(docs);
+                    callback(true, false,  docs[0]);
                 }
             });
         })
         .catch(function(err) {
-            console.error(err);
+            callback(false, true, null);
         });
 };
 

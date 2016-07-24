@@ -6,7 +6,8 @@ function main(){
         $("#profile-follows"),
         $("#profile-friends"),
         $("#profile-inbox"),
-        $("#profile-comments")];
+        $("#profile-comments"),
+        $('#profile-send-message')];
 
     function hidePages(){
         items.forEach(function(item){
@@ -32,7 +33,7 @@ function main(){
                 console.log("clicked general");
                 $("#profile-general").show();
                 break;
-            case "Follows":
+            case "Following":
                 $("#profile-follows").show();
                 break;
             case "Friends":
@@ -43,6 +44,9 @@ function main(){
                 break;
             case "Comments":
                 $("#profile-comments").show();
+                break;
+            case "Send Message":
+                $('#profile-send-message').show();
                 break;
             default:
                 console.log("Error: User page not found");

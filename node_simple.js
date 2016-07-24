@@ -557,31 +557,31 @@ exports.add_solution = function (fields, callback) {
         comments: [],
         author: fields[3]
     };
-    console.log("CHECK 1");
+
     // establish a connection
     mongoFactory.getConnection(uri)
         .then(function(db) {
-            console.log("CHECK 2");
+
             // find the solutions table
             var solutions = db.collection('solutions');
             // insert data into table
             solutions.insert(Data, function(err) {
                 if (err) callback(false , "Error: Failed to add the solution");
                 else {
-                    console.log("CHECK 3");
+
                     // console.log("solution added");
                     callback(true, "Success: added solution successfully!");
                     db.close(function (err) {   // close the connection when done
                         if (err) throw err;
                     });
-                    console.log("CHECK 4");
+
                 }
             });
         })
         .catch(function(err) {
             console.error(err);
         });
-    console.log("CHECK 5");
+
 };
 
 

@@ -15,6 +15,7 @@
  * 10. comment_history ? DONE
  * 11. solutions_history ? DONE
  * 12. voting for solutions ? DONE
+ * 23. A search users function ? DONE
  * 
  * */
 
@@ -97,6 +98,35 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
+
+exports.search_users = function ( token, callback ) {
+
+    mongoFactory.getConnection(uri).then(function (db) {
+        var users = db.collection('users');
+        users.createIndex(          // make the following fields searchable
+            {
+                "user_name":"text",
+                "f_name":"text",
+                "l_name":"text"
+            });
+        users.find(
+            { $text: { $search: token } },
+            { score: { $meta: "textScore" } }
+        ).sort( { score: { $meta:"textScore" } } ).toArray(function (err, docs) {
+            if (err) callback(false, "Error: some error while searhing");
+            else {
+                // console.log(docs);
+                callback(true, docs);
+            }
+        });
+
+        db.close();
+
+    }).catch(function (err) {
+        console.error(err);
+    });
+};
+
 
 exports.followExam = function (user_name, exam_id, callback) {
 

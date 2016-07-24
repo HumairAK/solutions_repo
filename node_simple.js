@@ -11,7 +11,7 @@
  * 5. solutions ? CURRENTLY WORKING ON -- need to add field for solutions provider, and updating.
  * 7. add university field to courses, exams ? PENDING
  * 8. make a user ? DONE
- * 9. 
+ * 9. update user info when they comment or post a solution  ? PENDING
  * */
 
 
@@ -482,7 +482,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 /*
  * This function will add a comment to the solutions table
  * Params: sol_id - id of the solution to which to add the comment
- *         fields - [text, by]
+ *         fields - [text, by_username]
  * */
 exports.add_comment = function (sol_id, fields) {
     var Data = {
@@ -580,6 +580,32 @@ exports.add_solution = function (fields, callback) {
         });
 
 };
+
+
+
+
+exports.vote_solution = function (sol_id, upORdown , callback) {
+    var vote = (upORdown == "up") ? 1 : -1;
+
+    mongoFactory.getConnection(uri).then(function (db) {
+       var solutions = db.collection('solutions');
+        solutions.updateOne(
+            {_id: ObjectId(sol_id) },
+            { $inc: { votes: vote} }, function (err) {
+                // if (err) throw err;
+                if (err) callback(false, "Error: couldnt update the vote count");
+                else {
+                    callback(true, "Success: updated vote count");
+                }
+        });
+        db.close();
+    }).catch(function (err) {
+        console.log(err);
+    });
+};
+
+
+
 
 /*
  * This function will retrieve all exams in the database given the course code ...

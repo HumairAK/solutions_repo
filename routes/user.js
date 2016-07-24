@@ -232,6 +232,31 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     res.redirect('/user/user_profile');
 });
 
+router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+    var comment = req.body.comment;
+    var username = req.user.user_name;
+    var solutionID = req.params.solID;
+    // Must be a logged in user to access
+    console.log(examID + "," + qID + "," + comment + "," + username + "," + solutionID);
+    var fields = [comment, username];
+    if(req.isAuthenticated()){
+        dbFile.add_comment(solutionID, fields, function(commentAdded, statusMessage){
+           if(commentAdded){
+               console.log("Success!");
+           } else{
+               console.log("Failed to add comment!");
+           }
+           console.log(statusMessage);
+           res.redirect('/solutions/' + examID + '/' + qID);
+        });
+
+    } else { //User not logged in
+        res.redirect('/'); // Change this to go back to the solutions page with "need to be logged in msg"
+    }
+});
+
 module.exports = router;
 
 /************** Route protection ********************/

@@ -2,6 +2,7 @@ var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
+
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
@@ -114,7 +115,7 @@ router.get('/questions/:exam_id', function (req,res) {
 
                 // Find q_id in questionsInfo, update comment/solutions count
                 questionsInfo.forEach(function(q){
-                    if (q.id == question.id){
+                    if (question.q_id == q._id){
                         question.count += q.count;
                         question.comments += q.comments;
                     }
@@ -187,7 +188,7 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
         solutions.forEach(function(soln){
             soln.commentCount = soln.comments.length;
         });
-        res.render('user_solutions', {query: solutions, examID: examID, qID: qID});
+        res.render('user_solutions', {query: solutions, examID: examID, qID: qID, csrfToken: req.csrfToken()});
     });
 });
 

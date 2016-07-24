@@ -684,7 +684,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
  * Params: sol_id - <string> id of the solution to which to add the comment
  *         fields - <[text, by_username]>
  * */
-exports.add_comment = function (sol_id, fields) {
+exports.add_comment = function (sol_id, fields, serverCallback) {
     var Data = {
         text: fields[0],
         date: new Date(),
@@ -698,14 +698,19 @@ exports.add_comment = function (sol_id, fields) {
             var solutions = db.collection('solutions');
             // insert data into table
             solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
-                if (err) throw err;
+                if (err) {
+                    ServerCallback(false, "Error: Solution found, but could not update comments.");
+                    throw err;
+                }
                 else {
+                    serverCallback(true, "Comment added successfully");
                     console.log("comment added");
                 }
             });
 
         })
         .catch(function (err) {
+            serverCallback(false, "Error: Could not establish connection with database.");
             console.error(err);
         })
 };

@@ -40,14 +40,14 @@ var questions_array = ["this is q1", "this is q2"];
 
 });*/
 
-dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
+/*dbFile.retrieve_userSolutions_history("some_user name", function (bool, result) {
     if (bool == false) {
         console.log(result);
     }
     else {
         console.log(result);
     }
-});
+});*/
 
 /*dbFile.retrieve_userSolutions_count("some_user name", function (bool, result) {
     if (!bool) console.log(result);
@@ -143,5 +143,11 @@ dbFile.retrieveFollows("some_user names", function (bool, result) {
 });*/
 
 /*dbFile.remove_user("some_user name", function (bool, mssg) {
+    console.log(mssg);
+});*/
+
+
+/*
+dbFile.search_exams("cSc240", function (bool, mssg) {
     console.log(mssg);
 });*/

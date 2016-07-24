@@ -93,6 +93,69 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 
 //****************************FUNCTIONS************************************************|
 
+exports.followExam = function (user_name, exam_id, callback) {
+
+    exports.retrieveFollows(user_name, function (bool, result) {
+        if (!bool) console.log(result);
+        else {      // no err occured so far...
+
+            var found = false;
+            for (var i = 0; i < result.length; i++) {       // search through the list of exams followed
+                if (result[i] == exam_id) {
+                    found = true;
+                }
+            }
+
+            if (found) {    // means exam is already followed by user
+                callback(false, "user is already following this exam");
+            }
+
+            else {      // add it to the user follower list
+                mongoFactory.getConnection(uri).then(function (db) {
+
+                    // find the user table
+                    var users = db.collection('users');
+                    // insert data into table
+                    users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
+                        // if (err) throw err;
+                        if (err) callback(false, "Error: some error occurred while following the exam");
+                        else {
+                            // console.log("user is following this exam");
+                            callback(true, "Success: user is following this exam");
+                        }
+                    });
+                    db.close();
+
+                }).catch(function (err) {
+                    console.error(err);
+                });
+            }
+        }
+    });
+};
+
+
+exports.retrieveFollows = function (user_name, callback) {
+
+    mongoFactory.getConnection(uri).then(function (db) {
+
+        // find the solutions table
+        var users = db.collection('users');
+        // insert data into table
+        users.find( {user_name: user_name} ).toArray(function (err, docs) {
+            // if (err) throw err;
+            if (err) callback(false, "Error: followers could not be retrieved for some reason");
+            else {
+                callback(true, docs[0].followers);
+            }
+        });
+
+        // db.close();
+    }).catch(function (err) {
+        console.error(err);
+    });
+};
+
 
 // will add comments ASAP
 exports.retrieve_userComments_history = function (username, callback) {

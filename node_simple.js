@@ -109,52 +109,6 @@ exports.remove_course = function (course_code, callback) {
 
 };
 
-exports.search_exams = function ( token, callback ) {
-
-    mongoFactory.getConnection(uri).then(function (db) {
-        var exams = db.collection('exams');
-
-        exams.find(
-            { $text: { $search: token } },
-            { score: { $meta: "textScore" } }       // the strength of the exams
-        ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
-            if (err) throw err;
-
-            else {    // get the title
-                // callback(true, docs);
-                // console.log(docs);
-                 exports.find_course(token.toUpperCase(), function (result, data) {
-
-                     // console.log("here");
-
-                     if (result == true) {
-                         // append the title from data to each exam object from docs
-                         docs.forEach(function (doc) {
-                             doc.title = data[0].title;
-                         });
-
-                         // if (debug_mode == true){
-                         //     console.log(docs);
-                         //     console.log(data);
-                         // }
-                         /*callback(docs);     // send back the data*/
-                     }
-                     else if (result == false) {    // no such course was found
-                         console.log("This course has not been added to the database.");
-                     }
-                     callback(true, docs);     // send back the data
-
-                 });
-            }
-        });
-
-        // db.close();
-
-    }).catch(function (err) {
-        console.error(err);
-    });
-};
-
 
 /*This function will remove the user given user_name from the users table
 * and the logins table. So far.

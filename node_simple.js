@@ -83,6 +83,7 @@ var assert = require('assert');
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
 
+
 // Keep this for testing on local machine, do not remove. - Humair
 //var uri = 'mongodb://localhost:27017/db';
 
@@ -473,8 +474,6 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
         .catch(function () {
             console.error(err);
         })
-
-
 };
 
 /*

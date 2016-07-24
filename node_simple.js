@@ -830,7 +830,7 @@ exports.remove_exam = function (fields, serverCallback) {
 
 //get_exam_byID("578a44ff71ed097fc3079d6e");
 
-exports.get_exam_byID = function (id) {
+exports.get_exam_byID = function (id, serverCallback) {
 
     // establish a connection
     mongoFactory.getConnection(uri)
@@ -842,8 +842,8 @@ exports.get_exam_byID = function (id) {
             exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
                 if  (err) throw err;
                 else {
-                    // console.log(JSON.stringify(docs, null, 2));
-                    console.log(docs);
+                    serverCallback(docs[0]);
+                    //console.log(docs);
                 }
             });
         })

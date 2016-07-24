@@ -832,8 +832,6 @@ exports.remove_exam = function (fields, serverCallback) {
         });
 };
 
-
-
 // callback(success, error, data)
 exports.get_exam_byID = function (id, callback) {
 
@@ -851,9 +849,8 @@ exports.get_exam_byID = function (id, callback) {
                     callback(false, false, null);
                 }
                 else {
-                    // console.log(JSON.stringify(docs, null, 2));
-                    //console.log(docs);
                     callback(true, false,  docs[0]);
+
                 }
             });
         })

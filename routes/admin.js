@@ -8,8 +8,6 @@ var passport_file = require('../config/passport.js');
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
-
-
 router.get('/', isAdmin, function(req,res){
     res.render('admin', {csrfToken: req.csrfToken()});
 });
@@ -65,7 +63,7 @@ router.post('/add/course', function(req,res){
     res.redirect('/admin');
 });
 
-// Add a new admin, redirect to admin panel
+/* Add a new admin, redirect to admin panel */
 router.post('/add/admin', function(req,res){
     var admin_data = {
         fname: req.body.fname,
@@ -128,9 +126,8 @@ module.exports = router;
 
 
 /************** Route protection ********************/
-
 function isAdmin(req, res, next) {
-    if (!req.user.email){
+    if (req.user && !req.user.email){
         return next();
     }
     res.redirect('/');

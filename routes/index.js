@@ -84,24 +84,73 @@ router.get('/search', function(req, res, next) {
     res.redirect('/exams/' + courseName);
 });
 
-/*EXAMPLE DATA GIVEN BELOW:
+
+/* This is a redirect from the exams page, route is generated in exams.hbs
+ *
+ * EXAMPLE DATA GIVEN BELOW:
  * questions = [{id,count,comments},{id,count,comments}] --> array of "question" objects
  *
  * id = questions number
  * count= number of solutions
  * comments = number of comments*/
 router.get('/questions/:exam_id', function (req,res) {
-    console.log(req.params.exam_id);
-    dbFile.get_exam_info_by_ID(req.params.exam_id, function (questions) {
+    var examID = req.params.exam_id;
+    console.log(examID);
+    dbFile.get_exam_byID(examID, function(exam){
+
+        /* [
+         { q_id: 1, question: 'this is q1' },
+         { q_id: 2, question: 'this is q2' }
+         ]
+         */
+        var qList = exam.questions_list;
+
+        // Add comments/solutions
+        dbFile.get_exam_info_by_ID(examID, function (questionsInfo) {
+            qList.forEach(function(question){
+                question.count = 0;
+                question.comments = 0;
+
+                // Find q_id in questionsInfo, update comment/solutions count
+                questionsInfo.forEach(function(q){
+                    if (q.id == question.id){
+                        question.count += q.count;
+                        question.comments += q.comments;
+                    }
+                });
+            });
+
+            var examInfo = {
+                id : exam._id,
+                courseCode : exam.course_code,
+                term : toProperCase(exam.term),
+                type : toProperCase(exam.type),
+                year : exam.year,
+                instructors : exam.instructors.join(),
+                uploadDate : exam.upload_date,
+                uploader : exam.uploaded_by,
+                pageCount : exam.page_count,
+                questionCount : exam.questions_count
+            };
+            res.render('questions', {query: qList, examInfo: examInfo});
+        });
+
+
+        console.log(exam);
+    });
+
+    /*dbFile.get_exam_info_by_ID(examID, function (questions) {
         console.log(questions);
         res.render('questions', {query: questions});
 
-    });
+    });*/
+
 });
 
-/*GET the solutions for a given exam given the question number and the exam_id*/
-/*EXPECTED DATA GIVEN BELOW:
-array of solutions:
+/*GET the solutions for a given exam given the question number and the exam_id
+
+* EXPECTED DATA GIVEN BELOW:
+* array of solutions:
 * solutions = [ {
     *               _id: "354ff71ed078933079d6467e"
     *               exam_id: "578a44ff71ed097fc3079d6e"
@@ -112,17 +161,17 @@ array of solutions:
     *           }
     *           {
     *                _id: ...
- *                  exam_id:  ..
- *                  q_id: ...
- *                  text: ..
- *                  votes: .. 
- *                  comments: ..
+    *               exam_id:  ..
+    *               q_id: ...
+    *               text: ..
+    *               votes: ..
+                    comments: ..
     *           
     *           }
     *           ]*/
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
     dbFile.get_all_solutions(req.params.exam_id,req.params.q_num,function (solutions) {
-        res.render('solutions', {query: solutions});
+        res.render('user_solutions', {query: solutions});
         console.log(solutions);
     });
 });

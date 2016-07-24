@@ -2,7 +2,7 @@
     <div class = 'search container' id = 'solutions-div'>
         <h4 class='search-head'>Search results for "{{query}}"</h4>
         {{# each result}}
-            <a href="/questions/{{this.id}}">
+            <a href="/questions/{{this.id}}"> <!--- Attaches exam id to url --->
                 <section class = 'solutions-card'>
                     <h3 class = 'solutions-title'>{{this.title}}</h3>
                     <p class = 'solutions-time' ><em>Term: </em>{{this.term}} {{this.year}}</p>

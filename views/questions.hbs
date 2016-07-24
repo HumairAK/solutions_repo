@@ -6,23 +6,22 @@
             <a href="http://www.cs.toronto.edu/~fpitt/CSC148/20131/tests/test1-0101.pdf" target='_blank'><img src="assets/images/exam.png" class='exam-img img-responsive exam-info'></a>
 
             <section class='exam-info'>
-                <h3>CSC148</h3>
-                <p>Winter 2015 exam</p>
-                <p><em>Instructor(s): </em>Fairgrieve and Hangerman </p>
-                <p><em>Upload date:</em> 2016-07-08</p>
-                <p><em>Uploaded by:</em> John Smith</p>
-                <p><em>Page count:</em> 22</p>
-                <p><em>Question count:</em> 10</p>
+                <h3>{{examInfo.courseCode}}</h3>
+                <p>{{examInfo.term}} {{examInfo.year}} {{examInfo.type}}</p>
+                <p><em>Instructor(s): </em>{{examInfo.instructors}}</p>
+                <p><em>Upload date:</em> {{examInfo.uploadDate}}</p>
+                <p><em>Uploaded by:</em> {{examInfo.uploader}}</p>
+                <p><em>Page count:</em> {{examInfo.pageCount}}</p>
+                <p><em>Question count:</em> {{examInfo.questionCount}}</p>
             </section>
 
             <!-- QUESTION LISTINGS -->
 
             {{#each query}}
-
-                <a href="/user_solutions">
+                <a href="/solutions/{{../examInfo.id}}/{{this.q_id}}">
                     <section class = 'solutions-card row'>
                         <div class='pull-left col-sm-8 col-md-8'>
-                            <h3 class = 'questions-number'>Question {{this.id}}</h3>
+                            <h3 class = 'questions-number'>Question {{this.q_id}}</h3>
                             <p><span class='questions-sol-num'>{{this.count}} solutions, </span> <span class = 'questions-comment'>{{this.comments}} comments</span></p>
                         </div>
                         <div class='pull-right right-arrow'>

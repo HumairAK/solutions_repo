@@ -16,7 +16,9 @@ var MongoStore = require('connect-mongo') (session); //for storing sessions in d
 var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
 var adminRoutes = require('./routes/admin');
-var app = express();
+
+var exports = module.exports = {};
+var app = exports.app = express();
 
 // Templating engine, we are using handlebars
 // This will allow us to create html pages dynamically before serving them.

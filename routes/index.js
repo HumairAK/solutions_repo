@@ -86,7 +86,6 @@ router.get('/search', function(req, res, next) {
     res.redirect('/exams/' + courseName);
 });
 
-
 /* This is a redirect from the exams page, route is generated in exams.hbs
  *
  * EXAMPLE DATA GIVEN BELOW:

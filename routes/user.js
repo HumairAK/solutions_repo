@@ -76,7 +76,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         inbox.push(mail_data);
         inbox.push(mail_data);
 
-    res.render('user_profile_alt', {comments : comments, inbox: inbox});
+    res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
 });
 
 /* Adds a solution into the database, redirect to exam/question/solution page */
@@ -207,7 +207,7 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 });
 
-router.get('/user_profile/send_message/:id', loggedIn, function(req, res, next) {
+router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     var date = new Date();
     var current_date = date.toString().slice(0, 24);
     var mail_data = {
@@ -215,8 +215,10 @@ router.get('/user_profile/send_message/:id', loggedIn, function(req, res, next) 
         receiver: req.body.receiver_username,
         message: req.body.message,
         date: current_date
-    }
+    };
 
+    console.log(mail_data);
+    /*
     dbFile.sendMail(mail_data, function(success, error, message) {
         if ((!success && !error) || (error)) {
             res.redirect('/user/user_profile', {error: message});
@@ -225,9 +227,9 @@ router.get('/user_profile/send_message/:id', loggedIn, function(req, res, next) 
             res.redirect('/user/user_profile', {success: message});
             $('#profile-send-message').show();
         }
-    });
+    });*/
 
-    //res.redirect('/user/user_profile');
+    res.redirect('/user/user_profile');
 });
 
 module.exports = router;

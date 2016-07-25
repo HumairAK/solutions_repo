@@ -1,7 +1,7 @@
 <header>
 	<div class="header-content">
 
-		<form action="/search" method="get">
+		<form action="/search/courses" method="get" id="search-field">
 			<section class="header-content-inner">
 				<p><strong>The solutions to all your problems</strong></p>
 				<hr> <!-- Divider -->
@@ -14,13 +14,17 @@
                                     class="btn btn-default dropdown-toggle search-button"
                                     data-toggle="dropdown"
                                     aria-haspopup="true"
-                                    aria-expanded="false">
-                                Courses
+                                    aria-expanded="false" id="search-drop-down">
+                                <span id="drop-down-value">Courses</span>
                                 <span class="caret"></span>
                             </button>
-							<ul class="dropdown-menu">
-								<li><a href="#">Courses</a></li>
-								<li><a href="#">Users</a> </li>
+							<ul class="dropdown-menu" id="search-type">
+
+                                <!-- add classes to <a> refs, on click, check texts, hide/adjust,
+                       change action etc. accordingly -->
+
+                                <li><a href="#" class="search-menu">Courses</a></li>
+								<li><a href="#" class="search-menu">Users</a> </li>
 							</ul>
 						</div>
 

@@ -1,18 +1,21 @@
 <main id = 'solutions-main'>
     <div class = 'search container' id = 'solutions-div'>
         <h4 class='search-head'>Search results for "{{query}}"</h4>
-        {{# each result}}
-            <a href="/questions/{{this.id}}"> <!--- Attaches exam id to url --->
-                <section class = 'solutions-card'>
-                    <h3 class = 'solutions-title'>{{this.title}}</h3>
-                    <p class = 'solutions-time' ><em>Term: </em>{{this.term}} {{this.year}}</p>
-                    <p class = 'exam-instr'><em>Instructors: </em>
-                        {{this.instructors}}
-                    </p>
-                    <p class = 'solutions-type'>{{result.type}}</p>
-                </section>
-            </a>
-        {{/each}}
-
+        {{# if result }}
+            {{# each result}}
+                <a href="/questions/{{this.id}}"> <!--- Attaches exam id to url --->
+                    <section class = 'solutions-card'>
+                        <h3 class = 'solutions-title'>{{this.title}}</h3>
+                        <p class = 'solutions-time' ><em>Term: </em>{{this.term}} {{this.year}}</p>
+                        <p class = 'exam-instr'><em>Instructors: </em>
+                            {{this.instructors}}
+                        </p>
+                        <p class = 'solutions-type'>{{result.type}}</p>
+                    </section>
+                </a>
+            {{/each}}
+        {{ else }}
+            <h3 class="solutions-title"> No results found. Sorry!</h3>
+        {{/if}}
     </div>
 </main>

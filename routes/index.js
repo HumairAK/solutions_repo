@@ -74,11 +74,37 @@ router.get('/exams/:id', function(req, res, next) {
     });
 });
 
+/* Render user search page based on query */
+router.get('/user/:query', function(req,res,next){
+    var query = req.params.query;
+    // Need to validate query
+
+
+    dbFile.search_users(query, function(success, result){
+        if(success){
+            console.log(result);
+            res.render('user_search', {users : result, query : query});
+        }else{
+            console.log(result);
+            res.redirect('/');
+        }
+    });
+});
+
 /* Render/GET search (exam) page */
-router.get('/search', function(req, res, next) {
+router.get('/search/:type', function(req, res, next) {
+
+    var searchType = req.params.type;
     console.log(req.query.search);
-    var courseName = req.query.search;
-    res.redirect('/exams/' + courseName);
+    console.log(searchType);
+    if(searchType == "courses"){
+        var courseName = req.query.search;
+        res.redirect('/exams/' + courseName);
+    }else{
+        var userInfo = req.query.search;
+        res.redirect('/user/' + userInfo);
+    }
+
 });
 
 /* This is a redirect from the exams page, route is generated in exams.hbs
@@ -166,8 +192,7 @@ router.get('/questions/:exam_id', function (req,res) {
      "by": "some_user name"
      },
     *
-    */
-
+    **/
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
     var examID = req.params.exam_id;
     var qID = req.params.q_num;

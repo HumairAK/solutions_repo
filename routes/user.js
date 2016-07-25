@@ -101,7 +101,7 @@ router.post('/submit_solution/:examID/:qID', function(req,res){
         comments = [],
         author = req.user.user_name;
 
-    var fields = [examID, qID, text, votes, comments, author];
+    var fields = [examID, qID, text, author];
     console.log(fields);
     // Add to database
     dbFile.add_solution(fields, function(addedSolution, statusMsg){

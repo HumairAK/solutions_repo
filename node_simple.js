@@ -323,7 +323,8 @@ exports.retrieveFollows = function (user_name, callback) {
 
 /**
  * This function will retrieve ALL the comments a user has ever made.
- * It returns an array containing objects of the form: {exam_id, comment, date}.
+ * It returns an array containing objects of the form: {exam_id, comment, date, ...
+ * course_code, year, term}.
  * Note: a comment should only exist IF a solution exists.
  *
  * @param {string}   user_name: the unique user name for the user

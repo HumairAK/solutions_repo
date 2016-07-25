@@ -213,13 +213,33 @@
                 <!--- Remove Course --->
                 <div class="row cpnl-container" id="cpnl-removeCourse">
                     <h4>Remove Course</h4>
-                    Pending. Need required database functionality.
+                    <form action="/admin/remove/course" method="post">
+                        <div class="form-group">
+                            Course Code: <input type="text"
+                                                class="form-control"
+                                                placeholder="e.g. CSC240"
+                                                name="course_code">
+                        </div>
+
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
 
                 <!--- Remove User --->
                 <div class="row cpnl-container" id="cpnl-removeUser">
                     <h4>Remove User</h4>
-                    Pending. Need required database functionality.
+                    <form action="/admin/remove/user" method="post">
+                        <div class="form-group">
+                            Username: <input type="text"
+                                                class="form-control"
+                                                placeholder="Jsmith85"
+                                                name="username">
+                        </div>
+
+                        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
 
 

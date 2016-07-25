@@ -285,6 +285,7 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
 
 });
 
+// Authentication check in code
 router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     var examID = req.params.examID;
     var qID = req.params.qID;
@@ -292,7 +293,6 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     var username = req.user.user_name;
     var solutionID = req.params.solID;
     // Must be a logged in user to access
-    console.log(examID + "," + qID + "," + comment + "," + username + "," + solutionID);
     var fields = [comment, username];
     if(req.isAuthenticated()){
         dbFile.add_comment(solutionID, fields, function(commentAdded, statusMessage){
@@ -310,7 +310,7 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     }
 });
 
-router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
+router.post('/solution/vote/:examID/:qID/:solID', loggedIn, function(req, res, next){
     var vote = req.body.vote;
     var examID = req.params.examID;
     var qID = req.params.qID;

@@ -51,6 +51,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     }
     function getMail(){
         return new Promise(function(resolve, reject) {
+
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
                 if (success) {
                     inbox = data;

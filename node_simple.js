@@ -350,16 +350,20 @@ exports.retrieve_userComments_history = function (username, callback) {
                 _id: 0
             }}
         ]).toArray(function (err, res) {
-            var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
-            res.forEach(function (comment) {
-                exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
-                    comment.course_code = docs[0].course_code;
-                    comment.year = docs[0].year;
-                    comment.term = docs[0].term;
-                    mylist.push(comment);       // save it to array
-                    finised();
+            if(!res.length){ // Ensure a callback is executed if res is empty
+                callback(true, res);
+            }else{
+                var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
+                res.forEach(function (comment) {
+                    exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
+                        comment.course_code = docs[0].course_code;
+                        comment.year = docs[0].year;
+                        comment.term = docs[0].term;
+                        mylist.push(comment);       // save it to array
+                        finised();
+                    });
                 });
-            });
+            }
         });
 
         function doCall() {

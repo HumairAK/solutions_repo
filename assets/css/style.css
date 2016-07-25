@@ -467,3 +467,9 @@ section.exam-info em {
 .cpnl-container{
     padding: 4%;
 }
+
+
+/***** Text Area for Send Message ****/
+textarea {
+	resize:vertical;
+}

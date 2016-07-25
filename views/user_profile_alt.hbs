@@ -151,15 +151,15 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                         </table>
                     </div>
                 </div>
-                {{# if success }}
+                {{# if messages.success }}
                     <section class="alert alert-success">
                         <!-- Change those to banners later -->
-                        <h2>{{ success }}</h2>
+                        <h3>{{ messages.success }}</h3>
                     </section>
                 {{ else }}
-                    {{# if error }}
+                    {{# if messages.error }}
                         <section class="alert alert-danger">
-                            <h2>{{ error }}</h2>
+                            <h3>{{ messages.error }}</h3>
                         </section>
                     {{/if}}
                 {{/if}}

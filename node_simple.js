@@ -89,6 +89,7 @@ var mongodb = exports.mongodb =  require('mongodb');
 var mongoFactory = exports.mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
+var _ = require('underscore');
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
@@ -337,6 +338,8 @@ exports.retrieve_userComments_history = function (username, callback) {
     mongoFactory.getConnection(uri).then(function (db) {
 
         var solutions = db.collection('solutions');
+        var exams = db.collection('exams');
+        var mylist = [];
         solutions.aggregate([
 
             { $match : {
@@ -352,13 +355,23 @@ exports.retrieve_userComments_history = function (username, callback) {
                 exam_id: "$exam_id",
                 _id: 0
             }}
-        ]).toArray(function (err, results) {
-            if (err) callback(false, "Error: some weird error occurred while query");
-            else {
-                callback(true, results);
-            }
-
+        ]).toArray(function (err, res) {
+            var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
+            res.forEach(function (comment) {
+                exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
+                    comment.course_code = docs[0].course_code;
+                    comment.year = docs[0].year;
+                    comment.term = docs[0].term;
+                    mylist.push(comment);       // save it to array
+                    finised();
+                });
+            });
         });
+
+        function doCall() {
+            callback(true, mylist);
+        }
+
 
     }).catch(function (err) {
         // console.err(err);
@@ -1207,6 +1220,7 @@ exports.get_exam_byID = function (id, callback) {
                 }
                 else {
                     callback(true, false,  docs[0]);
+                    console.log("DOCS: "+ docs);
                 }
             });
         })

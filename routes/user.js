@@ -22,9 +22,9 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         if (!success) {
             // Need to redirect to an error page instead.
             console.log("Could not retrieve comments.");
-        } else if (object){
+        } else if (object.length){
             comments = object;
-            for (var comment in comments) {
+            comments.forEach(function (comment) {
                 dbFile.get_exam_byID(comment.exam_id, function(success, error, data) {
                     if (success) {
                         comment.exam_info = {
@@ -32,10 +32,10 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                             term: data.term,
                             year : data.year
                         };
+                        console.log(comment);
                     }
                 });
-            }
-
+            });
         }
     });
     // For testing purposes, remove later:
@@ -207,7 +207,11 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 });
 
-router.post('/user_profile/send_message', loggedIn , function(req, res, next) {
+router.get('/user_profile/send_message', loggedIn, function(req, res, next) {
+    res.redirect('/user/user_profile');
+});
+
+router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     var date = new Date();
     var current_date = date.toString().slice(0, 24);
     var mail_data = {
@@ -218,18 +222,17 @@ router.post('/user_profile/send_message', loggedIn , function(req, res, next) {
     };
 
     console.log(mail_data);
-    /*
     dbFile.sendMail(mail_data, function(success, error, message) {
         if ((!success && !error) || (error)) {
-            res.redirect('/user/user_profile', {error: message});
-            $('#profile-send-message').show();
-        }  else {
-            res.redirect('/user/user_profile', {success: message});
-            $('#profile-send-message').show();
-        }
-    });*/
+            req.session.messages  = {error : message};
+            res.redirect('/user/user_profile');
 
-    res.redirect('/user/user_profile');
+        }  else {
+            req.session.messages = {success: message};
+            res.redirect('/user/user_profile');
+        }
+    });
+
 });
 
 // Authentication check in code

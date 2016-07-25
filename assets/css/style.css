@@ -473,3 +473,24 @@ section.exam-info em {
 textarea {
 	resize:vertical;
 }
+
+
+.table {
+    display:table;
+}
+
+.table-row {
+    display:table-row;
+}
+.table-row {
+    border-bottom: 3px solid red;
+}
+
+.table-cell {
+    display:table-cell;
+    padding: 2%;
+}
+
+hr {
+    width: 100%;
+}

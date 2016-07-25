@@ -6,6 +6,8 @@ var passport = require('passport');
 var dbFile  = require("../node_simple.js");
 var Promise = require('promise');
 
+var $ = require('jquery')(require("jsdom").jsdom().parentWindow);
+
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
@@ -18,6 +20,7 @@ router.get('/logout', loggedIn, function (req, res, next) {
 
 /* Render/GET user_profile page */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
+
     req.session.messages = null;
 
     var comments = [];
@@ -242,15 +245,20 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     dbFile.sendMail(mail_data, function(success, error, message) {
         if ((!success && !error) || (error)) {
             req.session.messages  = {error : message};
-            res.redirect('/user/user_profile');
+            res.redirect('/user/user_profile/');
+
 
         }  else {
             req.session.messages = {success: message};
-            res.redirect('/user/user_profile');
+            res.redirect('/user/user_profile/');
+            $('#profile-send-message').show();
+
+
         }
     });
 
 });
+
 
 // Authentication check in code
 router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){

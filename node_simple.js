@@ -320,7 +320,7 @@ exports.retrieveFollows = function (user_name, callback) {
  * course_code, year, term}.
  * Note: a comment should only exist IF a solution exists.
  *
- * @param {string}   user_name: the unique user name for the user
+ * @param {string}   username: the unique user name for the user
  * @param {function} callback: with 2 args: (boolean, <string>),
  *                             where boolean : err ? false : true
  *                             where <string> can be error message
@@ -380,7 +380,7 @@ exports.retrieve_userComments_history = function (username, callback) {
  * IF we dont wanna go that route, need to update these fields whenever they are altered
  * by the user manually.
  *
- * @param {string}   user_name: the unique user name for the user
+ * @param {string}   username: the unique user name for the user
  * @param {function} callback: with 2 args: (boolean, <string>),
  *                             where boolean : err ? false : true
  *                             where <string> can be error message
@@ -402,7 +402,7 @@ exports.retrieve_userComments_count = function (username, callback) {
  * This function will retrieve ALL the solutions a user has ever provided.
  * It returns an array containing objects of the solution form.
  *
- * @param {string}   user_name: the unique user name for the user
+ * @param {string}   username: the unique user name for the user
  * @param {function} callback: with 2 args: (boolean, <string>),
  *                             where boolean : err ? false : true
  *                             where <string> can be error message
@@ -432,7 +432,7 @@ exports.retrieve_userSolutions_history = function (username, callback) {
  * IF we dont wanna go that route, need to update these fields whenever they are altered
  * by the user manually.
  *
- * @param {string}   user_name: the unique user name for the user
+ * @param {string}   username: the unique user name for the user
  * @param {function} callback: with 2 args: (boolean, <string>),
  *                             where boolean is false if err OR true if no error
  *                             where <string> can be error message
@@ -715,7 +715,7 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
  *
  * @param {string}   sol_id: id of the solution to which to add the comment
  * @param {string[]} fields: <[text, by_username]>
- * @param {function} callback: with args (<bool>,<string>)
+ * @param {function} serverCallback: with args (<bool>,<string>)
  *                              where <bool> : err ? false : true
  *                              where <string> : err ? err_mssg : success_mssg
  * */

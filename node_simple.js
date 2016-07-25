@@ -370,6 +370,7 @@ exports.retrieve_userComments_history = function (username, callback) {
 
         function doCall() {
             callback(true, mylist);
+            console.log("IN NODE SIMPLE: " + mylist);
         }
 
 
@@ -723,9 +724,10 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
  *                              where <string> : err ? err_mssg : success_mssg
  * */
 exports.add_comment = function (sol_id, fields, serverCallback) {
+    var date = new Date();
     var Data = {
         text: fields[0],
-        date: new Date(),
+        date: date.toString().slice(0, 24),
         by: fields[1]
     };
 

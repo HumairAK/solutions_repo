@@ -103,6 +103,13 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
+exports.closeDB = function(){
+    mongoFactory.getConnection(uri).then(function(db) {
+        db.close();
+    }).catch(function(err){
+        console.error(err);
+    });
+};
 
 /**
  * Remvove a course from ONLY the courses table IN CASE of accidental
@@ -131,11 +138,11 @@ exports.remove_course = function (course_code, callback) {
 
             else if (docs.deletedCount == 1) {
                 callback(true, "Course was removed successfully from JUST courses");
-                db.close();
+
             }
             else if (docs.deletedCount == 0) {
                 callback(false, "No such user was found");
-                db.close();
+
                 //console.log("No such exam was found");
             }
         });
@@ -143,7 +150,6 @@ exports.remove_course = function (course_code, callback) {
         console.error(err);
     });
 };
-
 
 /**
  * This function will remove the user given user_name from the users table
@@ -174,13 +180,13 @@ exports.remove_user = function (username, callback) {
                     if (err) throw err;
                     else if (result.deletedCount == 1) {
                         callback(true, "User was removed successfully from both tables");
-                        db.close();
+
                     }
                 });
             }
             else if (docs.deletedCount == 0) {
                 callback(false, "No such user was found");
-                db.close();
+
                 //console.log("No such exam was found");
             }
         });
@@ -188,7 +194,6 @@ exports.remove_user = function (username, callback) {
         console.error(err);
     });
 };
-
 
 /**
  * This function will search through the users table to look for 'token'.
@@ -223,13 +228,12 @@ exports.search_users = function ( token, callback ) {
             }
         });
 
-        db.close();
+
 
     }).catch(function (err) {
         console.error(err);
     });
 };
-
 
 /**
  * This function will add the given exam_id to the given user's followers list.
@@ -276,7 +280,7 @@ exports.followExam = function (user_name, exam_id, callback) {
                             callback(true, "Success: user is following this exam");
                         }
                     });
-                    db.close();
+
 
                 }).catch(function (err) {
                     console.error(err);
@@ -285,7 +289,6 @@ exports.followExam = function (user_name, exam_id, callback) {
         }
     });
 };
-
 
 /**
  * This function will return a list of followers of user i.e. a list of
@@ -312,12 +315,10 @@ exports.retrieveFollows = function (user_name, callback) {
             }
         });
 
-        // db.close();
     }).catch(function (err) {
         console.error(err);
     });
 };
-
 
 /**
  * This function will retrieve ALL the comments a user has ever made.
@@ -359,14 +360,11 @@ exports.retrieve_userComments_history = function (username, callback) {
 
         });
 
-        db.close();
-
     }).catch(function (err) {
         // console.err(err);
         callback(false, "Error: failed to connect to db");
     })
 };
-
 
 /** We CAN use this. IF we do, we should remove the comments_count field from a user
  * IF we dont wanna go that route, need to update these fields whenever they are altered
@@ -390,7 +388,6 @@ exports.retrieve_userComments_count = function (username, callback) {
 
 };
 
-
 /**
  * This function will retrieve ALL the solutions a user has ever provided.
  * It returns an array containing objects of the solution form.
@@ -412,7 +409,7 @@ exports.retrieve_userSolutions_history = function (username, callback) {
             else {
                 callback(true, result);
             }
-            db.close();
+
         });
 
     }).catch(function (err) {
@@ -420,7 +417,6 @@ exports.retrieve_userSolutions_history = function (username, callback) {
         callback(false, "Error: failed to connect to db");
     })
 };
-
 
 /** We CAN use this. IF we do, we should remove the solutions_count field from a user
  * IF we dont wanna go that route, need to update these fields whenever they are altered
@@ -443,7 +439,6 @@ exports.retrieve_userSolutions_count = function (username, callback) {
     });
 
 };
-
 
 /**
  * This function creates and adds a user to users table.
@@ -500,19 +495,19 @@ exports.add_user = function (fields, callbackUser) {
                             users.insertOne( user_data, function (err) {
                                 if (err) {
                                     callbackUser(false, true, "Error : User has not been added.");
-                                    db.close();
+
                                 }
 
                                 else {// user insert successfull
                                     logins.insertOne(login_data, function (err) {
                                         if (err) {
                                             callbackUser(false, true, "Error : User has not been added.");
-                                            db.close();
+
                                         }
 
                                         else {// login insert successfull
                                             callbackUser(true, false, "User has been added.");
-                                            db.close();
+
                                         }
                                     });
                                 }
@@ -533,7 +528,6 @@ exports.add_user = function (fields, callbackUser) {
         }
     });
 };
-
 
 /**
  * This (helper) function returns true IFF user_name already exists in the database
@@ -557,13 +551,11 @@ exports.find_user_name = function (user_name, callback) {
                     callback(true);
                 }
             });
-            // db.close();
         })
         .catch(function (err) {
             console.err(err);
         })
 };
-
 
 /**
  * This function retrieves the user object given their user_name
@@ -594,12 +586,9 @@ exports.retrieveUser = function (username, callback) {
             else {
                 callback(false, false, null, "Username is undefined.");
             }
-
         });
     });
 }
-
-
 
 /**
  * Returns the hashed password given the username. Assume username exists.
@@ -627,10 +616,10 @@ exports.retrievePassword = function (username, callback) {
                 var pwd = result[0].password; //result is an array
                 callback(true, pwd, "Password retrieved");
             }
+
         });
     });
 }
-
 
 /**
  * This (helper) function returns true IFF email already exists in the database
@@ -654,13 +643,11 @@ exports.find_user = function (email, callback) {
                     callback(true);
                 }
             });
-            // db.close();
         })
         .catch(function (err) {
             console.err(err);
         })
 };
-
 
 /**
  * This function returns an array where each element contains info for a particular question
@@ -702,7 +689,6 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
 
 
                 ]).toArray(function (err, result) {
-                // console.log(result);
                 callback(result);
 
             });
@@ -712,7 +698,6 @@ exports.get_exam_info_by_ID = function (exam_id, callback) {
         })
 
 };
-
 
 /**
  * CALLBACK ADDED RECENTLY, BEWARE WHEN CALLING IT
@@ -746,15 +731,13 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
                 else {
                     users.updateOne( { user_name: fields[1] }, { $inc: { comments: 1} }, function (err) {
                         if (err) callback(false, "Error: Some error occured while updating user info");
-                        // if (err) throw err;
                         else {
                             callback(true, "Success: comment added successfully");
-                            // console.log("user updated");
-
                         }
-                        db.close();
+
                     });
                 }
+
             });
 
         })
@@ -763,7 +746,6 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
             console.error(err);
         })
 };
-
 
 /**
  * This function will get all the solution for a given exam_id and q_num
@@ -788,6 +770,7 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
                 else {
                     callback(docs);
                 }
+
             });
 
 
@@ -796,7 +779,6 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
             console.error(err);
         })
 };
-
 
 /**
  * CALLBACK ADDED RECENTLY, BEWARE WHEN CALLING IT
@@ -833,9 +815,6 @@ exports.add_solution = function (fields, callback) {
                         // console.log("solution added");
                         callback(true, "Success: added solution successfully!");
                     }
-                    db.close(function (err) {   // close the connection when done
-                        if (err) throw err;
-                    });
                 });
             }
         });
@@ -846,7 +825,6 @@ exports.add_solution = function (fields, callback) {
     });
 
 };
-
 
 /**
  * This function will update the vote count of a solution.
@@ -870,13 +848,12 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
                 else {
                     callback(true, "Success: updated vote count");
                 }
+
             });
-        db.close();
     }).catch(function (err) {
         console.log(err);
     });
 };
-
 
 /**
  * This function will retrieve all exams in the database given the course code ...
@@ -934,7 +911,6 @@ exports.get_all_exams = function (course_code, callback) {
         });
 
 };
-
 
 /**
  * This function will add an exam to the database UNLESS the exams already exists.
@@ -1003,9 +979,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
                         else {
                             console.log("exam added");
                             serverCallback(true, "Exam Successfully added.");
-                            db.close(function (err) {   // close the connection when done
-                                if (err) throw err;
-                            });
                         }
                     });
                 })
@@ -1016,7 +989,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
         }
     });
 };
-
 
 /**
  * This function will return TRUE if the provided exam info already exists in the database
@@ -1063,17 +1035,11 @@ exports.find_exam = function (fields, serverCallback, callback) {
                     callback(true, serverCallback);
                 }
             });
-
-            /*      db.close(function (err) {
-             if (err) throw err;
-             });*/
-
         })
         .catch(function(err) {
             console.error(err);
         });
 };
-
 
 /**
  * This function will add a course to the database UNLESS the course already exists.
@@ -1111,9 +1077,6 @@ exports.add_course = function (course_code, title, serverCallback) {
                         else {
                             console.log("course added");
                             serverCallback(true, "Course added successfully.");
-                            db.close(function (err) {   // close the connection when done
-                                if (err) throw err;
-                            });
                         }
                     });
                 })
@@ -1123,7 +1086,6 @@ exports.add_course = function (course_code, title, serverCallback) {
         }
     });
 };
-
 
 /**
  * This function will return TRUE if the provided course info already exists in the database
@@ -1160,17 +1122,11 @@ exports.find_course = function (course_code, callback) {
                     callback(true, docs);
                 }
             });
-
-            /*              db.close(function (err) {
-             if (err) throw err;
-             });*/
-
         })
         .catch(function(err) {
             console.error(err);
         });
 };
-
 
 /**
  * This function will remove the exam from the database given the combination
@@ -1208,12 +1164,12 @@ exports.remove_exam = function (fields, serverCallback) {
                     else {
                         if (docs.deletedCount == 1) {
                             serverCallback(true, "Exam was removed successfully");
-                            db.close();
+
                             //console.log("exam was removed");
                         }
                         else if (docs.deletedCount == 0) {
                             serverCallback(false, "No such exam was found");
-                            db.close();
+
                             //console.log("No such exam was found");
                         }
                     }
@@ -1224,7 +1180,6 @@ exports.remove_exam = function (fields, serverCallback) {
             console.error(err);
         });
 };
-
 
 /**
  * This function will get the specific exam object given its ID.
@@ -1252,7 +1207,6 @@ exports.get_exam_byID = function (id, callback) {
                 }
                 else {
                     callback(true, false,  docs[0]);
-
                 }
             });
         })
@@ -1260,7 +1214,6 @@ exports.get_exam_byID = function (id, callback) {
             callback(false, true, null);
         });
 };
-
 
 /******************************  ADMINS *********************************/
 
@@ -1286,12 +1239,11 @@ exports.addAdmin = function (admin_data, callback) {
                 admins.insertOne( admin_data, function (err) {
                     if (err) {
                         callback(false, true, message);
-                        db.close();
                     }
                     else {
                         callback(true, false, "Admin added.");
-                        db.close();
                     }
+
                 });
 
             }).catch(function (err) {
@@ -1303,7 +1255,6 @@ exports.addAdmin = function (admin_data, callback) {
     });
 
 };
-
 
 /*
  *  Equivalent of function find_user, but for admins. Calls back true if admin with a
@@ -1331,7 +1282,6 @@ exports.adminExists = function (username, callback) {
         })
 };
 
-
 /******************************  MAIL *********************************/
 
 /*
@@ -1345,22 +1295,19 @@ exports.adminExists = function (username, callback) {
  * callback(success, error, message)
  *
  */
-
 exports.sendMail = function (mail_data, callback) {
     exports.find_user_name(mail_data.receiver, function (exist){
         if (exist) {
             mongoFactory.getConnection(uri).then(function(db) {
                 var mail = db.collection('mail');
-
                 mail.insertOne(mail_data, function(err) {
                     if (err) {
                         callback(false, true, 'Error: could not send message.');
-                        db.close();
                     }
                     else {
                         callback(true, false, "Message sent.");
-                        db.close();
                     }
+
                 });
             });
         } else {
@@ -1391,6 +1338,7 @@ exports.checkMailbox = function (username, callback) {
             } else {
                 callback(true, false, data, 'Retrieved inbox');
             }
+
         });
     });
 
@@ -1405,7 +1353,7 @@ exports.findUserByID = function (id, callback) {
             var logins = db.collection('logins');
             logins.find( { _id : id }, function (err, result) {
                 callback(err, result);
-                db.close();
+
             });
         })
         .catch(function (err) {
@@ -1426,7 +1374,7 @@ exports.findUserByID = function (id, callback) {
  var users = db.collection('users').insertOne(userObj, function (err, result) {
  assert.equal(null, error);
  console.log("User inserted");
- db.close();
+
  });
 
  });

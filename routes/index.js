@@ -74,7 +74,7 @@ router.get('/exams/:id', function(req, res, next) {
     });
 });
 
-// WORK IN PROGRESS
+/* Render user search page based on query */
 router.get('/user/:query', function(req,res,next){
     var query = req.params.query;
     // Need to validate query
@@ -192,7 +192,7 @@ router.get('/questions/:exam_id', function (req,res) {
      "by": "some_user name"
      },
     *
-    *
+    **/
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
     var examID = req.params.exam_id;
     var qID = req.params.q_num;

@@ -151,20 +151,21 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                         </table>
                     </div>
                 </div>
-                {{# if messages.success }}
-                    <section class="alert alert-success">
-                        <!-- Change those to banners later -->
-                        <h3>{{ messages.success }}</h3>
-                    </section>
-                {{ else }}
-                    {{# if messages.error }}
-                        <section class="alert alert-danger">
-                            <h3>{{ messages.error }}</h3>
-                        </section>
-                    {{/if}}
-                {{/if}}
+
                 <div class="row" id="profile-send-message">
                     <h3>Send Message</h3>
+                    {{# if messages.success }}
+                        <section class="alert alert-success">
+                            <!-- Change those to banners later -->
+                            <h3>{{ messages.success }}</h3>
+                        </section>
+                    {{ else }}
+                        {{# if messages.error }}
+                            <section class="alert alert-danger">
+                                <h3>{{ messages.error }}</h3>
+                            </section>
+                        {{/if}}
+                    {{/if}}
                     <div class="col-xs-offset-1 col-sm-offset-3 col-xs-10 col-sm-6">
                         <form action="/user/user_profile/send_message" method="post">
                             <div class="form-group">
@@ -209,31 +210,31 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                 </div>
                 <div class="row" id="profile-comments">
 
-                    {{# if comments }}
+                    {{# if comments.length }}
                         <h3>Comment History</h3>
-                    <div class="col-sm-10 col-sm-offset-1 prf-tables">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Comment</th>
-                            <th>Exam</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {{# each comments }}
+                        <div class="col-sm-10 col-sm-offset-1 prf-tables">
+                        <table class="table">
+                            <thead>
                             <tr>
-                                <td>{{ this.date }}</td>
-                                <td>{{ this.comment }}</td>
-                                <td>{{ this.exam_info.course_code }} > {{ this.exam_info.term }}
-                                    {{ this.exam_info.year }}</td>
+                                <th>Date</th>
+                                <th>Comment</th>
+                                <th>Exam</th>
                             </tr>
-                        {{/each}}
+                            </thead>
+                            <tbody>
+                            {{# each comments }}
+                                <tr>
+                                    <td>{{ this.date }}</td>
+                                    <td>{{ this.comment }}</td>
+                                    <td>{{ this.course_code }} > {{ this.term }}
+                                        {{ this.year }}</td>
+                                </tr>
+                            {{/each}}
 
-                    </table>
+                        </table>
 
 
-                    </div>
+                        </div>
                     {{else}}
                         <h3>No Comments.</h3>
                     {{/if}}

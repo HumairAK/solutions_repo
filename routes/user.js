@@ -4,6 +4,7 @@ var csrf = require('csurf'); // Cross-Site Request Forgery prevention
 var passport = require('passport');
 
 var dbFile  = require("../node_simple.js");
+var Promise = require('promise');
 
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
@@ -14,69 +15,122 @@ router.get('/logout', loggedIn, function (req, res, next) {
     res.redirect('/');
 });
 
-/* Render/GET user_profile page */
-router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
-    // GET COMMENTS
+
+function getComments(req) {
     var comments = [];
     dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
         if (!success) {
             // Need to redirect to an error page instead.
             console.log("Could not retrieve comments.");
+            if (!comments.length) {
+                var obj = {
+                    comment: 'Use a heap!',
+                    date: '2016-04-05',
+                    exam_id: 'some id',
+                    exam_info : {
+                        course_code : 'CSC263',
+                        term: 'Fall',
+                        year : 2016
+                    }
+                };
+                comments.push(obj);
+                comments.push(obj);
+            }
         } else if (object.length){
             comments = object;
-            comments.forEach(function (comment) {
-                dbFile.get_exam_byID(comment.exam_id, function(success, error, data) {
-                    if (success) {
-                        comment.exam_info = {
-                            course_code : data.course_code,
-                            term: data.term,
-                            year : data.year
-                        };
-                        console.log(comment);
-                    }
-                });
-            });
+            console.log(object);
         }
-    });
-    // For testing purposes, remove later:
-    if (!comments.length) {
-        var obj = {
-            comment: 'Use a heap!',
-            date: '2016-04-05',
-            exam_id: 'some id',
-            exam_info : {
-                course_code : 'CSC263',
-                term: 'Fall',
-                year : 2016
-            }
-        };
-        comments.push(obj);
-        comments.push(obj);
-    }
 
-    // GET INBOX
+
+
+    });
+}
+
+var checkMail = function(req){
     var inbox = [];
     dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
         if (success) {
             inbox = data;
         } else if (error) {
+            // For testing purposes, remove later:
+            if (!inbox.length) {
+                var mail_data = {
+                    sender: 'The Dude', receiver: req.user.user_name,
+                    message: 'Whoa look at this',
+                    date: '2016-04-05'
+                }
+            }
+            inbox.push(mail_data);
+            inbox.push(mail_data);
             // Need to redirect to an error page instead.
             console.log("Could not retrieve mail.");
         }
     });
+}
 
-    // For testing purposes, remove later:
-    if (!inbox.length) {
-        var mail_data = {
-            sender: 'The Dude', receiver: req.user.user_name,
-            message: 'Whoa look at this',
-            date: '2016-04-05'
-        }
+
+
+/* Render/GET user_profile page */
+router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
+    req.session.messages = null;
+
+    var comments = [];
+    var inbox = [];
+    function getComments() {
+        return new Promise(function(resolve, reject) {
+            dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
+                if (!success) {
+                    // Need to redirect to an error page instead.
+                    console.log("Could not retrieve comments.");
+                    if (!comments.length) {
+                        var obj = {
+                            comment: 'Use a heap!',
+                            date: '2016-04-05',
+                            exam_id: 'some id',
+                            course_code : 'CSC263',
+                            term: 'Fall',
+                            year : 2016
+                        };
+                        comments.push(obj);
+                        comments.push(obj);
+                        resolve(1);
+                    }
+                } else if (object.length){
+                    comments = object;
+                    resolve(1);
+                }
+
+            });
+        });
     }
-        inbox.push(mail_data);
-        inbox.push(mail_data);
+    function getMail(){
+        return new Promise(function(resolve, reject) {
+            dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
+                if (success) {
+                    inbox = data;
+                    resolve(1);
+                } else if (error) {
+                    // For testing purposes, remove later:
+                    if (!inbox.length) {
+                        var mail_data = {
+                            sender: 'The Dude', receiver: req.user.user_name,
+                            message: 'Whoa look at this',
+                            date: '2016-04-05'
+                        }
+                    }
+                    inbox.push(mail_data);
+                    inbox.push(mail_data);
+                    // Need to redirect to an error page instead.
+                    console.log("Could not retrieve mail.");
+                    resolve(1);
+                }
+            });
+        });
+    }
+    getComments().then(getMail).then(function () {
+        res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
+    });
 
-    res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
 });
 
 /* Adds a solution into the database, redirect to exam/question/solution page */
@@ -158,7 +212,7 @@ router.get('/signin', loggedOut, function (req, res, next) {
 });
 
 router.post('/signup', loggedOut, function(req, res, next) {
-    req.check('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
+    req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
     req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
     req.check('email', 'Enter a valid Email address').notEmpty().withMessage('Email required').isEmail();
     req.check('usrname', 'Enter a valid username').notEmpty().withMessage('Username required.');
@@ -205,10 +259,6 @@ router.post('/signin', loggedOut, function(req, res, next) {
     }
 
 
-});
-
-router.get('/user_profile/send_message', loggedIn, function(req, res, next) {
-    res.redirect('/user/user_profile');
 });
 
 router.post('/user_profile/send_message', loggedIn, function(req, res, next) {

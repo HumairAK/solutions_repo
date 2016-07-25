@@ -1,12 +1,19 @@
 <main id="solutions-main">
 <div class='search solutions-container container'>
 <div>
-
-    {{# if messages.error }}
-        <section class="alert alert-danger custom-Alert">
-            <h5>{{ messages.error }}</h5>
+    {{# if messages.success }}
+        <section class="alert alert-success custom-Alert">
+            <!-- Change those to banners later -->
+            <h4>{{ messages.success }}</h4>
         </section>
+    {{ else }}
+        {{# if messages.error }}
+            <section class="alert alert-danger custom-Alert">
+                <h4>{{ messages.error }}</h4>
+            </section>
+        {{/if}}
     {{/if}}
+
 
     <!-- Add Solution button and path -->
     <div class="row top-sol">

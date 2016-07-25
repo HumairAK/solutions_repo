@@ -3,6 +3,18 @@
 <div class="row">
 <!-- Admin control Panel --->
 <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-xs-offset-0 col-sm-offset-0  toppad cpnl-details">
+    {{# if messages.success }}
+        <section class="alert alert-success custom-Alert">
+            <!-- Change those to banners later -->
+            <h4>{{ messages.success }}</h4>
+        </section>
+    {{ else }}
+        {{# if messages.error }}
+            <section class="alert alert-danger custom-Alert">
+                <h4>{{ messages.error }}</h4>
+            </section>
+        {{/if}}
+    {{/if}}
 
     <!-- Admin Control Panel Menu -->
     <nav class="navbar navbar-custom">

@@ -61,6 +61,12 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
                 if (success) {
                     inbox = data;
+                    // needed to display in layout
+                    var i = 0;
+                    inbox.forEach(function(element) {
+                        element.class = i;
+                        i ++;
+                    });
                     resolve(1);
                 } else if (error) {
                     // For testing purposes, remove later:
@@ -82,7 +88,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
     getComments().then(getMail).then(function (data) {
-        console.log('got here');
+        console.log('got here fere');
         res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
     });
 

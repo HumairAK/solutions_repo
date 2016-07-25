@@ -104,13 +104,6 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 /*refer to testImports.js*/
 
 //****************************FUNCTIONS************************************************|
-exports.closeDB = function(){
-    mongoFactory.getConnection(uri).then(function(db) {
-        db.close();
-    }).catch(function(err){
-        console.error(err);
-    });
-};
 
 /**
  * Remvove a course from ONLY the courses table IN CASE of accidental

@@ -1207,6 +1207,7 @@ exports.get_exam_byID = function (id, callback) {
                 }
                 else {
                     callback(true, false,  docs[0]);
+                    console.log("DOCS: "+ docs);
                 }
             });
         })

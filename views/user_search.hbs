@@ -1,0 +1,19 @@
+<main id = 'solutions-main'>
+<div class = 'search container' id = 'solutions-div'>
+    <h4 class='search-head'>Search results for "{{query}}"</h4>
+    {{# if users }}
+        {{# each users}}
+            <a href="/public_profile/{{this._id}}">
+                <section class = 'solutions-card'>
+                    <h3 class = 'solutions-title'>{{this.user_name}}</h3>
+                    <p class = 'solutions-time' >
+                        <em>Name: </em>{{this.f_name}} {{this.l_name}} </p>
+                    </p>
+                </section>
+            </a>
+        {{/each}}
+    {{ else }}
+            <h3 class="solutions-title"> No results found. Sorry!</h3>
+    {{/if}}
+</div>
+</main>

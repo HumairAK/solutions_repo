@@ -199,7 +199,7 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                             </thead>
                             <tbody>
                             {{# each inbox }}
-                                <a href="#" data-toggle="modal">
+                                <a href="#" data-toggle="modal" data-target=".{{this.date}}{{this.sender}}">
                                 <tr>
                                     <td>{{ this.date }}</td>
                                     <td>{{ this.subject }}</td>

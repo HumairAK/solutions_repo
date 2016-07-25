@@ -23,6 +23,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     var comments = [];
     var inbox = [];
     function getComments() {
+        console.log('in getComments');
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
                 if (!success) {
@@ -39,8 +40,10 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                         };
                         comments.push(obj);
                         comments.push(obj);
-                        resolve(1);
+
                     }
+
+                    resolve(1);
                 } else if (object.length){
                     comments = object;
                     resolve(1);
@@ -50,6 +53,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
     function getMail(){
+        console.log('ing getMail');
         return new Promise(function(resolve, reject) {
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
                 if (success) {
@@ -74,10 +78,12 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
             });
         });
     }
-    getComments().then(getMail).then(function () {
+    getComments().then(getMail).then(function (data) {
+        console.log('got here');
         res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
     });
 
+    //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
 });
 
 /* Adds a solution into the database, redirect to exam/question/solution page */

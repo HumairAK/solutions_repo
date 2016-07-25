@@ -330,7 +330,7 @@ exports.retrieve_userComments_history = function (username, callback) {
 
     // get a connection
     mongoFactory.getConnection(uri).then(function (db) {
-
+        console.log("for Each here");
         var solutions = db.collection('solutions');
         var exams = db.collection('exams');
         var mylist = [];
@@ -350,8 +350,10 @@ exports.retrieve_userComments_history = function (username, callback) {
                 _id: 0
             }}
         ]).toArray(function (err, res) {
+            console.log("for Each here");
             var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
             res.forEach(function (comment) {
+                console.log("for Each here");
                 exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
                     comment.course_code = docs[0].course_code;
                     comment.year = docs[0].year;
@@ -363,6 +365,7 @@ exports.retrieve_userComments_history = function (username, callback) {
         });
 
         function doCall() {
+            console.log("Am i inside the doCall()");
             callback(true, mylist);
             console.log("IN NODE SIMPLE: " + mylist);
         }

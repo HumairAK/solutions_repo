@@ -1,0 +1,77 @@
+<main id="solutions-main">
+    <div class="container user-info-content">
+        <div class="row">
+
+            <!-- User Profile details -->
+            <div class="col-xs-12 col-sm-12 col-md-8
+            col-md-offset-2 col-xs-offset-0 col-sm-offset-0  toppad prf-details">
+
+
+                <div class="rounded">
+                    <div class="panel panel-info rounded">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ user.f_name }} {{ user.l_name }}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <!--- User-Profile Pages -->
+                            <div class="row" id="profile-general">
+                                <!-- User Image -->
+                                <div class="col-md-3 col-lg-3 " align="center">
+                                    <img alt="User Pic" src="../assets/images/avatar.png"
+                                         class="img-circle img-responsive">
+                                </div>
+                                <!-- User Details -->
+                                <div class=" col-md-9 col-lg-9 ">
+                                    <table class="table table-user-information">
+                                        <tbody>
+                                        <tr>
+                                            <td>Username:</td>
+                                            <td>{{ user.user_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email:</td>
+                                            <td><a href="{{ user.email }}">{{ user.email }}</a></td>
+                                        </tr>
+                                        {{# if user.university }}
+                                            <tr>
+                                                <td>University:</td>
+                                                <td>{{ user.university }}</td>
+                                            </tr>
+                                        {{/if}}
+                                        {{# if user.department }}
+                                            <tr>
+                                                <td>Department:</td>
+                                                <td>{{ user.department }}</td>
+                                            </tr>
+                                        {{/if}}
+                                        <tr>
+                                            <td>Answered:</td>
+                                            <td>{{ user.answered }}</td>
+                                        </tr>
+                                        <tr>
+                                        <tr>
+                                            <td>Messages:</td>
+                                            <td>{{ user.messages }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Comments:</td>
+                                            <td>{{ user.comments }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Date, Edit, Logout (new row) -->
+                            <div class="col-md-12 prf-sign-off">
+                                <p class=" text-info"> July 4 2016 </p>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</main>

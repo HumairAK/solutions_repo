@@ -24,6 +24,20 @@ router.get('/about', function(req, res, next) {
     res.render('about');
 });
 
+/* Router for rendering public user profile of a given user */
+router.get('/public_profile/:username', function(req,res,next){
+    var username = req.params.username;
+    dbFile.retrieveUser(username, function(success, error, user, statusMsg){
+        if(success){
+            res.render('public_profile.hbs', {user: user});
+        }else{
+            req.session.messages  = {error : statusMsg};
+            res.redirect('/user/' + username);
+        }
+    });
+
+});
+
 /* Render/GET user_solutions page */
 router.get('/user_solutions', function(req, res, next) {
     res.render('user_solutions');
@@ -84,6 +98,7 @@ router.get('/user/:query', function(req,res,next){
         if(success){
             console.log(result);
             res.render('user_search', {users : result, query : query});
+            req.session.messages = null;
         }else{
             console.log(result);
             res.redirect('/');

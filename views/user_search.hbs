@@ -1,9 +1,18 @@
 <main id = 'solutions-main'>
 <div class = 'search container' id = 'solutions-div'>
+
+    <!--- Check to see if something went wrong db end --->
+    {{# if messages.error }}
+        <section class="alert alert-danger custom-Alert">
+            <h4>{{ messages.error }}</h4>
+        </section>
+    {{/if}}
+
+
     <h4 class='search-head'>Search results for "{{query}}"</h4>
     {{# if users }}
         {{# each users}}
-            <a href="/public_profile/{{this._id}}">
+            <a href="/public_profile/{{this.user_name}}">
                 <section class = 'solutions-card'>
                     <h3 class = 'solutions-title'>{{this.user_name}}</h3>
                     <p class = 'solutions-time' >

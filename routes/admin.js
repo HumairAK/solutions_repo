@@ -9,7 +9,9 @@ var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
 router.get('/', isAdmin, function(req,res){
+    console.log(req.session.messages);
     res.render('admin', {csrfToken: req.csrfToken()});
+    req.session.messages = null;
 });
 
 /* Adds exam from front-end */
@@ -36,15 +38,16 @@ router.post('/add/exam', function(req,res){
         upload_date,           // String
         uploaded_by];          // String
 
-    dbFile.add_exam(fields, questions_list, function(examAdded, statusMessage){
+    dbFile.add_exam(fields, questions_list, function(examAdded, statusMsg){
         if(examAdded){
-            console.log("Success!");
+            req.session.messages  = {success : statusMsg};
         }else{
-            console.log("Failed!");
+            req.session.messages  = {error : statusMsg};
         }
-        console.log(statusMessage);
+        console.log(statusMsg);
+        res.redirect('/admin');
     });
-    res.redirect('/admin');
+
 });
 
 /* Adds course from front-end */
@@ -52,15 +55,16 @@ router.post('/add/course', function(req,res){
     var course_code = req.body.course_code,
         title = req.body.title;
 
-    dbFile.add_course(course_code, title, function(courseAdded, statusMessage){
+    dbFile.add_course(course_code, title, function(courseAdded, statusMsg){
         if(courseAdded){
-            console.log("Success!");
+            req.session.messages  = {success : statusMsg};
         }else{
-            console.log("Failure!");
+            req.session.messages  = {error : statusMsg};
         }
-        console.log("Status message: " + statusMessage)
+        console.log(statusMsg);
+        res.redirect('/admin');
     });
-    res.redirect('/admin');
+
 });
 
 /* Add a new admin, redirect to admin panel */
@@ -72,18 +76,16 @@ router.post('/add/admin', function(req,res){
         password: passport_file.encryptPassword(req.body.password)
     };
 
-    dbFile.addAdmin(admin_data, function(success, error, message){
+    dbFile.addAdmin(admin_data, function(success, error, statusMsg){
         if(success){
-            console.log("Success!");
-        }else if(error){
-            console.log("Error!");
+            req.session.messages  = {success : statusMsg};
         }else{
-            console.log("Admin already exists.");
+            req.session.messages  = {error : statusMsg};
         }
-        console.log(message);
+        console.log(statusMsg);
+        res.redirect('/admin');
     });
 
-    res.redirect('/admin');
 });
 
 /* Remove an exam route, redirect to admin panel */
@@ -95,48 +97,46 @@ router.post('/remove/exam', function(req,res){
         campus = req.body.campus;
 
     var fields = [course_code, year, term, type];
-    console.log(fields);
-    dbFile.remove_exam(fields,
-        function(examRemoved, statusMessage){
-        if(examRemoved){
-            console.log("Success.");
-        } else {
-            console.log("Failed.");
-        }
-        console.log(statusMessage);
-    });
 
-    res.redirect('/admin');
+    dbFile.remove_exam(fields, function(examRemoved, statusMsg){
+        if(examRemoved){
+            req.session.messages  = {success : statusMsg};
+        } else {
+            req.session.messages  = {error : statusMsg};
+        }
+        console.log(statusMsg);
+        res.redirect('/admin');
+    });
 });
 
 /* Remove a course route, redirect to admin panel */
 router.post('/remove/course', function(req,res){
     var course_code = req.body.course_code;
-    dbFile.remove_course(course_code, function(courseRemoved, statusMessage){
+    dbFile.remove_course(course_code, function(courseRemoved, statusMsg){
             if(courseRemoved){
-                console.log("Success.");
+                req.session.messages  = {success : statusMsg};
             } else {
-                console.log("Failed.");
+                req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMessage);
+            console.log(statusMsg);
+            res.redirect('/admin');
         });
-
-    res.redirect('/admin');
 });
 
 /* Remove a user route, redirect to admin panel */
 router.post('/remove/user', function(req,res){
     var username = req.body.username;
-    dbFile.remove_user(username, function(userRemoved, statusMessage){
+    dbFile.remove_user(username, function(userRemoved, statusMsg){
         if(userRemoved){
-            console.log("Success.");
+            req.session.messages  = {success : statusMsg};
         } else {
-            console.log("Failed.");
+            req.session.messages  = {error : statusMsg};
         }
-        console.log(statusMessage);
+        console.log(statusMsg);
+        res.redirect('/admin');
     });
 
-    res.redirect('/admin');
+
 });
 
 

@@ -26,7 +26,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     var comments = [];
     var inbox = [];
     function getComments() {
-        console.log('in getComments');
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
                 if (!success) {
@@ -58,7 +57,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
     function getMail(){
-        console.log('ing getMail');
         return new Promise(function(resolve, reject) {
 
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
@@ -96,60 +94,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     });
 
     //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
-});
-
-/* Adds a solution into the database, redirect to exam/question/solution page */
-router.post('/submit_solution/:examID/:qID', function(req,res){
-    // Get required fields from body
-    // Populate this data
-    /* var Data = {
-     exam_id: fields[0],
-     q_id: fields[1],
-     text: fields[2],
-     votes: 0,
-     comments: [],
-     author: fields[3]
-     };*/
-
-    var examID = req.params.examID;
-    var qID = req.params.qID;
-
-    var text = req.body.solution,
-        votes = 0,
-        comments = [],
-        author = req.user.user_name;
-
-    var fields = [examID, qID, text, author];
-    console.log(fields);
-    // Add to database
-    dbFile.add_solution(fields, function(addedSolution, statusMsg){
-        if(addedSolution){
-            console.log("Success!");
-        }else{
-            console.log("Failed to add solution!");
-        }
-        console.log(statusMsg);
-
-        //Redirect to solutions page again
-        res.redirect('/solutions/' + examID + '/' + qID);
-
-    });
-
-});
-
-/* Routed here from Solutions page (add solution button)
-*  Renders add_solution page for response.*/
-router.get('/add_solution/:examID/:qID', function (req, res, next) {
-    var examID = req.params.examID;
-    var qID = req.params.qID;
-
-    // Must be a logged in user to access
-    if(req.isAuthenticated()){
-        res.render('add_solutions', {csrfToken: req.csrfToken(), examID: examID, qID: qID});
-    } else {
-        res.redirect('/'); // Change this to go back to the solutions page
-    }
-
 });
 
 router.get('/signup', loggedOut, function(req, res, next) {
@@ -241,7 +185,7 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
         date: current_date
     };
 
-    console.log(mail_data);
+    //console.log(mail_data);
     dbFile.sendMail(mail_data, function(success, error, message) {
         if ((!success && !error) || (error)) {
             req.session.messages  = {error : message};
@@ -259,6 +203,59 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
 
 });
 
+/* Adds a solution into the database, redirect to exam/question/solution page */
+router.post('/submit_solution/:examID/:qID', function(req,res){
+    // Get required fields from body
+    // Populate this data
+    /* var Data = {
+     exam_id: fields[0],
+     q_id: fields[1],
+     text: fields[2],
+     votes: 0,
+     comments: [],
+     author: fields[3]
+     };*/
+
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+
+    var text = req.body.solution,
+        votes = 0,
+        comments = [],
+        author = req.user.user_name;
+
+    var fields = [examID, qID, text, author];
+    console.log(fields);
+    // Add to database
+    dbFile.add_solution(fields, function(addedSolution, statusMsg){
+        if(addedSolution){
+            req.session.messages  = {success : statusMsg};
+        }else{
+            req.session.messages  = {error : statusMsg};
+        }
+        //Redirect to solutions page again
+        res.redirect('/solutions/' + examID + '/' + qID);
+
+    });
+
+});
+
+/* Routed here from Solutions page (add solution button)
+ *  Renders add_solution page for response.*/
+router.get('/add_solution/:examID/:qID', function (req, res, next) {
+    var examID = req.params.examID;
+    var qID = req.params.qID;
+
+    // Must be a logged in user to access
+    if(req.isAuthenticated()){
+        res.render('add_solutions', {csrfToken: req.csrfToken(), examID: examID, qID: qID});
+    } else {
+        var message = "Must be logged in to add a solution!";
+        req.session.messages  = {error : message};
+        res.redirect('/solutions/' + examID + '/' + qID);
+    }
+
+});
 
 // Authentication check in code
 router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
@@ -270,18 +267,19 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     // Must be a logged in user to access
     var fields = [comment, username];
     if(req.isAuthenticated()){
-        dbFile.add_comment(solutionID, fields, function(commentAdded, statusMessage){
+        dbFile.add_comment(solutionID, fields, function(commentAdded, statusMsg){
            if(commentAdded){
-               console.log("Success!");
+               req.session.messages  = {success : statusMsg};
            } else{
-               console.log("Failed to add comment!");
+               req.session.messages  = {error : statusMsg};
            }
-           console.log(statusMessage);
            res.redirect('/solutions/' + examID + '/' + qID);
         });
 
     } else { //User not logged in
-        res.redirect('/'); // Change this to go back to the solutions page with "need to be logged in msg"
+        var message = "Must be logged in to comment!";
+        req.session.messages  = {error : message};
+        res.redirect('/solutions/' + examID + '/' + qID);
     }
 });
 

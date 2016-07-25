@@ -129,6 +129,9 @@ router.post('/add/course', function(req,res){
 
     if (errors){
         console.log(errors);
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin');
     }else{
         var course_code = req.body.course_code,
             title = req.body.title;
@@ -156,6 +159,9 @@ router.post('/add/admin', function(req,res){
     var errors = req.validationErrors();
     if (errors) {
         console.log(errors);
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin');
     }else{
         var admin_data = {
             fname: req.body.fname,
@@ -196,6 +202,9 @@ router.post('/remove/exam', function(req,res){
     var errors = req.validationErrors();
     if (errors){
         console.log(errors);
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin');
 
     }else{
 
@@ -231,7 +240,9 @@ router.post('/remove/course', function(req,res){
     var errors = req.validationErrors();
 
     if (errors){
-
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin');
     }else{
         var course_code = req.body.course_code;
         course_code = course_code.toUpperCase();
@@ -257,7 +268,9 @@ router.post('/remove/user', function(req,res){
 
     var errors = validationErrors();
     if (errors){
-
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin');
     }else{
         var username = req.body.username;
         dbFile.remove_user(username, function(userRemoved, statusMsg){

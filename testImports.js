@@ -58,18 +58,18 @@ var questions_array = ["this is q1", "this is q2"];
  }
  });*/
 
-/*dbFile.retrieve_userComments_history("some_user name", function (bool, results) {
+dbFile.retrieve_userComments_history("kumar", function (bool, results) {
  if (!bool) console.log(results);
  else {
  console.log(results);
  }
- });*/
+ });
 
 /*dbFile.retrieve_userComments_count("sad@saddy.com", function (bool, result) {
- if (!bool) console.log(result);
- else {  // bool is true i.e no error occured. result contains an integer
- console.log(result);
- }
+    if (!bool) console.log(result);
+    else {  // bool is true i.e no error occured. result contains an integer
+        console.log(result);
+    }
  });*/
 
 
@@ -153,6 +153,7 @@ var questions_array = ["this is q1", "this is q2"];
  console.log(mssg);
  });*/
 
+/*
 dbFile.remove_course("MAT237", function (bool, mssg) {
     console.log(mssg);
-});
+});*/

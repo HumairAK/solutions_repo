@@ -730,9 +730,9 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
                 }
                 else {
                     users.updateOne( { user_name: fields[1] }, { $inc: { comments: 1} }, function (err) {
-                        if (err) callback(false, "Error: Some error occured while updating user info");
+                        if (err) serverCallback(false, "Error: Some error occured while updating user info");
                         else {
-                            callback(true, "Success: comment added successfully");
+                            serverCallback(true, "Success: comment added successfully");
                         }
 
                     });
@@ -1316,14 +1316,12 @@ exports.sendMail = function (mail_data, callback) {
     });
 }
 
-
 /*
  *
  * callback(success, error, data, message)
  * Returns the user's inbox (array of message objects)
  *
  */
-
 exports.checkMailbox = function (username, callback) {
 
     mongoFactory.getConnection(uri).then(function(db) {

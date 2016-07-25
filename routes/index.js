@@ -29,12 +29,6 @@ router.get('/user_solutions', function(req, res, next) {
     res.render('user_solutions');
 });
 
-/* Render/GET questions page
-router.get('/questions', function(req, res, next) {
-    res.render('questions');
-});
-*/
-
 //EXAMPLE EXPECTED DATA GIVEN BELOW:
 /*[     {courseCode: 'CSC240',
         year: 2016,
@@ -137,13 +131,6 @@ router.get('/questions/:exam_id', function (req,res) {
             res.render('questions', {query: qList, examInfo: examInfo});
         });
     });
-
-    /*dbFile.get_exam_info_by_ID(examID, function (questions) {
-        console.log(questions);
-        res.render('questions', {query: questions});
-
-    });*/
-
 });
 
 /*GET the solutions for a given exam given the question number and the exam_id
@@ -182,11 +169,9 @@ router.get('/questions/:exam_id', function (req,res) {
     */
 
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
-    console.log("index.js::Getting solutions");
     var examID = req.params.exam_id;
     var qID = req.params.q_num;
     dbFile.get_all_solutions(examID, qID, function (solutions) {
-        console.log("index.js::GOT solutions");
         solutions.forEach(function(soln){
             soln.commentCount = soln.comments.length;
         });

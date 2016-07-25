@@ -86,6 +86,7 @@ router.post('/add/admin', function(req,res){
     res.redirect('/admin');
 });
 
+/* Remove an exam route, redirect to admin panel */
 router.post('/remove/exam', function(req,res){
     var course_code = req.body.course_code,
         year = req.body.year,
@@ -107,6 +108,37 @@ router.post('/remove/exam', function(req,res){
 
     res.redirect('/admin');
 });
+
+/* Remove a course route, redirect to admin panel */
+router.post('/remove/course', function(req,res){
+    var course_code = req.body.course_code;
+    dbFile.remove_course(course_code, function(courseRemoved, statusMessage){
+            if(courseRemoved){
+                console.log("Success.");
+            } else {
+                console.log("Failed.");
+            }
+            console.log(statusMessage);
+        });
+
+    res.redirect('/admin');
+});
+
+/* Remove a user route, redirect to admin panel */
+router.post('/remove/user', function(req,res){
+    var username = req.body.username;
+    dbFile.remove_user(username, function(userRemoved, statusMessage){
+        if(userRemoved){
+            console.log("Success.");
+        } else {
+            console.log("Failed.");
+        }
+        console.log(statusMessage);
+    });
+
+    res.redirect('/admin');
+});
+
 
 /* Takes an input string delimited by commas, will split by comma and trim white
  * spaces. Consider callback.

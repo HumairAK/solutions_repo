@@ -2,7 +2,7 @@
 <div class="container">
 <div class="row">
 <!-- Admin control Panel --->
-<div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-xs-offset-0 col-sm-offset-0  toppad cpnl-details">
+<div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-xs-offset-0 col-sm-offset-0  toppad cpnl-sidetails">
     {{# if messages.success }}
         <section class="alert alert-success custom-Alert">
             <!-- Change those to banners later -->
@@ -14,6 +14,28 @@
                 <h4>{{ messages.error }}</h4>
             </section>
         {{/if}}
+    {{/if}}
+
+    {{# if success }}
+        <section class="alert alert-success">
+            <!-- Change those to banners later -->
+            <h2>Signup Successful!</h2>
+        </section>
+    {{ else }}
+        {{# if errors }}
+            <section class="alert alert-danger">
+                <ul>
+                    {{# each errors }}
+                        <li>{{ this.msg }}</li>
+                    {{/each}}
+                </ul>
+            </section>
+        {{/if}}
+    {{/if}}
+    {{#if flashMsg}}
+        <section class="alert alert-danger">
+            {{flashMsg}}
+        </section>
     {{/if}}
 
     <!-- Admin Control Panel Menu -->

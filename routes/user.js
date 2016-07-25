@@ -23,7 +23,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     var comments = [];
     var inbox = [];
     function getComments() {
-        console.log('in getComments');
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
                 if (!success) {
@@ -55,7 +54,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
     function getMail(){
-        console.log('ing getMail');
         return new Promise(function(resolve, reject) {
 
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
@@ -82,7 +80,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
     getComments().then(getMail).then(function (data) {
-        console.log('got here');
         res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
     });
 
@@ -138,7 +135,9 @@ router.get('/add_solution/:examID/:qID', function (req, res, next) {
     if(req.isAuthenticated()){
         res.render('add_solutions', {csrfToken: req.csrfToken(), examID: examID, qID: qID});
     } else {
-        res.redirect('/'); // Change this to go back to the solutions page
+        var message = "Must be logged in to add a solution!";
+        req.session.messages  = {error : message};
+        res.redirect('/solutions/' + examID + '/' + qID); 
     }
 
 });
@@ -232,7 +231,7 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
         date: current_date
     };
 
-    console.log(mail_data);
+    //console.log(mail_data);
     dbFile.sendMail(mail_data, function(success, error, message) {
         if ((!success && !error) || (error)) {
             req.session.messages  = {error : message};

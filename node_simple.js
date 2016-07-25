@@ -330,7 +330,6 @@ exports.retrieve_userComments_history = function (username, callback) {
 
     // get a connection
     mongoFactory.getConnection(uri).then(function (db) {
-        console.log("for Each here");
         var solutions = db.collection('solutions');
         var exams = db.collection('exams');
         var mylist = [];
@@ -367,9 +366,7 @@ exports.retrieve_userComments_history = function (username, callback) {
         });
 
         function doCall() {
-            console.log("Am i inside the doCall()");
             callback(true, mylist);
-            console.log("IN NODE SIMPLE: " + mylist);
         }
 
 

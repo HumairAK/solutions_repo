@@ -201,6 +201,7 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
             soln.commentCount = soln.comments.length;
         });
         res.render('user_solutions', {query: solutions, examID: examID, qID: qID, csrfToken: req.csrfToken()});
+        req.session.messages = null;
     });
 });
 

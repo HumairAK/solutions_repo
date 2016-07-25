@@ -16,60 +16,6 @@ router.get('/logout', loggedIn, function (req, res, next) {
 });
 
 
-function getComments(req) {
-    var comments = [];
-    dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
-        if (!success) {
-            // Need to redirect to an error page instead.
-            console.log("Could not retrieve comments.");
-            if (!comments.length) {
-                var obj = {
-                    comment: 'Use a heap!',
-                    date: '2016-04-05',
-                    exam_id: 'some id',
-                    exam_info : {
-                        course_code : 'CSC263',
-                        term: 'Fall',
-                        year : 2016
-                    }
-                };
-                comments.push(obj);
-                comments.push(obj);
-            }
-        } else if (object.length){
-            comments = object;
-            console.log(object);
-        }
-
-
-
-    });
-}
-
-var checkMail = function(req){
-    var inbox = [];
-    dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
-        if (success) {
-            inbox = data;
-        } else if (error) {
-            // For testing purposes, remove later:
-            if (!inbox.length) {
-                var mail_data = {
-                    sender: 'The Dude', receiver: req.user.user_name,
-                    message: 'Whoa look at this',
-                    date: '2016-04-05'
-                }
-            }
-            inbox.push(mail_data);
-            inbox.push(mail_data);
-            // Need to redirect to an error page instead.
-            console.log("Could not retrieve mail.");
-        }
-    });
-}
-
-
-
 /* Render/GET user_profile page */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     req.session.messages = null;
@@ -114,7 +60,8 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                     if (!inbox.length) {
                         var mail_data = {
                             sender: 'The Dude', receiver: req.user.user_name,
-                            message: 'Whoa look at this',
+                            subject: 'Whoa look at this',
+                            message: 'I sent you a link on Skype',
                             date: '2016-04-05'
                         }
                     }
@@ -264,9 +211,14 @@ router.post('/signin', loggedOut, function(req, res, next) {
 router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     var date = new Date();
     var current_date = date.toString().slice(0, 24);
+    var subject = req.body.subject;
+    if (!subject) {
+        subject = '(none)';
+    }
     var mail_data = {
         sender: req.user.user_name,
         receiver: req.body.receiver_username,
+        subject: subject,
         message: req.body.message,
         date: current_date
     };

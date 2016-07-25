@@ -173,8 +173,12 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                                 <input type="text" class="form-control" placeholder="Username" name="receiver_username">
                             </div>
                             <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" class="form-control" placeholder="Subject" name="subject">
+                            </div>
+                            <div class="form-group">
                                 <label for="sending-message">Message:</label>
-                                <textarea class="form-control" rows="3" name="message"></textarea>
+                                <textarea class="form-control" placeholder="Enter message here..." rows="3" name="message"></textarea>
                             </div>
                             <button class="btn btn-primary">Send Message</button>
                             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -195,14 +199,40 @@ col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad prf-details">
                             </thead>
                             <tbody>
                             {{# each inbox }}
+                                <a href="#" data-toggle="modal">
                                 <tr>
                                     <td>{{ this.date }}</td>
-                                    <td>{{ this.message }}</td>
+                                    <td>{{ this.subject }}</td>
                                     <td>{{ this.sender }}</td>
                                 </tr>
+                                </a>
                             {{/each}}
                             </tbody>
                         </table>
+
+                        {{# each inbox}}
+                        <article class="modal fade {{this.date}}{{this.sender}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <section class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title"><em>Subject: </em>{{ this.subject }}</h4>
+                                        <h5><em>From: </em>{{ this.sender }}</h5>
+                                    </section>
+
+                                    <section class="modal-body">
+                                        {{ this.message }}
+                                    </section>
+
+                                    <div class="modal-footer">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </article>
+                        {{/each}}
                     </div>
                     {{ else }}
                         <h3>No Messages.</h3>

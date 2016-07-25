@@ -35,7 +35,8 @@ app.use(express_validator({
 
 router.get('/', isAdmin, function(req,res){
     console.log(req.session.messages);
-    res.render('admin', {csrfToken: req.csrfToken()});
+    res.render('admin', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    req.session.errors = null;
     req.session.messages = null;
 });
 
@@ -102,15 +103,15 @@ router.post('/add/exam', function(req,res){
             upload_date,           // String
             uploaded_by];          // String
 
-        // dbFile.add_exam(fields, questions_list, function(examAdded, statusMsg){
-        //     if(examAdded){
-        //         req.session.messages  = {success : statusMsg};
-        //     }else{
-        //         req.session.messages  = {error : statusMsg};
-        //     }
-        //     console.log(statusMsg);
-        //     res.redirect('/admin');
-        // });
+        dbFile.add_exam(fields, questions_list, function(examAdded, statusMsg){
+            if(examAdded){
+                req.session.messages  = {success : statusMsg};
+            }else{
+                req.session.messages  = {error : statusMsg};
+            }
+            console.log(statusMsg);
+            res.redirect('/admin');
+        });
     }
 });
 

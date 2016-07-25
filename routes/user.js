@@ -47,6 +47,8 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                 } else if (object.length){
                     comments = object;
                     resolve(1);
+                } else {
+                    resolve(1);
                 }
 
             });

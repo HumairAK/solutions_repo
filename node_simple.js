@@ -760,6 +760,7 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
 
 /**
  * This function will get all the solution for a given exam_id and q_num
+ * sorted by highest to lowest votes.
  *
  * @param {string}   exam_id: exam_id for which the info is required.
  * @param {int}      q_num: the question number for which solutions are required.
@@ -776,7 +777,7 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
                     exam_id: exam_id,
                     q_id: q_num
                 }
-            ).toArray( function (err, docs) {
+            ).sort({ votes: -1}).toArray( function (err, docs) {
                 if (err) throw err;
                 else {
                     callback(docs);

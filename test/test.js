@@ -207,7 +207,6 @@ describe('Search Route:', function(){
 
 });
 
-
 /* Questions Listing route for a particular exam */
 describe('Questions Search Route:', function(){
     var server;
@@ -230,10 +229,27 @@ describe('Questions Search Route:', function(){
             });
     });
 
-    it.only('Search questions for a non existing exam', function testSlash(done) {
+    it('Search questions for a non existing exam', function testSlash(done) {
         var examID =  exams.nonExisting._id.$oid;
         chai.request(server)
             .get('/questions/' + examID)
+            .end(function(err, res){
+                expect(res).to.have.status(200);
+                var path = res.res.req.path;
+
+                // Redirected to homepage (with err msg)
+                assert.equal(path, '/');
+                done();
+            });
+    });
+
+    /* This differs from the earlier test because it will throw an error in db
+     * query and not return an exam at all, whereas before we pass in a
+     * legitimate hashed format id. Here we pass just random letters.
+     */
+    it.only('Search questions for gibberish id', function testSlash(done) {
+        chai.request(server)
+            .get('/questions/batman')
             .end(function(err, res){
                 expect(res).to.have.status(200);
                 var path = res.res.req.path;

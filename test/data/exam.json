@@ -1,32 +1,30 @@
 {
   "existing" : {
     "_id": {
-      "$oid": "57917d4d2a73c0224fb6e763"
+      "$oid": "578a429640e1bf7e118a6b7b"
     },
-    "course_code": "CSC373",
-    "year": "2016",
-    "term": "Midterm",
-    "type": "Winter",
+    "course_code": "CSC148",
+    "year": 2010,
+    "term": "fall",
+    "type": "midterm",
     "instructors": [
-      "Robert Dane"
+      "Faith Ellen",
+      "Tom F."
     ],
-    "page_count": "20",
-    "questions_count": "2",
+    "page_count": 20,
+    "questions_count": 2,
     "questions_list": [
       {
         "q_id": 1,
-        "question": "Question 1"
+        "question": "this is q1"
       },
       {
         "q_id": 2,
-        "question": "Question 2"
+        "question": "this is q2"
       }
     ],
-    "upload_date": "2005-06-10",
-    "uploaded_by": [
-      "humair",
-      ""
-    ]
+    "upload_date": "some date",
+    "uploaded_by": "some user name"
   },
   "nonExisting" : {
     "_id": {

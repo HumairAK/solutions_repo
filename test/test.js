@@ -8,8 +8,8 @@ var fs = require('fs');
 
 
 // Database info, cross check with database docs to ensure these files either:
-// a) exist
-// b) do not exist
+// We test get requests here mostly as those are the core functions of the
+// website that do not alter the database.
 
 var examPull = fs.readFileSync("test/data/exam.json");
 var exams = (JSON.parse(examPull));
@@ -18,8 +18,6 @@ var usersPull = fs.readFileSync("test/data/user.json");
 var users = (JSON.parse(usersPull));
 
 chai.use(chaiHttp);
-
-var request = require('supertest');
 
 /* Test simple routes that do not require database queries */
 describe('Test Simple Route:', function () {
@@ -247,7 +245,7 @@ describe('Questions Search Route:', function(){
      * query and not return an exam at all, whereas before we pass in a
      * legitimate hashed format id. Here we pass just random letters.
      */
-    it.only('Search questions for gibberish id', function testSlash(done) {
+    it('Search questions for gibberish id', function testSlash(done) {
         chai.request(server)
             .get('/questions/batman')
             .end(function(err, res){
@@ -256,6 +254,49 @@ describe('Questions Search Route:', function(){
 
                 // Redirected to homepage (with err msg)
                 assert.equal(path, '/');
+                done();
+            });
+    });
+
+
+});
+
+/* Solutions listing for a particular exam question
+*  Pre-condition: Assume existing exam in db has at least question 1*/
+describe('Solutions Route:', function(){
+    var server;
+    before(function () {
+        server = require('./test_server');
+    });
+    after(function () {
+        server.close();
+    });
+
+
+    it('Search solutions for an existing exam', function testSlash(done) {
+        var qID = 1; //Check the first question
+        var examID =  exams.existing._id.$oid;
+        chai.request(server)
+            .get('/solutions/' + examID + '/' + qID)
+            .end(function(err, res){
+                expect(res).to.have.status(200);
+                // Check for expected url path
+                var path = res.res.req.path;
+                assert.equal(path, '/solutions/' + examID + '/' + qID);
+                done();
+            });
+    });
+
+    it.only('Search solutions for a non existing exam', function testSlash(done) {
+        var qID = 1; //Check the first question
+        var examID =  exams.nonExisting._id.$oid;
+        chai.request(server)
+            .get('/solutions/' + examID + '/' + qID)
+            .end(function(err, res){
+                expect(res).to.have.status(200);
+                // Check for expected url path
+                var path = res.res.req.path;
+                assert.equal(path, '/solutions/' + examID + '/' + qID);
                 done();
             });
     });

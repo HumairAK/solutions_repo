@@ -793,8 +793,6 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
                 }
 
             });
-
-
         })
         .catch(function () {
             console.error(err);

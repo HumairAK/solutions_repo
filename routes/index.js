@@ -241,10 +241,6 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
     });
 });
 
-router.post('/add_solutions/submit', function (req, res) {
-    //TODO: get the form information for the solutions
-});
-
 /**** Helpers ****/
 
 function addFirstAdmin() {

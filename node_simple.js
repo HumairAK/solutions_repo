@@ -776,27 +776,36 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
  * @param {function} callback: <[Objs]> - RESULT
  * */
 exports.get_all_solutions = function (exam_id, q_num, callback) {
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
 
-            var solutions = db.collection('solutions');
+    // check if the exam id already exists...
+    exports.get_exam_byID(exam_id, function (success, failure, exam) {
+        if (!success && failure) {  // some error occurred while searching
+            callback(false, true, "Error: Some error occurred while searching for exam", null);
+        } else if (!success && !failure) {    
+            callback(false, true, "Error: this exam doesn't exist", null);
+        } else if (success && !failure) {       // this exam exists proceed with task
+            mongoFactory.getConnection(uri).then(function (db) {
 
-            solutions.find(
-                {
-                    exam_id: exam_id,
-                    q_id: q_num
-                }
-            ).sort({ votes: -1}).toArray( function (err, docs) {
-                if (err) throw err;
-                else {
-                    callback(docs);
-                }
+                var solutions = db.collection('solutions');
 
-            });
-        })
-        .catch(function () {
-            console.error(err);
-        })
+                solutions.find(
+                    {
+                        exam_id: exam_id,
+                        q_id: q_num
+                    }
+                ).sort({ votes: -1}).toArray( function (err, docs) {
+                    if (err) callback(false, true, "Error: Some error occurred while looking for solutions");
+                    else {      // either nothing was found or something was found
+                        callback(true, false, "Solutions", docs);
+                    }
+
+                });
+            }).catch(function () {
+                callback(false, true, "Error: Some error occurred with the db connection");
+            })
+        }
+    });
+
 };
 
 /**

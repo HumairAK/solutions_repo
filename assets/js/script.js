@@ -149,5 +149,7 @@ function main(){
                 console.log("Error: Click not registered");
         }
     });
+
+    $('.table-row').trigger('create');
 }
 $(document).ready(main);

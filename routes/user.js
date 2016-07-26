@@ -18,10 +18,12 @@ router.get('/logout', loggedIn, function (req, res, next) {
 
 /* Render/GET user_profile page */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
+
     req.session.messages = null;
 
     var comments = [];
     var inbox = [];
+    var error = null;
     function getComments() {
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
@@ -44,9 +46,11 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
                     resolve(1);
                 } else if (object.length){
+                    req.user.comments = object.length;
                     comments = object;
                     resolve(1);
                 } else {
+                    req.user.comments = object.length;
                     resolve(1);
                 }
 
@@ -59,6 +63,13 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
                 if (success) {
                     inbox = data;
+                    req.user.messages = inbox.length;
+                    // needed to display in layout
+                    var i = 0;
+                    inbox.forEach(function(element) {
+                        element.class = i;
+                        i ++;
+                    });
                     resolve(1);
                 } else if (error) {
                     // For testing purposes, remove later:
@@ -79,8 +90,28 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
             });
         });
     }
-    getComments().then(getMail).then(function (data) {
-        res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
+
+    function solutionsCount() {
+        return new Promise(function (resolve, reject) {
+            dbFile.retrieve_userSolutions_history(req.user.username, function (bool, results) {
+                if (!bool) {
+                    error = 'Error: could not retrieve Answered count';
+                    req.user.answered = 0;
+                    resolve(1);
+                }
+                else {
+                    req.user.answered = results.length;
+                    console.log("RESULTS: ");
+                    console.log(results);
+                    resolve(1);
+                }
+            });
+        });
+    }
+
+    getComments().then(getMail).then(solutionsCount).then(function (data) {
+        console.log('got here fere');
+        res.render('user_profile_alt', {comments : comments, inbox: inbox, error: error, csrfToken: req.csrfToken()});
     });
 
     //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
@@ -161,31 +192,43 @@ router.post('/signin', loggedOut, function(req, res, next) {
 });
 
 router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
-    var date = new Date();
-    var current_date = date.toString().slice(0, 24);
-    var subject = req.body.subject;
-    if (!subject) {
-        subject = '(none)';
+    if (req.user.user_name === req.body.receiver_username) {
+        req.session.messages  = {error : 'You cannot send a message to yourself.'};
+        res.redirect('/user/user_profile/');
     }
-    var mail_data = {
-        sender: req.user.user_name,
-        receiver: req.body.receiver_username,
-        subject: subject,
-        message: req.body.message,
-        date: current_date
-    };
 
-    //console.log(mail_data);
-    dbFile.sendMail(mail_data, function(success, error, message) {
-        if ((!success && !error) || (error)) {
-            req.session.messages  = {error : message};
-            res.redirect('/user/user_profile');
-
-        }  else {
-            req.session.messages = {success: message};
-            res.redirect('/user/user_profile');
+    else {
+        var date = new Date();
+        var current_date = date.toString().slice(0, 24);
+        var subject = req.body.subject;
+        if (!subject) {
+            subject = '(none)';
         }
-    });
+        var mail_data = {
+            sender: req.user.user_name,
+            receiver: req.body.receiver_username,
+            subject: subject,
+            message: req.body.message,
+            date: current_date
+        };
+
+        //console.log(mail_data);
+        dbFile.sendMail(mail_data, function(success, error, message) {
+            if ((!success && !error) || (error)) {
+                req.session.messages  = {error : message};
+                res.redirect('/user/user_profile/');
+
+
+            }  else {
+                req.session.messages = {success: message};
+                res.redirect('/user/user_profile/');
+                //$('#profile-send-message').show();
+
+
+            }
+        });
+
+    }
 
 });
 

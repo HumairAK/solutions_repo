@@ -68,8 +68,9 @@
                             </tr>
                             <tr>
                             <tr>
-                                <td>Messages:</td>
+                                <td>Inbox:</td>
                                 <td>{{ user.messages }}</td>
+
                             </tr>
                             <tr>
                                 <td>Comments:</td>
@@ -152,7 +153,6 @@
                 </div>
 
                 <div class="row" id="profile-send-message">
-                    <h3>Send Message</h3>
                     {{# if messages.success }}
                         <section class="alert alert-success">
                             <!-- Change those to banners later -->
@@ -165,6 +165,8 @@
                             </section>
                         {{/if}}
                     {{/if}}
+                    <h3>Send Message</h3>
+
                     <div class="col-xs-offset-1 col-sm-offset-3 col-xs-10 col-sm-6">
                         <form action="/user/user_profile/send_message" method="post">
                             <div class="form-group">
@@ -188,7 +190,22 @@
                     {{# if inbox }}
                     <h3>Inbox</h3>
                     <div class="col-sm-10 col-sm-offset-1 prf-tables">
-                        <table class="table">
+                        <div class="table">
+                            <div class="table-row">
+                                <div class="table-cell" class="head"><h5>Date</h5></div>
+                                <div class="table-cell" class="head"><h5>Subject</h5></div>
+                                <div class="table-cell" class="head"><h5>Sender</h5></div>
+                            </div>
+                            {{# each inbox }}
+                            <a href="#" class="table-row" data-toggle="modal" data-target=".{{ this.class }}">
+                                <div class="table-cell">{{ this.date }}</div>
+                                <div class="table-cell">{{ this.subject }}</div>
+                                <div class="table-cell">{{ this.sender }}</div>
+                            </a>
+                            {{/each}}
+                        </div>
+
+                        <!--<table class="table">
                             <thead>
                             <tr>
                                 <th>Date</th>
@@ -197,20 +214,22 @@
                             </tr>
                             </thead>
                             <tbody>
+
                             {{# each inbox }}
-                                <a href="#" data-toggle="modal" data-target=".{{this.date}}{{this.sender}}">
                                 <tr>
-                                    <td>{{ this.date }}</td>
-                                    <td>{{ this.subject }}</td>
-                                    <td>{{ this.sender }}</td>
+                                    <td><a href="#" data-toggle="modal" data-target=".{{ this.class }}">
+                                        {{ this.date }}</a></td>
+                                    <td><a href="#" data-toggle="modal" data-target=".{{ this.class }}">
+                                        {{ this.subject }}</a></td>
+                                    <td><a href="#" data-toggle="modal" data-target=".{{ this.class }}">
+                                        {{ this.sender }}</a></td>
                                 </tr>
-                                </a>
                             {{/each}}
                             </tbody>
-                        </table>
+                        </table> -->
 
                         {{# each inbox}}
-                        <article class="modal fade {{this.date}}{{this.sender}}">
+                        <article class="modal fade {{this.class}}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
 
@@ -218,6 +237,7 @@
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title"><em>Subject: </em>{{ this.subject }}</h4>
                                         <h5><em>From: </em>{{ this.sender }}</h5>
+                                        <em>Date: </em> {{this.date}}
                                     </section>
 
                                     <section class="modal-body">

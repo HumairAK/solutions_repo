@@ -414,7 +414,7 @@ section.exam-info em {
 
 /************************** Pop-up Window  ************************************/
 
-.login-window, .registration-window {
+.login-window, .registration-window, .modal {
 	display: inline-block;
 	text-align: left;
 	vertical-align: middle;
@@ -472,4 +472,25 @@ section.exam-info em {
 /***** Text Area for Send Message ****/
 textarea {
 	resize:vertical;
+}
+
+
+.table {
+    display:table;
+}
+
+.table-row {
+    display:table-row;
+}
+.table-row {
+    border-bottom: 3px solid red;
+}
+
+.table-cell {
+    display:table-cell;
+    padding: 2%;
+}
+
+hr {
+    width: 100%;
 }

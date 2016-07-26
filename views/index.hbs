@@ -1,4 +1,6 @@
 <header>
+
+
 	<div class="header-content">
 
 		<form action="/search/courses" method="get" id="search-field">
@@ -7,7 +9,31 @@
 				<hr> <!-- Divider -->
 				<div class="search col-md-8 col-lg-8 col-md-offset-2">
 					<!-- Search-bar, Drop-down and Prompt -->
-					<div class="input-group">
+
+                    {{# if success }}
+                        <section class="alert alert-success">
+                            <!-- Change those to banners later -->
+                            <h2>Signup Successful!</h2>
+                        </section>
+                    {{ else }}
+                        {{# if errors }}
+                            <section class="alert alert-danger">
+                                <ul>
+                                    {{# each errors }}
+                                        <li>{{ this.msg }}</li>
+                                    {{/each}}
+                                </ul>
+                            </section>
+                        {{/if}}
+                    {{/if}}
+                    {{#if flashMsg}}
+                        <section class="alert alert-danger">
+                            {{flashMsg}}
+                        </section>
+                    {{/if}}
+
+
+                    <div class="input-group">
 						<!-- Search Category Drop-Down -->
 						<div class="input-group-btn">
 							<button type="button"

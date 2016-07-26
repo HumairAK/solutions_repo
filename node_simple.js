@@ -552,10 +552,20 @@ exports.find_user_name = function (user_name, callback) {
         .then(function (db) {
 
             var logins = db.collection('logins');
+            var admins = db.collection('admins');
             logins.find( { user_name: user_name } ).toArray(function (err, result) {
                 if (err) throw err;
-                else if (result.length == 0) {  // nothing was found  so this user is new
-                    callback(false);
+                else if (result.length == 0) {  // nothing was found in users
+                    // check if user_name is taken by admin
+                    admins.find({username : user_name}).toArray(function(err, data) {
+                        if (err) throw err;
+                        else if (data.length == 0) {
+                            callback(false);
+                        }
+                        else {
+                            callback(true);
+                        }
+                    });
                 }
                 else {
                     callback(true);
@@ -1240,25 +1250,32 @@ exports.addAdmin = function (admin_data, callback) {
     console.log('addAdmin, admin_data: ' +  admin_data.fname);
 
     console.log("inside addAdmin");
-
+    var logins = db.collection('logins');
     // Check if the admin username already exists. Also check for user username. If it does, then we don't add the admin_data and return a message.
     exports.adminExists( admin_data.username , function (error, exists, data, message) {
         console.log("adminExists: " + message);
         if (!exists && !error) {
-            mongoFactory.getConnection(uri).then(function (db) {
+            logins.find({username: username}).toArray(function (err, result) {
+                if (err){
+                    callback(true, false, null, "Error: could not retreive logins collection in addAdmin().");
+                } else if (result.length) {
+                    callback(false, false, 'User with given username already exists.');
+                } else {
+                    mongoFactory.getConnection(uri).then(function (db) {
 
-                var admins = db.collection('admins');
+                        var admins = db.collection('admins');
 
-                admins.insertOne( admin_data, function (err) {
-                    if (err) {
-                        callback(false, true, message);
-                    }
-                    else {
-                        callback(true, false, "Admin added.");
-                    }
+                        admins.insertOne(admin_data, function (err) {
+                            if (err) {
+                                callback(false, true, message);
+                            }
+                            else {
+                                callback(true, false, "Admin added.");
+                            }
 
-                });
-
+                        });
+                    });
+            }
             }).catch(function (err) {
                 callbackUser(false, true,  "Unable to connect.");
             })

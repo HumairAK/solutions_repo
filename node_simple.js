@@ -781,7 +781,7 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
     exports.get_exam_byID(exam_id, function (success, failure, exam) {
         if (!success && failure) {  // some error occurred while searching
             callback(false, true, "Error: Some error occurred while searching for exam", null);
-        } else if (!success && !failure) {    
+        } else if (!success && !failure) {
             callback(false, true, "Error: this exam doesn't exist", null);
         } else if (success && !failure) {       // this exam exists proceed with task
             mongoFactory.getConnection(uri).then(function (db) {
@@ -801,7 +801,7 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
 
                 });
             }).catch(function () {
-                callback(false, true, "Error: Some error occurred with the db connection");
+                callback(false, true, "Error: Some error occurred with the db connection", null);
             })
         }
     });

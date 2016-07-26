@@ -96,8 +96,7 @@ router.get('/user/:query', function(req,res,next){
 
     dbFile.search_users(query, function(success, result){
         if(success){
-            console.log(result);
-            res.render('user_search', {users : result, query : query});
+            res.render('user_search', {users : result, query : query, resultCount: result.length});
             req.session.messages = null;
         }else{
             console.log(result);

@@ -11,6 +11,9 @@
 
     <h4 class='search-head'>Search results for "{{query}}"</h4>
     {{# if users }}
+        <h4 class='search-head'>
+            Found <span id="search-count"> {{ resultCount }}</span> result(s)
+        </h4>
         {{# each users}}
             <a href="/public_profile/{{this.user_name}}">
                 <section class = 'solutions-card'>

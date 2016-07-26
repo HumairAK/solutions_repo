@@ -2,10 +2,8 @@ var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
-var express_validator = require("express-validator");
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
-router.use(express_validator);
 // Remove later
 var passport_file = require('../config/passport.js');
 var bcrypt = require('bcrypt-nodejs');
@@ -61,8 +59,7 @@ router.get('/user_solutions', function(req, res, next) {
  */
 
 router.get('/exams/', function(req,res,next){
-    req.check('search','Course code should be between 6 and 20 characters').notEmpty().withMessage('Course code required').isLength({min: 6, max: 20});
-
+    req.checkParams('id','Course code should be between 6').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
     var errors = req.validationErrors();
     if (errors){
         console.log(errors);
@@ -74,7 +71,7 @@ router.get('/exams/', function(req,res,next){
 
 router.get('/exams/:id', function(req, res, next) {
 
-    req.check('search','Course code should be between 6 and 20 characters').notEmpty().withMessage('Course code required').isLength({min: 6, max: 20});
+    req.checkParams('id','Course code should be between 6 characters').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
 
     var errors = req.validationErrors();
     if (errors){

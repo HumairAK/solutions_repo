@@ -6,8 +6,6 @@ var passport = require('passport');
 var dbFile  = require("../node_simple.js");
 var Promise = require('promise');
 
-var $ = require('jquery')(require("jsdom").jsdom().parentWindow);
-
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 

@@ -6,10 +6,32 @@ var url  = require("url");
 var path = require("path");
 var fs = require('fs');
 
+/*
+ * Note: To remove dots and see the detailed reports for each test, omit the
+ * --reporter dot flag in mocha.opts
+ *
+ * To run test simply type $mocha in the terminal. Ensure preconditions listed
+ * below are met. Due to db queries, if tests fail due to time out, increase
+ * the time out flag in mocha.opts for --timeout.
+ * 
+ */
+/* PRE-CONDITION:
+*
+*  The existing exam/user in exam.json/user.json must be in the database
+*  for these tests to work. This is because these routes will require database
+*  queries, this allows us to test core modules from the database side along
+*  with front end routing. We cross check the appropriate route status codes
+*  and parameters to ensure that the proper paths with their appropriate
+*  parameters are being served without errors. We also test false queries
+*  to ensure that we get the 404 or redirected pages as expected.
+*
+*  Also note that port 3000 must not be in use when running these tests.
+*  If a new port is required, simply change the port attritube in test_server.js
+*
+*  */
 
-// Database info, cross check with database docs to ensure these files either:
-// We test get requests here mostly as those are the core functions of the
-// website that do not alter the database.
+// We test public get requests here mostly as those are the core functions of the
+// website that do not add to or update the database.
 
 var examPull = fs.readFileSync("test/data/exam.json");
 var exams = (JSON.parse(examPull));
@@ -20,7 +42,7 @@ var users = (JSON.parse(usersPull));
 chai.use(chaiHttp);
 
 /* Test simple routes that do not require database queries */
-describe('Test Simple Route:', function () {
+describe('Test Basic Route:', function () {
 
     var server;
     before(function () {
@@ -44,7 +66,6 @@ describe('Test Simple Route:', function () {
             });
     });
 
-
     it('Get Homepage', function testSlash(done) {
         chai.request(server)
             .get('/')
@@ -63,10 +84,33 @@ describe('Test Simple Route:', function () {
             });
     });
 
+    /* Sign up page form */
+    it('Get Signup Page', function testSlash(done) {
+        chai.request(server)
+            .get('/user/signup')
+            .end(function(err, res){
+                var path = res.res.req.path;
+                assert.equal(path, '/user/signup');
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
+
+    /* Sin in page form */
+    it('Get signin Page', function testSlash(done) {
+        chai.request(server)
+            .get('/user/signin')
+            .end(function(err, res){
+                var path = res.res.req.path;
+                assert.equal(path, '/user/signin');
+                expect(res).to.have.status(200);
+                done();
+            });
+    });
 });
 
 /* Public profile page response test */
-describe('User_profile_page Route:', function(){
+describe('User profile page (public) Route:', function(){
     var server;
     before(function () {
         server = require('./test_server');
@@ -287,7 +331,9 @@ describe('Solutions Route:', function(){
             });
     });
 
-    it.only('Search solutions for a non existing exam', function testSlash(done) {
+
+    /* COME BACK TO THIS AFTER GET_ALL_SOLUTIONS IS UPDATED*/
+    it('Search solutions for a non existing exam', function testSlash(done) {
         var qID = 1; //Check the first question
         var examID =  exams.nonExisting._id.$oid;
         chai.request(server)

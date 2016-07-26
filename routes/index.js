@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
     res.render('index', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
     req.session.success = null;
+    req.session.messages = null;
 
 });
 
@@ -62,7 +63,6 @@ router.get('/exams/', function(req,res,next){
     req.checkParams('id','Course code should be between 6').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
     var errors = req.validationErrors();
     if (errors){
-        console.log(errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/');
@@ -153,45 +153,45 @@ router.get('/search/:type', function(req, res, next) {
  * comments = number of comments*/
 router.get('/questions/:exam_id', function (req,res) {
     var examID = req.params.exam_id;
-    console.log(examID);
     dbFile.get_exam_byID(examID, function(success, error, exam){
 
-        /* [
-         { q_id: 1, question: 'this is q1' },
-         { q_id: 2, question: 'this is q2' }
-         ]
-         */
-        var qList = exam.questions_list;
+        if(success && exam){
+            var qList = exam.questions_list;
+            // Add comments/solutions
+            dbFile.get_exam_info_by_ID(examID, function (questionsInfo) {
+                qList.forEach(function(question){
+                    question.count = 0;
+                    question.comments = 0;
 
-        // Add comments/solutions
-        dbFile.get_exam_info_by_ID(examID, function (questionsInfo) {
-            qList.forEach(function(question){
-                question.count = 0;
-                question.comments = 0;
-
-                // Find q_id in questionsInfo, update comment/solutions count
-                questionsInfo.forEach(function(q){
-                    if (question.q_id == q._id){
-                        question.count += q.count;
-                        question.comments += q.comments;
-                    }
+                    // Find q_id in questionsInfo, update comment/solutions count
+                    questionsInfo.forEach(function(q){
+                        if (question.q_id == q._id){
+                            question.count += q.count;
+                            question.comments += q.comments;
+                        }
+                    });
                 });
-            });
 
-            var examInfo = {
-                id : exam._id,
-                courseCode : exam.course_code,
-                term : toProperCase(exam.term),
-                type : toProperCase(exam.type),
-                year : exam.year,
-                instructors : exam.instructors.join(),
-                uploadDate : exam.upload_date,
-                uploader : exam.uploaded_by,
-                pageCount : exam.page_count,
-                questionCount : exam.questions_count
-            };
-            res.render('questions', {query: qList, examInfo: examInfo});
-        });
+                var examInfo = {
+                    id : exam._id,
+                    courseCode : exam.course_code,
+                    term : toProperCase(exam.term),
+                    type : toProperCase(exam.type),
+                    year : exam.year,
+                    instructors : exam.instructors.join(),
+                    uploadDate : exam.upload_date,
+                    uploader : exam.uploaded_by,
+                    pageCount : exam.page_count,
+                    questionCount : exam.questions_count
+                };
+                res.render('questions', {query: qList, examInfo: examInfo});
+            });
+        }else{
+            req.session.messages  = {error : "Could not find exam."};
+            res.redirect('/');
+        }
+
+
     });
 });
 

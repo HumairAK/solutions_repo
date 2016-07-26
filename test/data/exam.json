@@ -1,0 +1,60 @@
+{
+  "existing" : {
+    "_id": {
+      "$oid": "57917d4d2a73c0224fb6e763"
+    },
+    "course_code": "CSC373",
+    "year": "2016",
+    "term": "Midterm",
+    "type": "Winter",
+    "instructors": [
+      "Robert Dane"
+    ],
+    "page_count": "20",
+    "questions_count": "2",
+    "questions_list": [
+      {
+        "q_id": 1,
+        "question": "Question 1"
+      },
+      {
+        "q_id": 2,
+        "question": "Question 2"
+      }
+    ],
+    "upload_date": "2005-06-10",
+    "uploaded_by": [
+      "humair",
+      ""
+    ]
+  },
+  "nonExisting" : {
+    "_id": {
+      "$oid": "999999999999999999999999"
+    },
+    "course_code": "CSC373",
+    "year": "2016",
+    "term": "Midterm",
+    "type": "Winter",
+    "instructors": [
+      "Robert Dane"
+    ],
+    "page_count": "20",
+    "questions_count": "2",
+    "questions_list": [
+      {
+        "q_id": 1,
+        "question": "Question 1"
+      },
+      {
+        "q_id": 2,
+        "question": "Question 2"
+      }
+    ],
+    "upload_date": "2005-06-10",
+    "uploaded_by": [
+      "humair",
+      ""
+    ]
+  }
+}

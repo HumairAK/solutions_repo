@@ -9,6 +9,11 @@
 				<hr> <!-- Divider -->
 				<div class="search col-md-8 col-lg-8 col-md-offset-2">
 					<!-- Search-bar, Drop-down and Prompt -->
+                    {{# if messages.error }}
+                        <section class="alert alert-danger custom-Alert">
+                            <h4>{{ messages.error }}</h4>
+                        </section>
+                    {{/if}}
 
                     {{# if success }}
                         <section class="alert alert-success">

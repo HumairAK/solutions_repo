@@ -312,20 +312,29 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     }
 });
 
-router.post('/solution/vote/:examID/:qID/:solID', loggedIn, function(req, res, next){
+router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
     var vote = req.body.vote;
     var examID = req.params.examID;
     var qID = req.params.qID;
     var solutionID = req.params.solID;
-    dbFile.vote_solution(solutionID, vote, function(voteCounted, statusMsg){
-        if(voteCounted){
-            console.log("Success!");
-        }else{
-            console.log("Action failed!");
-        }
-        console.log(statusMsg); // Change to display message above
+
+    if(req.isAuthenticated()){
+        dbFile.vote_solution(solutionID, vote, function(voteCounted, statusMsg){
+            if(voteCounted){
+                res.redirect('/solutions/' + examID + '/' + qID);
+            }else{
+                req.session.messages  = {error : statusMsg};
+                res.redirect('/solutions/' + examID + '/' + qID);
+            }
+        });
+    } else { //User not logged in
+        var message = "Must be logged in to Vote!";
+        req.session.messages  = {error : message};
         res.redirect('/solutions/' + examID + '/' + qID);
-    });
+    }
+
+
+
 
 
 });

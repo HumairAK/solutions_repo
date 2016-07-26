@@ -599,7 +599,6 @@ exports.retrieveUser = function (username, callback) {
             }
 
             else if (result.length) {
-                console.log("retreive User: " + result[0]);
                 callback(true, false, result[0], "User retrieved");
             }
 
@@ -1229,7 +1228,6 @@ exports.get_exam_byID = function (id, callback) {
                 }
                 else {
                     callback(true, false,  docs[0]);
-                    console.log("DOCS: "+ docs);
                 }
             });
         })

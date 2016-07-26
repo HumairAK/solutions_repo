@@ -1,0 +1,35 @@
+{
+  "existingUser": {
+    "_id": {
+      "$oid": "57950d18543bc2fe7681f28c"
+    },
+    "email": "kumar@kumar.com",
+    "user_name": "kumar",
+    "f_name": "KUMAR",
+    "l_name": "DAMANI",
+    "university": "",
+    "department": "",
+    "answered": 1,
+    "messages": 0,
+    "comments": 4,
+    "phone_num": "",
+    "followers": []
+  },
+
+  "nonExistingUser": {
+    "_id": {
+      "$oid": "57950d18543bc2fe7681f28c"
+    },
+    "email": "kumar@kumar.com",
+    "user_name": "kumarFake",
+    "f_name": "KUMAR",
+    "l_name": "DAMANI",
+    "university": "",
+    "department": "",
+    "answered": 1,
+    "messages": 0,
+    "comments": 4,
+    "phone_num": "",
+    "followers": []
+  }
+}

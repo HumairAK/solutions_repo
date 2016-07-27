@@ -2,10 +2,8 @@ var dbFile  = require("../node_simple.js");
 var express = require('express');
 var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
-
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
-
 // Remove later
 var passport_file = require('../config/passport.js');
 var bcrypt = require('bcrypt-nodejs');
@@ -13,9 +11,10 @@ var bcrypt = require('bcrypt-nodejs');
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
     //addFirstAdmin();
-    res.render('index');
+    res.render('index', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
     req.session.success = null;
+    req.session.messages = null;
 
 });
 
@@ -59,33 +58,57 @@ router.get('/user_solutions', function(req, res, next) {
         title: 'Thry of Computation' } ]
 
  */
-router.get('/exams/:id', function(req, res, next) {
-    var minExamInfoArray = [];
-    dbFile.get_all_exams(req.params.id, function (exams) {
-        if (exams.length == 0){
-            console.log("Nothing was found");
-        }
-        else {
-            //console.log(exams);
-            //only pass over the information that is necessary for the exams page
-            for (var i = 0; i<exams.length;i++){
 
-                var getInstructors = exams[i].instructors.join(", ");
-                var minExamInfo = {     courseCode:exams[i].course_code,
-                    year:exams[i].year,
-                    term:toProperCase(exams[i].term),
-                    instructors: getInstructors,
-                    type:toProperCase(exams[i].type) + " Examination",
-                    title:exams[i].title,
-                    id:exams[i]._id,
-                    questionCount : exams[i].questions_count
-                };
-                //console.log(minExamInfo);
-                minExamInfoArray.push(minExamInfo);
+router.get('/exams/', function(req,res,next){
+    req.checkParams('id','Course code should be between 6').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
+    var errors = req.validationErrors();
+    if (errors){
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/');
+    }
+});
+
+router.get('/exams/:id', function(req, res, next) {
+
+    req.checkParams('id','Course code should be between 6 characters').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
+
+    var errors = req.validationErrors();
+    if (errors){
+        console.log("id " + errors);
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/');
+    }else{
+
+        var minExamInfoArray = [];
+        dbFile.get_all_exams(req.params.id, function (exams) {
+            if (exams.length == 0){
+                console.log("Nothing was found");
             }
-        }
-        res.render('exams',  {query: req.params.id, result: minExamInfoArray});
-    });
+            else {
+                //console.log(exams);
+                //only pass over the information that is necessary for the exams page
+                for (var i = 0; i<exams.length;i++){
+
+                    var getInstructors = exams[i].instructors.join(", ");
+                    var minExamInfo = {     courseCode:exams[i].course_code,
+                        year:exams[i].year,
+                        term:toProperCase(exams[i].term),
+                        instructors: getInstructors,
+                        type:toProperCase(exams[i].type) + " Examination",
+                        title:exams[i].title,
+                        id:exams[i]._id,
+                        questionCount : exams[i].questions_count
+                    };
+                    //console.log(minExamInfo);
+                    minExamInfoArray.push(minExamInfo);
+                }
+            }
+            res.render('exams',  {query: req.params.id, result: minExamInfoArray});
+        });
+
+    }
 });
 
 /* Render user search page based on query */
@@ -93,11 +116,9 @@ router.get('/user/:query', function(req,res,next){
     var query = req.params.query;
     // Need to validate query
 
-
     dbFile.search_users(query, function(success, result){
         if(success){
-            console.log(result);
-            res.render('user_search', {users : result, query : query});
+            res.render('user_search', {users : result, query : query, resultCount: result.length});
             req.session.messages = null;
         }else{
             console.log(result);
@@ -132,45 +153,45 @@ router.get('/search/:type', function(req, res, next) {
  * comments = number of comments*/
 router.get('/questions/:exam_id', function (req,res) {
     var examID = req.params.exam_id;
-    console.log(examID);
     dbFile.get_exam_byID(examID, function(success, error, exam){
 
-        /* [
-         { q_id: 1, question: 'this is q1' },
-         { q_id: 2, question: 'this is q2' }
-         ]
-         */
-        var qList = exam.questions_list;
+        if(success && exam){
+            var qList = exam.questions_list;
+            // Add comments/solutions
+            dbFile.get_exam_info_by_ID(examID, function (questionsInfo) {
+                qList.forEach(function(question){
+                    question.count = 0;
+                    question.comments = 0;
 
-        // Add comments/solutions
-        dbFile.get_exam_info_by_ID(examID, function (questionsInfo) {
-            qList.forEach(function(question){
-                question.count = 0;
-                question.comments = 0;
-
-                // Find q_id in questionsInfo, update comment/solutions count
-                questionsInfo.forEach(function(q){
-                    if (question.q_id == q._id){
-                        question.count += q.count;
-                        question.comments += q.comments;
-                    }
+                    // Find q_id in questionsInfo, update comment/solutions count
+                    questionsInfo.forEach(function(q){
+                        if (question.q_id == q._id){
+                            question.count += q.count;
+                            question.comments += q.comments;
+                        }
+                    });
                 });
-            });
 
-            var examInfo = {
-                id : exam._id,
-                courseCode : exam.course_code,
-                term : toProperCase(exam.term),
-                type : toProperCase(exam.type),
-                year : exam.year,
-                instructors : exam.instructors.join(),
-                uploadDate : exam.upload_date,
-                uploader : exam.uploaded_by,
-                pageCount : exam.page_count,
-                questionCount : exam.questions_count
-            };
-            res.render('questions', {query: qList, examInfo: examInfo});
-        });
+                var examInfo = {
+                    id : exam._id,
+                    courseCode : exam.course_code,
+                    term : toProperCase(exam.term),
+                    type : toProperCase(exam.type),
+                    year : exam.year,
+                    instructors : exam.instructors.join(),
+                    uploadDate : exam.upload_date,
+                    uploader : exam.uploaded_by,
+                    pageCount : exam.page_count,
+                    questionCount : exam.questions_count
+                };
+                res.render('questions', {query: qList, examInfo: examInfo});
+            });
+        }else{
+            req.session.messages  = {error : "Could not find exam."};
+            res.redirect('/');
+        }
+
+
     });
 });
 
@@ -218,10 +239,6 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
         res.render('user_solutions', {query: solutions, examID: examID, qID: qID, csrfToken: req.csrfToken()});
         req.session.messages = null;
     });
-});
-
-router.post('/add_solutions/submit', function (req, res) {
-    //TODO: get the form information for the solutions
 });
 
 /**** Helpers ****/

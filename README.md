@@ -50,9 +50,7 @@ Usage and features:
 
     Signed In User:
 
-        In order to sign in and take advantage of commenting and adding solutions please click the signup button at the
-        top of any of the pages. Then fill out the forms and press submit. Once signed in you will be able to enjoy
-        all the features of a general user + the ones mentioned below
+        In order to sign in and take advantage of commenting and adding solutions you must sign in via your facebook account.
 
         Examination + Solution Search:
             Add Solution:
@@ -71,13 +69,14 @@ Usage and features:
             you have in the "Friends" tab. You can also see the messages you have received in "Inbox" and the comments
             you have made in "Comments". Please follow the following steps to friend a user, message a user or follow a
             user:
+                Follow an exam:
 
-                Follow a user:
-
-                Friend a user:
+                    1. Once signed in search for the course you wish to see the exam for and select and exam of your choice
+                    2. Click the "Follow Exam" button once in the page displaying the list of questions for an exam
 
 
                 Message a user:
+
                     1. Once signed in click on the "PROFILE PAGE" at the top of any of the pages
                     2. Click "Send Message"
                     3. Fill in the forms: "Send To:" must contain the username of the person you are trying to reach

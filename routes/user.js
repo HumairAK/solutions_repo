@@ -95,9 +95,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
     function getFollows(){
         return new Promise(function(resolve, reject) {
-
-
-
             dbFile.retrieveFollows(req.user.user_name, function(success, data){
                     req.user.examfollows = [];
                     req.user.followerCount = data.length;

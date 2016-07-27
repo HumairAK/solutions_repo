@@ -10,6 +10,7 @@ var expressValidator = require('express-validator');
 var session = require('express-session');
 var passport = require('passport');
 var flash = require('connect-flash');
+var compression = require('compression');
 
 var MongoStore = require('connect-mongo') (session); //for storing sessions in database
 
@@ -29,6 +30,8 @@ app.set('views', path.join(__dirname, 'views')); // Our view path
 app.set('view engine', 'hbs');
 
 // Middleware initialization, make sure everything is initialized in proper order
+app.use(compression());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());
@@ -53,7 +56,6 @@ require('./config/passport'); // simply need to load it
 app.use(express.static(__dirname));
 
 // Needed to style the header based on the whether the user is signed in or not
-// Gives errors for admin - need to figure out
 app.use(function(req, res, next) {
     res.locals.login = req.isAuthenticated(); // global variable
     res.locals.session = req.session;
@@ -62,6 +64,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+
+
 // Allows us to customize express routing
 // in a separate file.
 app.use('/admin', adminRoutes);
@@ -69,6 +73,7 @@ app.use('/user', userRoutes);
 app.use('/', routes);
 
 
+/* Handle error page */
 app.use(function(req, res, next){
     res.status(404 || 500);
 

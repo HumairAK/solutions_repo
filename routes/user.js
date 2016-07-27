@@ -91,27 +91,27 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
 
-    function solutionsCount() {
+    /*function solutionsCount() {
         return new Promise(function (resolve, reject) {
             dbFile.retrieve_userSolutions_history(req.user.username, function (bool, results) {
                 if (!bool) {
                     error = 'Error: could not retrieve Answered count';
-                    req.user.answered = 0;
                     resolve(1);
                 }
                 else {
-                    req.user.answered = results.length;
                     console.log("RESULTS: ");
                     console.log(results);
                     resolve(1);
                 }
             });
         });
-    }
+    }*/
 
-    getComments().then(getMail).then(solutionsCount).then(function (data) {
+
+
+    getComments().then(getMail).then(function (data) {
         console.log('got here fere');
-        res.render('user_profile_alt', {comments : comments, inbox: inbox, error: error, csrfToken: req.csrfToken()});
+        res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken()});
     });
 
     //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});

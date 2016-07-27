@@ -1023,7 +1023,7 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
  * OR FALSE if it does not exist in the database.
  *
  * @param {string[]} fields: an array of format ["course_code", year, "term", "type"]
- * @param {fucntion} serverCallback: ...
+ * @param {function} serverCallback: ...
  * @param {function} callback: with args (<bool>, ...)
  *                      where <bool> : found ? true : false
  * */

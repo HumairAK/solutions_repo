@@ -259,7 +259,7 @@
                 </div>
                 <div class="row" id="profile-comments">
 
-                    {{# if comments.length }}
+                    {{# if user.comment_list.length }}
                         <h3>Comment History</h3>
                         <div class="col-sm-10 col-sm-offset-1 prf-tables">
                         <table class="table">
@@ -271,7 +271,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{# each comments }}
+                            {{# each user.comment_list }}
                                 <tr>
                                     <td>{{ this.date }}</td>
                                     <td>{{ this.comment }}</td>

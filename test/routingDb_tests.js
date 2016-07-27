@@ -1,5 +1,6 @@
 var chai = require('chai');
 var chaiHttp = require('chai-http');
+var dbFile = require('../node_simple');
 var expect = require('chai').expect;
 var assert = chai.assert;
 var url  = require("url");
@@ -40,6 +41,18 @@ var usersPull = fs.readFileSync("test/data/user.json");
 var users = (JSON.parse(usersPull));
 
 chai.use(chaiHttp);
+
+
+
+/* Set up DB connection as it is required for the test cases below*/
+dbFile.setupDB(function (success, mssg) {
+    if(success){
+        console.log('Db Connection success');
+    } else{
+        console.log('Failed to connect');
+    }
+});
+
 
 /* Test simple routes that do not require database queries */
 describe('Test Basic Route:', function () {
@@ -112,9 +125,11 @@ describe('Test Basic Route:', function () {
 /* Public profile page response test */
 describe('User profile page (public) Route:', function(){
     var server;
-    before(function () {
+    before(function (done) {
         server = require('./test_server');
+        done();
     });
+
     after(function () {
         server.close();
     });
@@ -125,7 +140,6 @@ describe('User profile page (public) Route:', function(){
             .get('/public_profile/' + username)
             .end(function(err, res){
                 expect(res).to.have.status(200);
-
                 var path = res.res.req.path;
                 assert.equal(path, '/public_profile/' + username); // Check url path
                 done();
@@ -293,11 +307,11 @@ describe('Questions Search Route:', function(){
         chai.request(server)
             .get('/questions/batman')
             .end(function(err, res){
-                expect(res).to.have.status(200);
+                expect(res).to.have.status(500);
                 var path = res.res.req.path;
 
                 // Redirected to homepage (with err msg)
-                assert.equal(path, '/');
+                assert.equal(path, '/questions/batman');
                 done();
             });
     });

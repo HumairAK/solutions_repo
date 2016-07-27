@@ -77,7 +77,7 @@ app.use('/', routes);
 
 /* Handle error page */
 app.use(function(req, res, next){
-    res.status(404 || 500);
+    res.status(404);
 
     // respond with html page
     if (req.accepts('html')) {
@@ -89,6 +89,13 @@ app.use(function(req, res, next){
     res.type('txt').send('Not found');
 
 });
+
+app.use(function(error, req, res, next) {
+    res.status(500);
+    url = req.url;
+    res.render('error', {error: error, url: url});
+});
+
 
 
 module.exports = app;

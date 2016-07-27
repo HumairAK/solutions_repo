@@ -158,12 +158,10 @@ router.get('/signin', loggedOut, function (req, res, next) {
     });
 });
 
-
 /** Render/GET verification page. */
 router.get('/verify', function(req, res, next) {
     res.render('verification', {noHeader: true, noFooter: true});
 });
-
 
 /** Retrieves infomation from the signup form, form validates and sends it to passport.js to authenticate. */
 router.post('/signup', loggedOut, function(req, res, next) {
@@ -382,7 +380,6 @@ router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
 
 });
 
-
 /**
  * Retrieves information about the exam following button, redirects if there is an error, and shows an error alert
  * if the user is not logged in.
@@ -410,9 +407,6 @@ router.post('/follow_exam/:examID',function (req, res) {
 
     }
 });
-
-
-
 
 module.exports = router;
 

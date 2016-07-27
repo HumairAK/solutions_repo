@@ -4,12 +4,11 @@ var router = express.Router();
 var csrf = require('csurf'); // Cross-Site Request Forgery prevention
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
-// Remove later
 var passport_file = require('../config/passport.js');
 var bcrypt = require('bcrypt-nodejs');
 var passport = require('passport');
 
-/* Render/GET homepage. */
+/** Serve the main index.hbs page for a regular user (logged in or not) */
 router.get('/', function(req, res, next) {
     //addFirstAdmin();
     res.render('index', {homePage: true, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
@@ -19,12 +18,13 @@ router.get('/', function(req, res, next) {
 
 });
 
-/* Render/GET about page */
+/** Serve the about.hbs page */
 router.get('/about', function(req, res, next) {
     res.render('about');
 });
 
-/* Router for rendering public user profile of a given user */
+
+/** Serve the profile page of a user with given username */
 router.get('/public_profile/:username', function(req,res,next){
     var username = req.params.username;
     dbFile.retrieveUser(username, function(success, error, user, statusMsg){
@@ -38,13 +38,16 @@ router.get('/public_profile/:username', function(req,res,next){
 
 });
 
-/* Render/GET user_solutions page */
+/** Serve the user_solutions.hbs page */
 router.get('/user_solutions', function(req, res, next) {
     res.render('user_solutions');
 });
 
-//EXAMPLE EXPECTED DATA GIVEN BELOW:
-/*[     {courseCode: 'CSC240',
+/**
+ * Serve the exams.hbs page
+ *
+ * EXAMPLE EXPECTED DATA GIVEN BELOW:
+[     {courseCode: 'CSC240',
         year: 2016,
         term: 'Fall',
         instructors: ['Faith Ellen', 'Tom F.'],
@@ -56,12 +59,10 @@ router.get('/user_solutions', function(req, res, next) {
         term: 'Fall',
         instructors: ['Faith Ellen', 'Tom F.'],
         type: 'Midterm Examination',
-        title: 'Thry of Computation' } ]
-
- */
-
+        title: 'Thry of Computation' } ]  */
 router.get('/exams/', function(req,res,next){
-    req.checkParams('id','Course code should be between 6').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
+    req.checkParams('id','Course code should be between 6').notEmpty().withMessage('Course code required')
+        .isLength({min: 6, max: 6});
     var errors = req.validationErrors();
     if (errors){
         req.session.errors = errors;
@@ -70,9 +71,12 @@ router.get('/exams/', function(req,res,next){
     }
 });
 
+
+/** Serve the exams.hbs with a specific exam corresponding to the id */
 router.get('/exams/:id', function(req, res, next) {
 
-    req.checkParams('id','Course code should be between 6 characters').notEmpty().withMessage('Course code required').isLength({min: 6, max: 6});
+    req.checkParams('id','Course code should be between 6 characters').notEmpty().withMessage('Course code required')
+        .isLength({min: 6, max: 6});
 
     var errors = req.validationErrors();
     if (errors){
@@ -112,6 +116,7 @@ router.get('/exams/:id', function(req, res, next) {
     }
 });
 
+/** Route protection. Redirect to the main page if errors.  */
 router.get('/user/',function (req, res) {
     req.checkParams('username','Please enter a username').notEmpty();
     var errors = req.validationErrors();
@@ -122,7 +127,7 @@ router.get('/user/',function (req, res) {
     }
 });
 
-/* Render user search page based on query */
+/** Render user search page based on query */
 router.get('/user/:query', function(req,res,next){
     var query = req.params.query;
     // Need to validate query
@@ -138,7 +143,8 @@ router.get('/user/:query', function(req,res,next){
     });
 });
 
-/* Render/GET search (exam) page */
+
+/** Render/GET search (exam) page */
 router.get('/search/:type', function(req, res, next) {
 
     var searchType = req.params.type;
@@ -154,7 +160,7 @@ router.get('/search/:type', function(req, res, next) {
 
 });
 
-/* This is a redirect from the exams page, route is generated in exams.hbs
+/** This is a redirect from the exams page, route is generated in exams.hbs
  *
  * EXAMPLE DATA GIVEN BELOW:
  * questions = [{id,count,comments},{id,count,comments}] --> array of "question" objects
@@ -207,32 +213,32 @@ router.get('/questions/:exam_id', function (req,res) {
     });
 });
 
-/*GET the solutions for a given exam given the question number and the exam_id
+/** GET the solutions for a given exam given the question number and the exam_id
 
 * EXPECTED DATA GIVEN BELOW:
 * array of solutions:
 * solutions = [ {
-    *               _id: "354ff71ed078933079d6467e"
-    *               exam_id: "578a44ff71ed097fc3079d6e"
-    *               q_id: 1  (int)
-    *               text: "answer"
-    *               votes: 1 (int)
-    *               comments: [{}.{}] (just going to be string for now i think)
-    *               author : "text"
-    *           }
-    *           {
-    *                _id: ...
-    *               exam_id:  ..
-    *               q_id: ...
-    *               text: ..
-    *               votes: ..
-                    comments: ..
-                    author : "text"
-    *           
-    *           }
-    *           ]
-    *            "comments": []
-    *
+                   _id: "354ff71ed078933079d6467e"
+                   exam_id: "578a44ff71ed097fc3079d6e"
+                   q_id: 1  (int)
+                   text: "answer"
+                   votes: 1 (int)
+                   comments: [{}.{}] (just going to be string for now i think)
+                   author : "text"
+               }
+               {
+                    _id: ...
+                   exam_id:  ..
+                   q_id: ...
+                   text: ..
+                   votes: ..
+                   comments: ..
+                   author : "text"
+
+               }
+               ]
+                "comments": []
+
      A comment:
      {
      "text": "this is asdfasdf",
@@ -258,15 +264,16 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
     });
 });
 
-// Redirect the user to Facebook for authentication.  When complete,
-// Facebook will redirect the user back to the application at
-//     /auth/facebook/callback
+
+/** Redirect the user to Facebook for authentication.  When complete,
+     Facebook will redirect the user back to the application at
+    /auth/facebook/callback */
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
-// Facebook will redirect the user to this URL after approval.  Finish the
-// authentication process by attempting to obtain an access token.  If
-// access was granted, the user will be logged in.  Otherwise,
-// authentication has failed.
+/** Facebook will redirect the user to this URL after approval.  Finish the
+    authentication process by attempting to obtain an access token.  If
+    access was granted, the user will be logged in.  Otherwise,
+    authentication has failed. */
 router.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
     successRedirect: '/user/user_profile',
@@ -276,12 +283,15 @@ router.get('/auth/facebook/callback',
 
 /**** Helpers ****/
 
+/**
+ * Adds an admin manually. There is no way to add an admin unless another admin adds him/her. Hence, there has to be
+ * at least one admin in the database.
+ */
 function addFirstAdmin() {
-    //console.log("Inside addFirstAdmin()");
+
     //admin_data = {fname: firstname, lname: lastname, username: username, password: password}
     var password = 'lamptable';
     var hash_pwd = passport_file.encryptPassword(password);
-    //console.log("Admin hashed: " + hash_pwd);
     var admin_data = {
         fname: 'Admin',
         lname: 'Admin',
@@ -294,17 +304,11 @@ function addFirstAdmin() {
     });
 }
 
-function getExamsForCourseCode(courseCode) {
-    dbFile.get_all_exams(courseCode, function (exams) {
-        if (exams.length == 0){
-            console.log("Nothing was found");
-        }
-        else {
-            console.log(exams);
-        }
-    });
-}
-
+/**
+ * Returns a proper cased string, given string.
+ * @param string
+ * @returns {void|XML}
+ */
 function toProperCase(string) {
     return string.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }

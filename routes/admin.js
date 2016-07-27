@@ -34,7 +34,7 @@ app.use(express_validator({
     }
 }));
 
-/** Serve the main index.html page */
+/** Serve the main index.hbs page as an admin */
 router.get('/', isAdmin, function(req,res){
     res.render('admin', {adminPanel: true, csrfToken: req.csrfToken(), success: req.session.success,
         errors: req.session.errors});

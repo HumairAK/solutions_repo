@@ -9,6 +9,7 @@ app = express();
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
+/** Form validator */
 app.use(express_validator({
     customValidators:{
         validRadio: function (value) {
@@ -33,14 +34,16 @@ app.use(express_validator({
     }
 }));
 
+/** Serve the main index.html page */
 router.get('/', isAdmin, function(req,res){
-    console.log(req.session.messages);
-    res.render('admin', {adminPanel: true, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    res.render('admin', {adminPanel: true, csrfToken: req.csrfToken(), success: req.session.success,
+        errors: req.session.errors});
     req.session.errors = null;
     req.session.messages = null;
 });
 
-/* Adds exam from front-end */
+
+/** Retrieves infomation from the exam adding form and sends it to the database to add.  */
 router.post('/add/exam', function(req,res){
     req.sanitize('course_code').escape();
     req.sanitize('course_code').trim();
@@ -75,7 +78,6 @@ router.post('/add/exam', function(req,res){
     var errors  = req.validationErrors();
 
     if (errors){
-        console.log(errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/admin');
@@ -109,13 +111,12 @@ router.post('/add/exam', function(req,res){
             }else{
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
     }
 });
 
-/* Adds course from front-end */
+/** Retrieves information from the course adding form and sends it to the database to add. */
 router.post('/add/course', function(req,res){
 
     req.sanitize('course_code').escape();
@@ -129,7 +130,6 @@ router.post('/add/course', function(req,res){
     var errors = req.validationErrors();
 
     if (errors){
-        console.log(errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/admin');
@@ -143,13 +143,12 @@ router.post('/add/course', function(req,res){
             }else{
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
     }
 });
 
-/* Add a new admin, redirect to admin panel */
+/** Retrieves information from the admin user adding form and sends it to the database to add. */
 router.post('/add/admin', function(req,res){
     req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
     req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
@@ -159,7 +158,6 @@ router.post('/add/admin', function(req,res){
 
     var errors = req.validationErrors();
     if (errors) {
-        console.log(errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/admin');
@@ -177,7 +175,6 @@ router.post('/add/admin', function(req,res){
             }else{
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
 
@@ -185,7 +182,7 @@ router.post('/add/admin', function(req,res){
 
 });
 
-/* Remove an exam route, redirect to admin panel */
+/** Retrieves information from the exam removing form and sends it to the database to remove. */
 router.post('/remove/exam', function(req,res){
     req.sanitize('course_code').escape();
     req.sanitize('course_code').trim();
@@ -202,7 +199,6 @@ router.post('/remove/exam', function(req,res){
 
     var errors = req.validationErrors();
     if (errors){
-        console.log(errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/admin');
@@ -225,13 +221,13 @@ router.post('/remove/exam', function(req,res){
             } else {
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
     }
 });
 
-/* Remove a course route, redirect to admin panel */
+
+/** Retrieves information from the course removing form and sends it to the database to delete. */
 router.post('/remove/course', function(req,res){
 
     req.sanitize('course_code').escape();
@@ -253,14 +249,13 @@ router.post('/remove/course', function(req,res){
             } else {
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
     }
 
 });
 
-/* Remove a user route, redirect to admin panel */
+/** Retrieves information from the user adding form and sends it to the database to delete. */
 router.post('/remove/user', function(req,res){
 
     req.sanitize('username').trim();
@@ -280,7 +275,6 @@ router.post('/remove/user', function(req,res){
             } else {
                 req.session.messages  = {error : statusMsg};
             }
-            console.log(statusMsg);
             res.redirect('/admin');
         });
     }
@@ -288,8 +282,13 @@ router.post('/remove/user', function(req,res){
 });
 
 
-/* Takes an input string delimited by commas, will split by comma and trim white
- * spaces. Consider callback.
+/** Helper function */
+
+/**
+ * Takes an input string delimited by commas, will split by comma and trim whitespaces. Consider callback.
+ *
+ * @param input
+ * @returns {Array}
  */
 function parseStringArray(input){
     var list = input.split(',');

@@ -1,4 +1,3 @@
-var fs = require("fs");
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -31,7 +30,6 @@ app.set('view engine', 'hbs');
 
 // Middleware initialization, make sure everything is initialized in proper order
 app.use(compression());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressValidator());

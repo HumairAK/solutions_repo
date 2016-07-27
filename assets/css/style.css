@@ -49,7 +49,6 @@ main .search h2{
 .search input {
     text-align: center;
     box-sizing: border-box;
-    background: white url('../images/search_icon.png') no-repeat 9px 9px;
     background-size: 20px 20px;
     padding: 0;
 }
@@ -155,6 +154,9 @@ main [id^="sol-"] img.user-image {
 
 main [id^="sol-"] p.username {
 	vertical-align: middle;
+	padding-left: 10px;
+	font-weight: bolder;
+
 }
 
 main [id^="sol-"] button.upvote, [id^="sol-"] button.downvote {
@@ -337,6 +339,7 @@ p.solutions-time {
 .exam-info {
 	margin-left: 5%;
 	display: inline-block;
+	text-align: center;
 }
 
 img.exam-info {
@@ -348,6 +351,7 @@ img.exam-info {
 section.exam-info em {
 	font-weight: bold;
 }
+
 
 .questions-number{
     font-size: large;
@@ -365,6 +369,10 @@ section.exam-info em {
 
 .questions-sol-num {
 	margin-left: 5%;
+}
+
+.questions-arrow{
+	padding-top: 6px;
 }
 /*** EXAM QUESTIONS PAGE END ***/
 

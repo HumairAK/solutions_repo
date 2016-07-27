@@ -47,7 +47,8 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                     resolve(1);
                 } else if (object.length){
                     req.user.comments = object.length;
-                    comments = object;
+                    req.user.comment_list = comments = object;
+
                     resolve(1);
                 } else {
                     req.user.comments = object.length;

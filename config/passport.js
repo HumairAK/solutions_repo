@@ -1,7 +1,10 @@
 var passport = require('passport');
 var dbFile  = require("../node_simple.js");
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var bcrypt = require('bcrypt-nodejs');
+
+var configAuth = require('./auth');
 
 var exports = module.exports = {};
 
@@ -138,3 +141,16 @@ passport.use('local_signin', new LocalStrategy({
         }
     });
 }));
+
+passport.use(new FacebookStrategy({
+        clientID: configAuth.facebookAuth.clientID,
+        clientSecret: configAuth.facebookAuth.clientSecret,
+        callbackURL: configAuth.facebookAuth.callbackURL
+    },
+    function(accessToken, refreshToken, profile, done) {
+        User.findOrCreate(..., function(err, user) {
+            if (err) { return done(err); }
+            done(null, user);
+        });
+    }
+));

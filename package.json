@@ -39,6 +39,8 @@
     "mongodb": "^2.2.2",
     "object-assign": "^4.1.0",
     "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
     "promise": "^7.1.1",
     "sanitizer": "^0.1.3",

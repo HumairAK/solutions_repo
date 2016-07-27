@@ -232,12 +232,17 @@ router.get('/questions/:exam_id', function (req,res) {
 router.get('/solutions/:exam_id/:q_num', function (req, res) {
     var examID = req.params.exam_id;
     var qID = req.params.q_num;
-    dbFile.get_all_solutions(examID, qID, function (solutions) {
-        solutions.forEach(function(soln){
-            soln.commentCount = soln.comments.length;
-        });
-        res.render('user_solutions', {query: solutions, examID: examID, qID: qID, csrfToken: req.csrfToken()});
-        req.session.messages = null;
+    dbFile.get_all_solutions(examID, qID, function (success, failure, message, solutions) {
+        if(success){
+            solutions.forEach(function(soln){
+                soln.commentCount = soln.comments.length;
+            });
+            res.render('user_solutions', {query: solutions, examID: examID, qID: qID, csrfToken: req.csrfToken()});
+            req.session.messages = null;
+        } else{
+            res.render('error', {error : message});
+        }
+
     });
 });
 

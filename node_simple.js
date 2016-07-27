@@ -782,7 +782,7 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
         if (!success && failure) {  // some error occurred while searching
             callback(false, true, "Error: Some error occurred while searching for exam", null);
         } else if (!success && !failure) {
-            callback(false, true, "Error: this exam doesn't exist", null);
+            callback(false, true, "Error: this exam does not exist", null);
         } else if (success && !failure) {       // this exam exists proceed with task
             mongoFactory.getConnection(uri).then(function (db) {
 
@@ -1230,7 +1230,7 @@ exports.get_exam_byID = function (id, callback) {
             exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
                 if  (err) {
                     callback(false, true,  null);
-                } else if (!docs) {
+                } else if (docs.length == 0) {
                     callback(false, false, null);
                 }
                 else {

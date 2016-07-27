@@ -13,7 +13,7 @@ var fs = require('fs');
  * To run test simply type $mocha in the terminal. Ensure preconditions listed
  * below are met. Due to db queries, if tests fail due to time out, increase
  * the time out flag in mocha.opts for --timeout.
- * 
+ *
  */
 /* PRE-CONDITION:
 *

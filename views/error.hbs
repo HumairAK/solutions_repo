@@ -1,5 +1,12 @@
 <main id = 'solutions-main'>
     <div class = 'search container' id = 'solutions-div'>
-       <h4>Sorry, we could not find {{ url }}</h4>
+       {{# if url}}
+           <h4>Sorry, we could not find {{ url }}</h4>
+       {{/if}}
+        {{# if error }}
+            <section class="alert alert-danger custom-Alert">
+                <h4>{{ error }}</h4>
+            </section>
+        {{/if}}
     </div>
 </main>

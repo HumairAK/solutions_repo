@@ -111,6 +111,16 @@ router.get('/exams/:id', function(req, res, next) {
     }
 });
 
+router.get('/user/',function (req, res) {
+    req.checkParams('username','Please enter a username').notEmpty();
+    var errors = req.validationErrors();
+    if (errors){
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/');
+    }
+});
+
 /* Render user search page based on query */
 router.get('/user/:query', function(req,res,next){
     var query = req.params.query;

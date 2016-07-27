@@ -16,7 +16,7 @@ router.get('/logout', loggedIn, function (req, res, next) {
 });
 
 
-/** Render/GET user_profile page */
+/** Render/GET user_profile page. */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
     req.session.messages = null;
@@ -29,7 +29,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
                 if (!success) {
                     // Need to redirect to an error page instead.
-                    console.log("Could not retrieve comments.");
                     if (!comments.length) {
                         var obj = {
                             comment: 'Use a heap!',
@@ -85,7 +84,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                     inbox.push(mail_data);
                     inbox.push(mail_data);
                     // Need to redirect to an error page instead.
-                    console.log("Could not retrieve mail.");
                     resolve(1);
                 }
             });
@@ -104,13 +102,11 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                                 if(success){
                                     req.user.examfollows.push(data);
                                     if(count == req.user.followerCount ){
-                                        console.log(req.user.examfollows);
                                         resolve(1);
                                     }else{
                                         count++;
                                     }
                                 }else{
-                                    console.log("Error: Could not fetch one or more exams;");
                                     resolve(1);
                                 }
                             })
@@ -118,11 +114,9 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
                     } else if(success && !data.length){
                         resolve(1);
-                        console.log("Success: But no follows found;");
                     }
                     else{ //error
                         error = data;
-                        console.log(error);
                         resolve(1);
                     }
 
@@ -131,18 +125,19 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     }
 
     getComments().then(getMail).then(getFollows).then(function (data) {
-        console.log('got here fere');
         res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
     });
 
-    //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
 });
 
+
+/** Render/GET signin page. */
 router.get('/signup', loggedOut, function(req, res, next) {
     res.render('signup', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
 });
 
+/** Render/GET signup page when the user failed. Redirect to signup page */
 router.get('/signup/failed', loggedOut, function(req, res, next) {
     var msg = req.flash('error');
 
@@ -152,6 +147,7 @@ router.get('/signup/failed', loggedOut, function(req, res, next) {
         flashMsg: msg});
 });
 
+/** Render/GET signin page. */
 router.get('/signin', loggedOut, function (req, res, next) {
     var msg = req.flash('error');
     res.render('signin', {
@@ -162,9 +158,14 @@ router.get('/signin', loggedOut, function (req, res, next) {
     });
 });
 
+
+/** Render/GET verification page. */
 router.get('/verify', function(req, res, next) {
     res.render('verification', {noHeader: true, noFooter: true});
 });
+
+
+/** Retrieves infomation from the signup form, form validates and sends it to passport.js to authenticate. */
 router.post('/signup', loggedOut, function(req, res, next) {
     req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
     req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
@@ -185,7 +186,6 @@ router.post('/signup', loggedOut, function(req, res, next) {
         req.session.success = false;
         res.redirect('/user/signup');
     } else {
-        console.log("GOT SUCCESS");
         passport.authenticate('local_signup', {
             successRedirect: '/user/verify',
             failureRedirect: '/user/signup/failed',
@@ -195,6 +195,7 @@ router.post('/signup', loggedOut, function(req, res, next) {
     }
 });
 
+/** Retrieves infomation from the signin form, form validates and sends it to passport.js to authenticate. */
 router.post('/signin', loggedOut, function(req, res, next) {
     req.check('usrname', 'Username field is empty.').notEmpty();
     req.check('password', "Password field is empty.").notEmpty();
@@ -215,7 +216,8 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 });
 
-
+/** Retrieves infomation from the message sending form and sends it to the database to add. Redirects back if
+ * some error occurs. */
 router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     if (req.user.user_name === req.body.receiver_username) {
         req.session.messages  = {error : 'You cannot send a message to yourself.'};
@@ -238,7 +240,6 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
             date: current_date
         };
 
-        //console.log(mail_data);
         dbFile.sendMail(mail_data, function(success, error, message) {
             if ((!success && !error) || (error)) {
                 req.session.messages  = {error : message};
@@ -258,7 +259,7 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
 
 });
 
-/* Adds a solution into the database, redirect to exam/question/solution page */
+/**Adds a solution into the database, redirect to exam/question/solution page */
 router.post('/submit_solution/:examID/:qID', function(req,res){
     // Get required fields from body
     // Populate this data
@@ -284,7 +285,6 @@ router.post('/submit_solution/:examID/:qID', function(req,res){
             author = req.user.user_name;
 
         var fields = [examID, qID, text, author];
-        console.log(fields);
         // Add to database
         dbFile.add_solution(fields, function(addedSolution, statusMsg){
             if(addedSolution){
@@ -303,7 +303,7 @@ router.post('/submit_solution/:examID/:qID', function(req,res){
 
 });
 
-/* Routed here from Solutions page (add solution button)
+/** Routed here from Solutions page (add solution button)
  *  Renders add_solution page for response.*/
 router.get('/add_solution/:examID/:qID', function (req, res, next) {
     var examID = req.params.examID;
@@ -320,7 +320,10 @@ router.get('/add_solution/:examID/:qID', function (req, res, next) {
 
 });
 
-// Authentication check in code
+/**
+ * Retrieves information from the comment adding form, authenticates on whether the user is logged in or not (redirects
+ * in this case). Sends information to the database to add.
+ */
 router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     var examID = req.params.examID;
     var qID = req.params.qID;
@@ -329,7 +332,6 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     var solutionID = req.params.solID;
     // Must be a logged in user to access
     var fields = [comment, username];
-    console.log(req.body.comment);
     if (!req.body.comment ==='') {
         req.session.messages  = {error : 'Cannot submit an empty comment.'};
         res.redirect('/solutions/' + examID + '/' + qID);
@@ -353,6 +355,10 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
 
 });
 
+/**
+ * Retrieves information from the voting button and sends it to the database. Redirects back if there is an error, or
+ * simply shows an error alert if the user is not logged in.
+ */
 router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
     var vote = req.body.vote;
     var examID = req.params.examID;
@@ -377,12 +383,14 @@ router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
 });
 
 
+/**
+ * Retrieves information about the exam following button, redirects if there is an error, and shows an error alert
+ * if the user is not logged in.
+ */
 router.post('/follow_exam/:examID',function (req, res) {
     var examId = req.params.examID;
 
     if (req.isAuthenticated()){
-        console.log("Exam Id follow exam: " + examId);
-        console.log("Username follow exam: " + req.user.user_name);
 
         dbFile.followExam(req.user.user_name,examId,function (success, message) {
             if (success){
@@ -397,7 +405,6 @@ router.post('/follow_exam/:examID',function (req, res) {
 
     }else{
         var message = "Must be logged in to follow an exam!";
-        console.log(message);
         req.session.messages  = {error : message};
         res.redirect('/questions/' + examId);
 
@@ -410,6 +417,10 @@ router.post('/follow_exam/:examID',function (req, res) {
 module.exports = router;
 
 /************** Route protection ********************/
+
+/**
+ * Redirects to the main page if the user is logged in.
+ */
 function loggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -417,6 +428,9 @@ function loggedIn(req, res, next) {
     res.redirect('/');
 }
 
+/**
+ * Redirects to the main page is the user is not logged in.
+ */
 function loggedOut(req, res, next) {
     if (!req.isAuthenticated()) {
         return next();
@@ -424,6 +438,9 @@ function loggedOut(req, res, next) {
     res.redirect('/');
 }
 
+/**
+ * Redirects to the admin panel if the user is an admin.
+ */
 function isUser(req, res, next) {
     if (req.user && req.user.email) {
         return next();

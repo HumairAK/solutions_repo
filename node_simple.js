@@ -422,9 +422,6 @@ exports.add_user = function (fields, callbackUser) {
     });
 };
 
-
-
-
 /**
  * This function returns whether the user with the given username has already been signed in before.
  * This is important because we need to link a unique facebook account with a username. If the user has signed in
@@ -449,7 +446,6 @@ exports.userVerifiedBefore = function(username, callback) {
 
     });
 };
-
 
 /**
  * THis function adds the user's facebook account verification to the database and links it to the user's local in site
@@ -599,7 +595,6 @@ exports.findUserByID = function (id, callback) {
 
 /************************* COURSES / EXAMS **********************************/
 
-
 /**
  * Remvove a course from ONLY the courses table IN CASE of accidental
  * addition.
@@ -633,7 +628,6 @@ exports.remove_course = function (course_code, callback) {
         }
     });
 };
-
 
 /**
  * This function will add the given exam_id to the given user's followers list.
@@ -683,10 +677,6 @@ exports.followExam = function (user_name, exam_id, callback) {
         }
     });
 };
-
-
-
-
 
 /**
  * This function returns an array where each element contains info for a particular question

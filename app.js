@@ -17,8 +17,7 @@ var routes = require('./routes/index');
 var userRoutes = require('./routes/user');
 var adminRoutes = require('./routes/admin');
 
-var exports = module.exports = {};
-var app = exports.app = express();
+var app = express();
 
 // Templating engine, we are using handlebars
 // This will allow us to create html pages dynamically before serving them.
@@ -46,9 +45,11 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 require('./config/passport'); // simply need to load it
 
 /*LOADS ALL STATIC FILES FROM THE DIRECTORY __dirname*/
+//app.use(minify({cache: __dirname + '/cache'}));
 app.use(express.static(__dirname));
 
 // Needed to style the header based on the whether the user is signed in or not

@@ -1,0 +1,68 @@
+***************************************
+** PERFORMACE IMPROVEMENT TECHNIQUES **
+***************************************
+
+Performace measurement: Firebug
+
+5) RENDERING: 
+
+	- Render core elements first (idk what that means)
+	- Reflow: see google website for guidelines, lazy load content
+
+ NETWORK:
+
+	- Redirect to error pages when there is an error.
+	- HTTP headers
+
+1) FRONT END OPTIMIZATION:
+
+	- Minify HTML, JS and CSS (DONE)	
+	_ GZIP compression (DONE)
+	- Add expires or Cache-Control Header 
+	- Every request sends cookies (store info in them so that we don't have to load more info again)
+
+4) BACK END OPTIMIZATION:
+
+	- Use cluster and http-proxy modules to run one Node process per core.  	
+
+3) JS/CSS: 
+
+ 	- Use selectors with native JS support. 
+ 	- Avoid universal selectors *
+ 	- Stylesheets at the top of the page. 
+
+RESPONSIVE DESIGN:
+
+	- Responsive design: Isn't currently mobile-first design, need to change to it in CSS (designing for the lowest common denominator)
+
+	- Progressive enhancement: Prelude to responsive design; everyone has access to basic, and features added depending on performance abilities of client. (FIND OUT WHAT THIS MEANS)
+
+IMAGES (for when we have images): 
+
+	- Standardizing images for Responsive Design (if we do have images)
+
+	- Lazy image loading (loading triggered when you scroll to that point in the page)
+
+	- CSS Sprites to use image requests (FRONT END OPTIMIZATION)
+
+2) PLUGINS/LIBARAIES: 
+
+	- Customize plugins and libraries so that we only include what we need. Can do that with jQuery (and Bootstrap). Find out how to do this. 
+
+
+************************
+** PERFORMACE TESTING **
+************************
+The load testing tool we're using is node-load-tester.
+
+INITIAL RESULTS:
+	- index.html: The loading of index.html was quite long, and only due to waiting for a response from the server (purple). 
+	- /user/user_profile: Logging In and getting redirected to the profile page took even more time than loading the index.html, also due to waiting for the server. Also, the GET user profile method took Time required to read the entire response from the server (and/or time required to read from cache). 
+
+The task taking the longest time is loading the profile page.
+Possible tweaks:
+
+	- Load all the user comments when signing in and store them in the user object set as a global variable. If the user reloads the profile page, 
+	we don't access the database again. When a user adds a comment, we simply update the user global variable. Unfortunately, for inbox, we cannot do anything since the user can receive a message anytime. 
+
+

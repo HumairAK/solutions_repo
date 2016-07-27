@@ -455,7 +455,8 @@ exports.retrieve_userSolutions_count = function (username, callback) {
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
  *
- * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num]
+ * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num, facebookId, facebookToken,
+ * facebookName, facebookEmail]
  * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>)
  *                                  where, <boolean1> -
  *                                   <boolean2> -
@@ -538,6 +539,89 @@ exports.add_user = function (fields, callbackUser) {
         }
     });
 };
+
+
+
+
+/*
+ *
+ * var login_data = {
+        facebook: {
+            id: fields[8],
+             token: fields[9],
+             name: fields[10],
+             email: fields[11]
+         }
+     };
+ *
+ */
+
+
+
+
+exports.verifyExists = function(login_id, callBack) {
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+            var verif = db.collection('verifications');
+
+            verif.find( { facebookID : login_id } ).toArray(function(err, result) {
+                console.log("VERIF Y EIXSTS: ");
+                console.log(result);
+                if (err) {
+                    throw err;
+                } else {
+                    callBack(false, result);
+                }
+
+            });
+        });
+}
+
+
+exports.userVerifiedBefore = function(username, callback) {
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+            var verif = db.collection('verifications');
+
+            verif.find( { username : username } ).toArray(function(err, result) {
+                if (err) {
+                    callback(true, null);
+                } else {
+                    callback(false, result);
+                }
+
+            });
+        });
+}
+
+
+/**
+ * verification = {
+ *      username: username
+ *      facebook: {
+ *          id: id,
+ *          token: token,
+ *          name: name,
+ *          email: email
+ *      }
+ * }
+ */
+
+exports.addVerification = function(verification, callBack) {
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+            var verif = db.collection('verifications');
+
+           verif.insertOne(verification, function (err) {
+               if (err) {
+                   callBack(true);
+               } else {
+                   callBack(false);
+               }
+           })
+        });
+}
+
 
 /**
  * This (helper) function returns true IFF user_name already exists in the database

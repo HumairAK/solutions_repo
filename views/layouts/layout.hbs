@@ -29,9 +29,16 @@
 
 </head>
 <body>
-    {{> header }}
+    {{# if noHeader}}
+    {{else}}
+        {{> header }}
+    {{/if}}
+
     {{{ body }}}
-    {{> footer }}
+    {{# if noHeader}}
+    {{else}}
+        {{> footer }}
+    {{/if}}
     {{> login }}
     {{> registration }}
 </body>

@@ -7,6 +7,7 @@ router.use(csrfProtection); // router is protected
 // Remove later
 var passport_file = require('../config/passport.js');
 var bcrypt = require('bcrypt-nodejs');
+var passport = require('passport');
 
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
@@ -250,15 +251,16 @@ router.get('/solutions/:exam_id/:q_num', function (req, res) {
 // Redirect the user to Facebook for authentication.  When complete,
 // Facebook will redirect the user back to the application at
 //     /auth/facebook/callback
-app.get('/auth/facebook', passport.authenticate('facebook'));
+router.get('/auth/facebook', passport.authenticate('facebook'));
 
 // Facebook will redirect the user to this URL after approval.  Finish the
 // authentication process by attempting to obtain an access token.  If
 // access was granted, the user will be logged in.  Otherwise,
 // authentication has failed.
-app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { successRedirect: '/user/user_profile',
-        failureRedirect: '/signin' }));
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+    successRedirect: '/user/user_profile',
+        failureRedirect: '/user/logout' }));
 
 
 

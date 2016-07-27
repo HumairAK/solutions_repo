@@ -28,23 +28,6 @@ passport.deserializeUser(function(user, done) {
     done(null, user);
 });
 
-/*
-passport.serializeUser(function (user, done) {
-    console.log("In serialize User");
-    console.log(user);
-    done(null, user._id);
-});
-
-
-passport.deserializeUser(function(id, done) {
-    console.log("In de-serialize User");
-    dbFile.findUserByID(id, function(err, user){
-        done(err, user);
-    });
-});*/
-
-
-
 // fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
 
 passport.use('local_signup', new LocalStrategy({
@@ -142,15 +125,58 @@ passport.use('local_signin', new LocalStrategy({
     });
 }));
 
+
+/**
+ * verification = {
+ *      username: username
+ *      facebook: {
+ *          id: id,
+ *          token: token,
+ *          name: name,
+ *          email: email
+ *      }
+ * }
+ */
+
 passport.use(new FacebookStrategy({
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
-        callbackURL: configAuth.facebookAuth.callbackURL
+        callbackURL: configAuth.facebookAuth.callbackURL,
+        passReqToCallback: true
+
     },
-    function(accessToken, refreshToken, profile, done) {
-        User.findOrCreate(..., function(err, user) {
-            if (err) { return done(err); }
-            done(null, user);
+    function(req, accessToken, refreshToken, profile, done) {
+        console.log("Profile: ");
+        console.log(profile);
+        dbFile.userVerifiedBefore(req.user.user_name, function(err, data) {
+            if (err) {
+                return done(err);
+            } else if (data.length) {
+                if (data[0].facebookID == profile.id) {
+                    var user = req.user;
+                    user.login_info = data[0];
+                    return done(null, user);
+                } else {
+                    return done(null, false, {message: "The verification account doesn't match."});
+                }
+            } else {
+                var verification = {
+                    username : req.user.user_name,
+                    facebookID : profile.id,
+                    facebookToken : accessToken
+
+                }
+                console.log(verification);
+                dbFile.addVerification(verification, function (err) {
+                    if (err) {
+                        return done(err);
+                    } else {
+                        var user = req.user;
+                        user.login_info = verification;
+                        return done(null, user);
+                    }
+                });
+            }
         });
     }
 ));

@@ -20,7 +20,6 @@ router.get('/logout', loggedIn, function (req, res, next) {
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
     req.session.messages = null;
-
     var comments = [];
     var inbox = [];
     var error = null;
@@ -141,6 +140,9 @@ router.get('/signin', loggedOut, function (req, res, next) {
     });
 });
 
+router.get('/verify', function(req, res, next) {
+    res.render('verification', {noHeader: true});
+});
 router.post('/signup', loggedOut, function(req, res, next) {
     req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
     req.check('lname', 'Please enter a valid first name.').notEmpty().withMessage('Last name required.').isAlpha();
@@ -163,7 +165,7 @@ router.post('/signup', loggedOut, function(req, res, next) {
     } else {
         console.log("GOT SUCCESS");
         passport.authenticate('local_signup', {
-            successRedirect: '/user/user_profile',
+            successRedirect: '/user/verify',
             failureRedirect: '/user/signup/failed',
             failureFlash: true
         })(req, res);
@@ -182,7 +184,7 @@ router.post('/signin', loggedOut, function(req, res, next) {
         res.redirect('/signin');
     } else {
         passport.authenticate('local_signin', {
-            successRedirect: '/user/user_profile',
+            successRedirect: '/user/verify',
             failureRedirect: '/user/signin',
             failureFlash: true
         })(req, res);
@@ -190,6 +192,7 @@ router.post('/signin', loggedOut, function(req, res, next) {
 
 
 });
+
 
 router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     if (req.user.user_name === req.body.receiver_username) {
@@ -333,10 +336,6 @@ router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
         res.redirect('/solutions/' + examID + '/' + qID);
     }
 
-
-
-
-
 });
 
 router.post('/follow_exam/:examID',function (req, res) {
@@ -354,6 +353,8 @@ router.post('/follow_exam/:examID',function (req, res) {
 
     }
 });
+
+
 
 
 module.exports = router;

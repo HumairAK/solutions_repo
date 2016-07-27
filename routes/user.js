@@ -160,7 +160,12 @@ router.get('/signin', loggedOut, function (req, res, next) {
 
 /** Render/GET verification page. */
 router.get('/verify', function(req, res, next) {
-    res.render('verification', {noHeader: true, noFooter: true});
+    if (req.user.email) {
+        res.render('verification', {noHeader: true, noFooter: true});
+    } else {
+        res.redirect('/user/user_profile');
+    }
+
 });
 
 /** Retrieves infomation from the signup form, form validates and sends it to passport.js to authenticate. */

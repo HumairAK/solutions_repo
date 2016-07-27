@@ -23,6 +23,16 @@ router.get('/about', function(req, res, next) {
     res.render('about');
 });
 
+/** Serve the terms_and_conditions.hbs page */
+router.get('/terms_and_conditions', function(req, res, next) {
+    res.render('terms_and_conditions');
+});
+
+/** Serve the privacy_poicy.hbs page */
+router.get('/privacy_policy', function(req, res, next) {
+    res.render('privacy_policy');
+});
+
 
 /** Serve the profile page of a user with given username */
 router.get('/public_profile/:username', function(req,res,next){

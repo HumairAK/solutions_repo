@@ -182,7 +182,7 @@ router.get('/signin', loggedOut, function (req, res, next) {
 });
 
 router.get('/verify', function(req, res, next) {
-    res.render('verification', {noHeader: true});
+    res.render('verification', {noHeader: true, noFooter: true});
 });
 router.post('/signup', loggedOut, function(req, res, next) {
     req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
@@ -239,9 +239,10 @@ router.post('/user_profile/send_message', loggedIn, function(req, res, next) {
     if (req.user.user_name === req.body.receiver_username) {
         req.session.messages  = {error : 'You cannot send a message to yourself.'};
         res.redirect('/user/user_profile/');
-    }
-
-    else {
+    } else if (!req.body.message){
+        req.session.messages = {error: 'You cannot send an empty message.'};
+        res.redirect('/user/user_profile/');
+    } else {
         var date = new Date();
         var current_date = date.toString().slice(0, 24);
         var subject = req.body.subject;
@@ -292,24 +293,32 @@ router.post('/submit_solution/:examID/:qID', function(req,res){
     var examID = req.params.examID;
     var qID = req.params.qID;
 
-    var text = req.body.solution,
-        votes = 0,
-        comments = [],
-        author = req.user.user_name;
+    if (!req.body.solution) {
+        req.session.messages = {error: 'You cannot submit an empty solution.'};
+        res.redirect('/user/add_solution/' + examID + '/' + qID);
+    } else {
+        var text = req.body.solution,
+            votes = 0,
+            comments = [],
+            author = req.user.user_name;
 
-    var fields = [examID, qID, text, author];
-    console.log(fields);
-    // Add to database
-    dbFile.add_solution(fields, function(addedSolution, statusMsg){
-        if(addedSolution){
-            req.session.messages  = {success : statusMsg};
-        }else{
-            req.session.messages  = {error : statusMsg};
-        }
-        //Redirect to solutions page again
-        res.redirect('/solutions/' + examID + '/' + qID);
+        var fields = [examID, qID, text, author];
+        console.log(fields);
+        // Add to database
+        dbFile.add_solution(fields, function(addedSolution, statusMsg){
+            if(addedSolution){
+                req.session.messages  = {success : statusMsg};
+            }else{
+                req.session.messages  = {error : statusMsg};
+            }
+            //Redirect to solutions page again
+            res.redirect('/solutions/' + examID + '/' + qID);
 
-    });
+        });
+    }
+
+
+
 
 });
 

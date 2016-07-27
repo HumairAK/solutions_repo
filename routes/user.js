@@ -339,21 +339,6 @@ router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
 
 });
 
-router.post('/follow_exam/:examID',function (req, res) {
-
-    console.log("ENTERED THE FUNCTION FOLLOW EXAM!!");
-    var examId = req.params.examID;
-
-    if (req.isAuthenticated()){
-        console.log("Exam Id follow exam: " + examId);
-        console.log("Username follow exam: " + req.user.user_name);
-    }else{
-        var message = "Must be logged in to follow an exam!";
-        req.session.messages  = {error : message};
-        res.redirect('/questions/' + examId);
-
-    }
-});
 
 router.post('/follow_exam/:examID',function (req, res) {
     var examId = req.params.examID;
@@ -363,15 +348,10 @@ router.post('/follow_exam/:examID',function (req, res) {
         console.log("Username follow exam: " + req.user.user_name);
 
         dbFile.followExam(req.user.user_name,examId,function (success, message) {
-            console.log("ENTERED DBFILE!!!")
-
             if (success){
-                console.log("SUCCESS!")
                 req.session.messages  = {success : message};
                 res.redirect('/questions/' + examId);
             }else{
-                console.log("FAIlURE!")
-
                 req.session.messages  = {error : message};
                 res.redirect('/questions/' + examId);
             }

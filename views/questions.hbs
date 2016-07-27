@@ -2,23 +2,23 @@
     <div class = 'search container' id = 'solutions-div'>
 
         <!-- EXAM DETAILS -->
-        {{# if messages.success }}
-            <section class="alert alert-success custom-Alert">
-                <!-- Change those to banners later -->
-                <h4>{{ messages.success }}</h4>
-            </section>
-        {{ else }}
-            {{# if messages.error }}
-                <section class="alert alert-danger custom-Alert">
-                    <h4>{{ messages.error }}</h4>
+        <div  class="row">
+            {{# if messages.success }}
+                <section class="alert alert-success custom-Alert">
+                    <!-- Change those to banners later -->
+                    <h4>{{ messages.success }}</h4>
                 </section>
+            {{ else }}
+                {{# if messages.error }}
+                    <section class="alert alert-danger custom-Alert">
+                        <h4>{{ messages.error }}</h4>
+                    </section>
+                {{/if}}
             {{/if}}
-        {{/if}}
+        </div>
 
-
-
-
-        <a href="http://www.cs.toronto.edu/~fpitt/CSC148/20131/tests/test1-0101.pdf" target='_blank'><img src="/assets/images/exam.png" class='exam-img img-responsive exam-info'></a>
+        <div class="row">
+            <a href="http://www.cs.toronto.edu/~fpitt/CSC148/20131/tests/test1-0101.pdf" target='_blank'><img src="/assets/images/exam.png" class='exam-img img-responsive exam-info'></a>
 
             <section class='exam-info'>
                 <h3>{{examInfo.courseCode}}</h3>
@@ -29,23 +29,25 @@
                 <p><em>Page count:</em> {{examInfo.pageCount}}</p>
                 <p><em>Question count:</em> {{examInfo.questionCount}}</p>
             </section>
-
-            <!-- QUESTION LISTINGS -->
-
+        </div>
 
 
-        <form action="/user/follow_exam/{{examInfo.id}}" method = 'post'>
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button class="col-xs-4 col-sm-2 col-md-2 col-lg-2
+        <div class="row">
+            <form action="/user/follow_exam/{{examInfo.id}}" method = 'post'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                <button class="col-xs-4 col-sm-2 col-md-2 col-lg-2
             col-xs-offset-4 col-sm-offset-5 col-md-offset-2
             col-lg-offset-2 rounded" id="add-solution" type="submit">
-                <h3>Follow Exam</h3>
-            </button>
-        </form>
+                    <h3>Follow Exam</h3>
+                </button>
+
+            </form>
+        </div>
 
 
 
 
+        <!-- QUESTION LISTINGS -->
         {{#each query}}
                 <a href="/solutions/{{../examInfo.id}}/{{this.q_id}}">
                     <section class = 'solutions-card row'>

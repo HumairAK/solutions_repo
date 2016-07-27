@@ -111,7 +111,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
     getComments().then(getMail).then(function (data) {
         console.log('got here fere');
-        res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken()});
+        res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
     });
 
     //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});

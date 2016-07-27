@@ -100,6 +100,8 @@ var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
 var _ = require('underscore');
 
+var db;
+
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
 var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
 
@@ -110,7 +112,17 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 
 /*******************************FUNCTIONS************************************************/
 
+/************************* SETUP **********************************/
 
+exports.setupDB = function (callback) {
+    mongoFactory.getConnection(uri).then(function (database) {
+        db = database;
+        callback(true, "Database connected"); // signal start of app
+
+    }).catch(function (err) {
+        callback(false, "Error: connecting to the database");
+    });
+};
 
 /************************* USERS **********************************/
 
@@ -128,32 +140,27 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
  */
 exports.remove_user = function (username, callback) {
 
-    mongoFactory.getConnection(uri).then(function(db) {
+    var users = db.collection('users');
+    var logins = db.collection('logins');
 
-        // fetch the exams table
-        var users = db.collection('users');
-        var logins = db.collection('logins');
+    // look for the specific user
+    users.removeOne( { user_name: username }, function (err, docs) {
+        if (err) throw callback(false, "Error: problem while removing the user from users");
+        else if (docs.deletedCount == 1) {
+            // now remove it from logins ....
+            logins.removeOne( { user_name: username }, function (err, result) {
+                if (err) throw callback(false, "Error: problem whlie remvoving course from courses");
+                else if (result.deletedCount == 1) {
+                    callback(true, "User was removed successfully from both tables");
 
-        // look for the specific user
-        users.removeOne( { user_name: username }, function (err, docs) {
-            if (err) throw err;
-            else if (docs.deletedCount == 1) {
-                // now remove it from logins ....
-                logins.removeOne( { user_name: username }, function (err, result) {
-                    if (err) throw err;
-                    else if (result.deletedCount == 1) {
-                        callback(true, "User was removed successfully from both tables");
+                }
+            });
+        }
+        else if (docs.deletedCount == 0) {
+            callback(false, "No such user was found");
 
-                    }
-                });
-            }
-            else if (docs.deletedCount == 0) {
-                callback(false, "No such user was found");
-
-            }
-        });
-    }).catch(function(err) {
-        console.error(err);
+            //console.log("No such exam was found");
+        }
     });
 };
 
@@ -171,28 +178,22 @@ exports.remove_user = function (username, callback) {
  * */
 exports.search_users = function ( token, callback ) {
 
-    mongoFactory.getConnection(uri).then(function (db) {
-        var users = db.collection('users');
-        users.createIndex(          // make the following fields searchable
-            {
-                "user_name":"text",
-                "f_name":"text",
-                "l_name":"text"
-            });
-        users.find(
-            { $text: { $search: token } },
-            { score: { $meta: "textScore" } }
-        ).sort( { score: { $meta:"textScore" } } ).toArray(function (err, docs) {
-            if (err) callback(false, "Error: some error while searching");
-            else {
-                callback(true, docs);
-            }
+    var users = db.collection('users');
+    users.createIndex(          // make the following fields searchable
+        {
+            "user_name":"text",
+            "f_name":"text",
+            "l_name":"text"
         });
-
-
-
-    }).catch(function (err) {
-        console.error(err);
+    users.find(
+        { $text: { $search: token } },
+        { score: { $meta: "textScore" } }
+    ).sort( { score: { $meta:"textScore" } } ).toArray(function (err, docs) {
+        if (err) callback(false, "Error: some error while searching");
+        else {
+            // console.log(docs);
+            callback(true, docs);
+        }
     });
 };
 
@@ -209,21 +210,14 @@ exports.search_users = function ( token, callback ) {
  **/
 exports.retrieveFollows = function (user_name, callback) {
 
-    mongoFactory.getConnection(uri).then(function (db) {
-
-        // find the solutions table
-        var users = db.collection('users');
-        // insert data into table
-        users.find( {user_name: user_name} ).toArray(function (err, docs) {
-            // if (err) throw err;
-            if (err) callback(false, "Error: followers could not be retrieved for some reason");
-            else {
-                callback(true, docs[0].followers);
-            }
-        });
-
-    }).catch(function (err) {
-        console.error(err);
+    var users = db.collection('users');
+    // insert data into table
+    users.find( {user_name: user_name} ).toArray(function (err, docs) {
+        // if (err) throw err;
+        if (err) callback(false, "Error: followers could not be retrieved for some reason");
+        else {
+            callback(true, docs[0].followers);
+        }
     });
 };
 
@@ -241,51 +235,44 @@ exports.retrieveFollows = function (user_name, callback) {
  **/
 exports.retrieve_userComments_history = function (username, callback) {
 
-    // get a connection
-    mongoFactory.getConnection(uri).then(function (db) {
-        var solutions = db.collection('solutions');
-        var exams = db.collection('exams');
-        var mylist = [];
-        solutions.aggregate([
+    var solutions = db.collection('solutions');
+    var exams = db.collection('exams');
+    var mylist = [];
+    solutions.aggregate([
 
-            { $match : {
-                "comments.by": username
-            }},
-            { $unwind : "$comments" },
-            { $match : {
-                "comments.by": username
-            }},
-            {$project: {
-                comment: "$comments.text",
-                date: "$comments.date",
-                exam_id: "$exam_id",
-                _id: 0
-            }}
-        ]).toArray(function (err, res) {
-            if(!res.length){ // Ensure a callback is executed if res is empty
-                callback(true, res);
-            }else{
-                var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
-                res.forEach(function (comment) {
-                    exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {// get the exam info
-                        comment.course_code = docs[0].course_code;
-                        comment.year = docs[0].year;
-                        comment.term = docs[0].term;
-                        mylist.push(comment);       // save it to array
-                        finised();
-                    });
+        { $match : {
+            "comments.by": username
+        }},
+        { $unwind : "$comments" },
+        { $match : {
+            "comments.by": username
+        }},
+        {$project: {
+            comment: "$comments.text",
+            date: "$comments.date",
+            exam_id: "$exam_id",
+            _id: 0
+        }}
+    ]).toArray(function (err, res) {
+        if(!res.length){ // Ensure a callback is executed if res is empty
+            callback(true, res);
+        }else{
+            var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
+            res.forEach(function (comment) {
+                exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
+                    comment.course_code = docs[0].course_code;
+                    comment.year = docs[0].year;
+                    comment.term = docs[0].term;
+                    mylist.push(comment);       // save it to array
+                    finised();
                 });
-            }
-        });
-
-        function doCall() {
-            callback(true, mylist);
+            });
         }
+    });
 
-
-    }).catch(function (err) {
-        callback(false, "Error: failed to connect to db");
-    })
+    function doCall() {
+        callback(true, mylist);
+    }
 };
 
 /** We CAN use this. IF we do, we should remove the comments_count field from a user
@@ -322,22 +309,14 @@ exports.retrieve_userComments_count = function (username, callback) {
  **/
 exports.retrieve_userSolutions_history = function (username, callback) {
 
-    // get a connection
-    mongoFactory.getConnection(uri).then(function (db) {
+    var solutions = db.collection('solutions');
+    solutions.find( { author: username } ).toArray(function (err, result) {
+        if (err) callback(false, "Error: problem while looking for stuff");
+        else {
+            callback(true, result);
+        }
 
-        var solutions = db.collection('solutions');
-        solutions.find( { author: username } ).toArray(function (err, result) {
-            if (err) callback(false, "Error: problem while looking for stuff");
-            else {
-                callback(true, result);
-            }
-
-        });
-
-    }).catch(function (err) {
-        // console.err(err);
-        callback(false, "Error: failed to connect to db");
-    })
+    });
 };
 
 /** We CAN use this. IF we do, we should remove the solutions_count field from a user
@@ -403,40 +382,34 @@ exports.add_user = function (fields, callbackUser) {
             exports.find_user_name( fields[1], function (docs) {
                 if (docs == false) {        // if not ...
                     // continue
+                    console.log("user name is valid");
 
                     // when both are valid add the user to the users and logins table
-                    mongoFactory.getConnection(uri)
-                        .then(function (db) {
 
-                            var users = db.collection('users');
-                            var logins = db.collection('logins');
+                    var users = db.collection('users');
+                    var logins = db.collection('logins');
 
-                            // Add users, and login through callbacks
-                            users.insertOne( user_data, function (err) {
+                    // Add users, and login through callbacks
+                    users.insertOne( user_data, function (err) {
+                        if (err) {
+                            callbackUser(false, true, "Error : User has not been added.");
+
+                        }
+
+                        else {// user insert successfull
+                            logins.insertOne(login_data, function (err) {
                                 if (err) {
                                     callbackUser(false, true, "Error : User has not been added.");
 
                                 }
 
-                                else {// user insert successfull
-                                    logins.insertOne(login_data, function (err) {
-                                        if (err) {
-                                            callbackUser(false, true, "Error : User has not been added.");
+                                else {// login insert successfull
+                                    callbackUser(true, false, "User has been added.");
 
-                                        }
-
-                                        else {// login insert successfull
-                                            callbackUser(true, false, "User has been added.");
-
-                                        }
-                                    });
                                 }
                             });
-
-                        })
-                        .catch(function (err) {
-                            callbackUser(false, true,  "Unable to connect.");
-                        })
+                        }
+                    });
                 }
                 else {
                     callbackUser(false, false, "Username is taken.");
@@ -464,20 +437,18 @@ exports.add_user = function (fields, callbackUser) {
  **/
 
 exports.userVerifiedBefore = function(username, callback) {
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-            var verif = db.collection('verifications');
 
-            verif.find( { username : username } ).toArray(function(err, result) {
-                if (err) {
-                    callback(true, null);
-                } else {
-                    callback(false, result);
-                }
+    var verif = db.collection('verifications');
 
-            });
-        });
-}
+    verif.find( { username : username } ).toArray(function(err, result) {
+        if (err) {
+            callback(true, null);
+        } else {
+            callback(false, result);
+        }
+
+    });
+};
 
 
 /**
@@ -489,19 +460,16 @@ exports.userVerifiedBefore = function(username, callback) {
  *
  **/
 exports.addVerification = function(verification, callBack) {
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-            var verif = db.collection('verifications');
 
-            verif.insertOne(verification, function (err) {
-                if (err) {
-                    callBack(true);
-                } else {
-                    callBack(false);
-                }
-            })
-        });
-}
+    var verif = db.collection('verifications');
+    verif.insertOne(verification, function (err) {
+        if (err) {
+            callBack(true);
+        } else {
+            callBack(false);
+        }
+    })
+};
 
 /**
  * This (helper) function returns true IFF user_name already exists in the database
@@ -511,34 +479,27 @@ exports.addVerification = function(verification, callBack) {
  *                              where <bool> : found ? true : false
  * */
 exports.find_user_name = function (user_name, callback) {
-    // make a connection
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
 
-            var logins = db.collection('logins');
-            var admins = db.collection('admins');
-            logins.find( { user_name: user_name } ).toArray(function (err, result) {
+    var logins = db.collection('logins');
+    var admins = db.collection('admins');
+    logins.find( { user_name: user_name } ).toArray(function (err, result) {
+        if (err) throw err;
+        else if (result.length == 0) {  // nothing was found in users
+            // check if user_name is taken by admin
+            admins.find({username : user_name}).toArray(function(err, data) {
                 if (err) throw err;
-                else if (result.length == 0) {  // nothing was found in users
-                    // check if user_name is taken by admin
-                    admins.find({username : user_name}).toArray(function(err, data) {
-                        if (err) throw err;
-                        else if (data.length == 0) {
-                            callback(false);
-                        }
-                        else {
-                            callback(true);
-                        }
-                    });
+                else if (data.length == 0) {
+                    callback(false);
                 }
                 else {
                     callback(true);
                 }
             });
-        })
-        .catch(function (err) {
-            console.err(err);
-        })
+        }
+        else {
+            callback(true);
+        }
+    });
 };
 
 /**
@@ -553,25 +514,23 @@ exports.find_user_name = function (user_name, callback) {
  * */
 exports.retrieveUser = function (username, callback) {
 
-    mongoFactory.getConnection(uri).then(function (db) {
-        var users = db.collection('users');
+    var users = db.collection('users');
 
-        users.find({user_name: username}).toArray(function (err, result) {
-            if (err) {
-                // callback(success, error, user, message)
-                callback(false, true,  null, "Error : Could not retrieve user.");
-            }
+    users.find({user_name: username}).toArray(function (err, result) {
+        if (err) {
+            // callback(success, error, user, message)
+            callback(false, true,  null, "Error : Could not retrieve user.");
+        }
 
-            else if (result.length) {
-                callback(true, false, result[0], "User retrieved");
-            }
+        else if (result.length) {
+            callback(true, false, result[0], "User retrieved");
+        }
 
-            else {
-                callback(false, false, null, "Username is undefined.");
-            }
-        });
+        else {
+            callback(false, false, null, "Username is undefined.");
+        }
     });
-}
+};
 
 /**
  * Returns the hashed password given the username. Assume username exists.
@@ -584,24 +543,22 @@ exports.retrieveUser = function (username, callback) {
  *                           where, <string> : success ? success_mssg : err_mssg
  * */
 exports.retrievePassword = function (username, callback) {
-    mongoFactory.getConnection(uri).then(function (db) {
 
-        var collection = db.collection('logins');
+    var collection = db.collection('logins');
 
-        collection.find({user_name: username}).toArray(function(err, result) {
-            if (err) {
-                // callback(success, password, message)
-                callback(false, null, "Error : Could not retrieve password.");
-            }
+    collection.find({user_name: username}).toArray(function(err, result) {
+        if (err) {
+            // callback(success, password, message)
+            callback(false, null, "Error : Could not retrieve password.");
+        }
 
-            else {
-                var pwd = result[0].password; //result is an array
-                callback(true, pwd, "Password retrieved");
-            }
+        else {
+            var pwd = result[0].password; //result is an array
+            callback(true, pwd, "Password retrieved");
+        }
 
-        });
     });
-}
+};
 
 /**
  * This (helper) function returns true IFF email already exists in the database
@@ -610,24 +567,17 @@ exports.retrievePassword = function (username, callback) {
  * @param {function} callback: <bool> : found ? true : false
  * */
 exports.find_user = function (email, callback) {
-    // make a connection
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
 
-            var logins = db.collection('logins');
-            logins.find( { email: email } ).toArray(function (err, result) {
-                if (err) throw err;
-                else if (result.length == 0) {  // nothing was found  so this user is new
-                    callback(false);
-                }
-                else {
-                    callback(true);
-                }
-            });
-        })
-        .catch(function (err) {
-            console.err(err);
-        })
+    var logins = db.collection('logins');
+    logins.find( { email: email } ).toArray(function (err, result) {
+        if (err) throw err;
+        else if (result.length == 0) {  // nothing was found  so this user is new
+            callback(false);
+        }
+        else {
+            callback(true);
+        }
+    });
 };
 
 
@@ -640,18 +590,11 @@ exports.find_user = function (email, callback) {
  *
  **/
 exports.findUserByID = function (id, callback) {
-    // make a connection
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-            var logins = db.collection('logins');
-            logins.find( { _id : id }, function (err, result) {
-                callback(err, result);
+    var logins = db.collection('logins');
+    logins.find( { _id : id }, function (err, result) {
+        callback(err, result);
 
-            });
-        })
-        .catch(function (err) {
-            console.err(err);
-        })
+    });
 };
 
 /************************* COURSES / EXAMS **********************************/
@@ -668,31 +611,26 @@ exports.findUserByID = function (id, callback) {
  */
 exports.remove_course = function (course_code, callback) {
 
-    mongoFactory.getConnection(uri).then(function(db) {
+    var courses = db.collection('courses');
 
-        // fetch the exams table
-        var courses = db.collection('courses');
-
-        courses.createIndex(          // make the following fields searchable
-            {
-                "course_code":"text"
-            });
-        // look for the specific course
-        courses.removeOne( { $text: { $search: course_code } }, function (err, docs) {
-            // if (err) throw err;
-            if (err) callback(false, "Error: Failed to remove the course.");
-
-            else if (docs.deletedCount == 1) {
-                callback(true, "Course was removed successfully from JUST courses");
-
-            }
-            else if (docs.deletedCount == 0) {
-                callback(false, "No such user was found");
-
-            }
+    courses.createIndex(          // make the following fields searchable
+        {
+            "course_code":"text"
         });
-    }).catch(function(err) {
-        console.error(err);
+    // look for the specific course
+    courses.removeOne( { $text: { $search: course_code } }, function (err, docs) {
+        // if (err) throw err;
+        if (err) callback(false, "Error: Failed to remove the course.");
+
+        else if (docs.deletedCount == 1) {
+            callback(true, "Course was removed successfully from JUST courses");
+
+        }
+        else if (docs.deletedCount == 0) {
+            callback(false, "No such course was found");
+
+            //console.log("No such exam was found");
+        }
     });
 };
 
@@ -714,7 +652,7 @@ exports.remove_course = function (course_code, callback) {
 exports.followExam = function (user_name, exam_id, callback) {
 
     exports.retrieveFollows(user_name, function (bool, result) {
-        if (!bool) console.log(result);
+        if (!bool) callback(false, result);
         else {      // no err occured so far...
 
             var found = false;
@@ -729,22 +667,17 @@ exports.followExam = function (user_name, exam_id, callback) {
             }
 
             else {      // add it to the user follower list
-                mongoFactory.getConnection(uri).then(function (db) {
 
-                    // find the user table
-                    var users = db.collection('users');
-                    // insert data into table
-                    users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
-                        // if (err) throw err;
-                        if (err) callback(false, "Error: some error occurred while following the exam");
-                        else {
-                            callback(true, "Success: user is following this exam");
-                        }
-                    });
-
-
-                }).catch(function (err) {
-                    console.error(err);
+                // find the user table
+                var users = db.collection('users');
+                // insert data into table
+                users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
+                    // if (err) throw err;
+                    if (err) callback(false, "Error: some error occurred while following the exam");
+                    else {
+                        // console.log("user is following this exam");
+                        callback(true, "Success: user is following this exam");
+                    }
                 });
             }
         }
@@ -764,45 +697,31 @@ exports.followExam = function (user_name, exam_id, callback) {
  * @param {function} callback: with arg (<[Objs]>) - RESULT
  * */
 exports.get_exam_info_by_ID = function (exam_id, callback) {
+    var solutions = db.collection('solutions');
 
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
+    solutions.aggregate([
+        // {$unwind: "$comments"},
+        { $match: { exam_id: exam_id }},
+        {
+            $project:
+            {
+                num_comments: { $size: "$comments" },
+                _id: "$exam_id",
+                q_id: "$q_id"
+            }
+        },
+        {
+            $group : {
+                _id : "$q_id",
+                count: { $sum: 1 },
+                comments: {$sum: "$num_comments"}
+                // num_comments: { $size: "$comments" }
 
-            var solutions = db.collection('solutions');
-
-            solutions.aggregate(
-                [
-
-                    // {$unwind: "$comments"},
-                    { $match: { exam_id: exam_id }},
-                    {
-                        $project:
-                        {
-                            num_comments: { $size: "$comments" },
-                            _id: "$exam_id",
-                            q_id: "$q_id"
-                        }
-                    },
-                    {
-                        $group : {
-                            _id : "$q_id",
-                            count: { $sum: 1 },
-                            comments: {$sum: "$num_comments"}
-                            // num_comments: { $size: "$comments" }
-
-                        }
-                    }
-
-
-                ]).toArray(function (err, result) {
-                callback(result);
-
-            });
-        })
-        .catch(function (err) {
-            console.err(err);
-        })
-
+            }
+        }
+    ]).toArray(function (err, result) {
+        callback(result);
+    });
 };
 
 /**
@@ -823,35 +742,26 @@ exports.add_comment = function (sol_id, fields, serverCallback) {
         by: fields[1]
     };
 
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-
-            // find the solutions table
-            var solutions = db.collection('solutions');
-            var users = db.collection('users');
-            // insert data into table
-            solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
-                if (err) {
-                    serverCallback(false, "Error: Solution found, but could not update comments.");
-                    throw err;
-                }
+    // find the solutions table
+    var solutions = db.collection('solutions');
+    var users = db.collection('users');
+    // insert data into table
+    solutions.updateOne( {_id: ObjectId(sol_id)}, {$push: {comments: Data}} , function (err, result) {
+        if (err) {
+            serverCallback(false, "Error: Solution found, but could not update comments.");
+            throw err;
+        }
+        else {
+            users.updateOne( { user_name: fields[1] }, { $inc: { comments: 1} }, function (err) {
+                if (err) serverCallback(false, "Error: Some error occured while updating user info");
                 else {
-                    users.updateOne( { user_name: fields[1] }, { $inc: { comments: 1} }, function (err) {
-                        if (err) serverCallback(false, "Error: Some error occured while updating user info");
-                        else {
-                            serverCallback(true, "Success: comment added successfully");
-                        }
-
-                    });
+                    serverCallback(true, "Success: comment added successfully");
                 }
 
             });
+        }
 
-        })
-        .catch(function (err) {
-            serverCallback(false, "Error: Could not establish connection with database.");
-            console.error(err);
-        })
+    });
 };
 
 /**
@@ -869,30 +779,25 @@ exports.get_all_solutions = function (exam_id, q_num, callback) {
         if (!success && failure) {  // some error occurred while searching
             callback(false, true, "Error: Some error occurred while searching for exam", null);
         } else if (!success && !failure) {
-            callback(false, true, "Error: this exam does not exist", null);
+            callback(false, true, "Error: this exam doesn't exist", null);
         } else if (success && !failure) {       // this exam exists proceed with task
-            mongoFactory.getConnection(uri).then(function (db) {
 
-                var solutions = db.collection('solutions');
+            var solutions = db.collection('solutions');
 
-                solutions.find(
-                    {
-                        exam_id: exam_id,
-                        q_id: q_num
-                    }
-                ).sort({ votes: -1}).toArray( function (err, docs) {
-                    if (err) callback(false, true, "Error: Some error occurred while looking for solutions");
-                    else {      // either nothing was found or something was found
-                        callback(true, false, "Solutions", docs);
-                    }
+            solutions.find(
+                {
+                    exam_id: exam_id,
+                    q_id: q_num
+                }
+            ).sort({ votes: -1}).toArray( function (err, docs) {
+                if (err) callback(false, true, "Error: Some error occurred while looking for solutions");
+                else {      // either nothing was found or something was found
+                    callback(true, false, "Solutions", docs);
+                }
 
-                });
-            }).catch(function () {
-                callback(false, true, "Error: Some error occurred with the db connection", null);
-            })
+            });
         }
     });
-
 };
 
 /**
@@ -914,30 +819,22 @@ exports.add_solution = function (fields, callback) {
         author: fields[3]
     };
 
-    // establish a connection
-    mongoFactory.getConnection(uri).then(function(db) {
-
-        // find the solutions table
-        var solutions = db.collection('solutions');
-        var users = db.collection('users');
-        // insert data into table
-        solutions.insert(Data, function(err) {
-            if (err) callback(false , "Error: Failed to add the solution");
-            else {
-                users.updateOne( { user_name: fields[3] }, { $inc: { answered: 1} }, function (err) {
-                    if (err) callback(false, "Error: Failed to update the user solution count");
-                    else {
-                        callback(true, "Success: added solution successfully!");
-                    }
-                });
-            }
-        });
-
-
-    }).catch(function(err) {
-        console.error(err);
+    // find the solutions table
+    var solutions = db.collection('solutions');
+    var users = db.collection('users');
+    // insert data into table
+    solutions.insert(Data, function(err) {
+        if (err) callback(false , "Error: Failed to add the solution");
+        else {
+            users.updateOne( { user_name: fields[3] }, { $inc: { answered: 1} }, function (err) {
+                if (err) callback(false, "Error: Failed to update the user solution count");
+                else {
+                    // console.log("solution added");
+                    callback(true, "Success: added solution successfully!");
+                }
+            });
+        }
     });
-
 };
 
 /**
@@ -950,23 +847,18 @@ exports.add_solution = function (fields, callback) {
  *                       where, <string>: err ? err_mssg : success_mssg
  * */
 exports.vote_solution = function (sol_id, upORdown , callback) {
+
     var vote = (upORdown == "up") ? 1 : -1;
-
-    mongoFactory.getConnection(uri).then(function (db) {
-        var solutions = db.collection('solutions');
-        solutions.updateOne(
-            {_id: ObjectId(sol_id) },
-            { $inc: { votes: vote} }, function (err) {
-                // if (err) throw err;
-                if (err) callback(false, "Error: couldnt update the vote count");
-                else {
-                    callback(true, "Success: updated vote count");
-                }
-
-            });
-    }).catch(function (err) {
-        console.log(err);
-    });
+    var solutions = db.collection('solutions');
+    solutions.updateOne(
+        {_id: ObjectId(sol_id) },
+        { $inc: { votes: vote} }, function (err) {
+            // if (err) throw err;
+            if (err) callback(false, "Error: couldnt update the vote count");
+            else {
+                callback(true, "Success: updated vote count");
+            }
+        });
 };
 
 /**
@@ -978,52 +870,37 @@ exports.vote_solution = function (sol_id, upORdown , callback) {
  *                      where on success is <[Objs]>
  * */
 exports.get_all_exams = function (course_code, callback) {
+    // get the exams table
+    var exam_collection = db.collection('exams');
 
-    // get a connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
-
-            // get the exams table
-            var exam_collection = db.collection('exams');
-
-            exam_collection.createIndex(          // make the following fields searchable
-                {
-                    "course_code":"text"
-                });
-            // search exams table with given course code
-            exam_collection.find(
-                { $text: { $search: course_code } }
-            ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
-                if (err) throw err;
-
-                else {    // get the title
-                    exports.find_course(course_code, function (result, data) {
-
-                        if (result == true) {
-                            // append the title from data to each exam object from docs
-                            docs.forEach(function (doc) {
-                                doc.title = data[0].title;
-                            });
-
-                            if (debug_mode == true){
-                                console.log(docs);
-                                console.log(data);
-                            }
-                            /*callback(docs);     // send back the data*/
-                        }
-                        else if (result == false) {    // no such course was found
-                            console.log("This course has not been added to the database.");
-                        }
-                        callback(docs);     // send back the data
-
-                    });
-                }
-            });
-        })
-        .catch(function(err) {
-            console.error(err);
+    exam_collection.createIndex(          // make the following fields searchable
+        {
+            "course_code":"text"
         });
+    // search exams table with given course code
+    exam_collection.find(
+        { $text: { $search: course_code } }
+    ).sort({ year: -1}).toArray( function (err, docs) {   // order by year
+        if (err) throw err;
+        else {    // get the title
+            exports.find_course(course_code, function (result, data) {
 
+                if (result == true) {
+                    // append the title from data to each exam object from docs
+                    docs.forEach(function (doc) {
+                        doc.title = data[0].title;
+                    });
+
+                    /*callback(docs);     // send back the data*/
+                }
+                else if (result == false) {    // no such course was found
+                    console.log("This course has not been added to the database.");
+                }
+                callback(docs);     // send back the data
+
+            });
+        }
+    });
 };
 
 /**
@@ -1042,7 +919,6 @@ exports.get_all_exams = function (course_code, callback) {
  *
  * */
 exports.add_exam = function (fields, questions_array, serverCallback) {
-
     // construct an exam object
     var Data =
     {
@@ -1077,27 +953,18 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
         }
 
         else {    // add Data to the database
-            // make a connection
-            mongoFactory.getConnection(uri)
-                .then(function(db) {
-
-                    // find the exams table
-                    var exam_collection = db.collection('exams');
-                    // insert data into table
-                    exam_collection.insert(Data, function(err) {
-                        if (err) {
-                            serverCallback(false, "Error: Could not add exam into database.");
-                            throw err;
-                        }
-                        else {
-                            serverCallback(true, "Exam Successfully added.");
-                        }
-                    });
-                })
-                .catch(function(err) {
-                    serverCallback(false, "Error: Could not establish connection with database.");
-                    console.error(err);
-                });
+            // find the exams table
+            var exam_collection = db.collection('exams');
+            // insert data into table
+            exam_collection.insert(Data, function(err) {
+                if (err) {
+                    serverCallback(false, "Error: Could not add exam into database.");
+                    throw err;
+                }
+                else {
+                    serverCallback(true, "Exam Successfully added.");
+                }
+            });
         }
     });
 };
@@ -1112,7 +979,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
  *                      where <bool> : found ? true : false
  * */
 exports.find_exam = function (fields, serverCallback, callback) {
-
     var course_code = fields[0];
     var year = fields[1];
     var term = fields[2];
@@ -1120,35 +986,28 @@ exports.find_exam = function (fields, serverCallback, callback) {
 
     // check the data to see if this exam exists...
 
-    // first make a connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
 
-            // fetch the exams table
-            var exams = db.collection('exams');
+    // fetch the exams table
+    var exams = db.collection('exams');
 
-            // look for the exam
-            exams.find(
-                {
-                    course_code: course_code,
-                    year: year,
-                    term: term,
-                    type: type
-                }
-            ).toArray(function (err, docs) {
-                if (err) throw err;
+    // look for the exam
+    exams.find(
+        {
+            course_code: course_code,
+            year: year,
+            term: term,
+            type: type
+        }
+    ).toArray(function (err, docs) {
+        if (err) throw err;
 
-                if (docs.length == 0) { // if this exam doesnt exist.... add it
-                    callback(false, serverCallback);
-                }
-                else {  // exam was found
-                    callback(true, serverCallback);
-                }
-            });
-        })
-        .catch(function(err) {
-            console.error(err);
-        });
+        if (docs.length == 0) { // if this exam doesnt exist.... add it
+            callback(false, serverCallback);
+        }
+        else {  // exam was found
+            callback(true, serverCallback);
+        }
+    });
 };
 
 /**
@@ -1173,24 +1032,18 @@ exports.add_course = function (course_code, title, serverCallback) {
 
         if (result == true){
             serverCallback(false, "Course already exists");
+            console.log("course already exists");
         }
         else if (result == false) {    // add it
-            mongoFactory.getConnection(uri)
-                .then(function(db) {
-
-                    // find the exams table
-                    var courses = db.collection('courses');
-                    // insert data into table
-                    courses.insert(courseData, function(err) {
-                        if (err) throw err;
-                        else {
-                            serverCallback(true, "Course added successfully.");
-                        }
-                    });
-                })
-                .catch(function(err) {
-                    console.error(err);
-                });
+            // find the exams table
+            var courses = db.collection('courses');
+            // insert data into table
+            courses.insert(courseData, function(err) {
+                if (err) throw err;
+                else {
+                    serverCallback(true, "Course added successfully.");
+                }
+            });
         }
     });
 };
@@ -1207,33 +1060,24 @@ exports.add_course = function (course_code, title, serverCallback) {
 exports.find_course = function (course_code, callback) {
     // check the data to see if this exam exists...
 
-    // first make a connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
-
-            // fetch the courses table
-            var courses = db.collection('courses');
-            courses.createIndex(          // make the following fields searchable
-                {
-                    "course_code":"text"
-                });
-            // look for the courses
-            courses.find(
-                { $text: { $search: course_code } }
-            ).toArray(function (err, docs) {
-                if (err) throw err;
-                // if this course doesnt exist.... add it (via add_course call)
-                if (docs.length == 0) {
-                    callback(false);
-                }
-                else {  // course was found
-                    callback(true, docs);
-                }
-            });
-        })
-        .catch(function(err) {
-            console.error(err);
+    var courses = db.collection('courses');
+    courses.createIndex(          // make the following fields searchable
+        {
+            "course_code":"text"
         });
+    // look for the courses
+    courses.find(
+        { $text: { $search: course_code } }
+    ).toArray(function (err, docs) {
+        if (err) callback(false, "Error: error while looking for course");
+        // if this course doesnt exist.... add it (via add_course call)
+        if (docs.length == 0) {
+            callback(false);
+        }
+        else {  // course was found
+            callback(true, docs);
+        }
+    });
 };
 
 /**
@@ -1254,35 +1098,33 @@ exports.remove_exam = function (fields, serverCallback) {
     var type = fields[3];
 
     // establish connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
 
-            // fetch the exams table
-            var exams = db.collection('exams');
+    // fetch the exams table
+    var exams = db.collection('exams');
 
-            // look for the specific exam
-            exams.removeOne(
-                {
-                    course_code: course_code,
-                    year: year,
-                    term: term,
-                    type: type
-                }, function (err, docs) {
-                    if (err) throw err;
-                    else {
-                        if (docs.deletedCount == 1) {
-                            serverCallback(true, "Exam was removed successfully");
-                        }
-                        else if (docs.deletedCount == 0) {
-                            serverCallback(false, "No such exam was found");
-                        }
-                    }
+    // look for the specific exam
+    exams.removeOne(
+        {
+            course_code: course_code,
+            year: year,
+            term: term,
+            type: type
+        }, function (err, docs) {
+            if (err) callback(false, "Error: problem while removing the exam");
+            else {
+                if (docs.deletedCount == 1) {
+                    serverCallback(true, "Exam was removed successfully");
+
+                    //console.log("exam was removed");
                 }
-            );
-        })
-        .catch(function(err) {
-            console.error(err);
-        });
+                else if (docs.deletedCount == 0) {
+                    serverCallback(false, "No such exam was found");
+
+                    //console.log("No such exam was found");
+                }
+            }
+        }
+    );
 };
 
 /**
@@ -1296,27 +1138,19 @@ exports.remove_exam = function (fields, serverCallback) {
  * */
 exports.get_exam_byID = function (id, callback) {
 
-    // establish a connection
-    mongoFactory.getConnection(uri)
-        .then(function(db) {
-
-            // find the solutions table
-            var exams = db.collection('exams');
-            // query
-            exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
-                if  (err) {
-                    callback(false, true,  null);
-                } else if (docs.length == 0) {
-                    callback(false, false, null);
-                }
-                else {
-                    callback(true, false,  docs[0]);
-                }
-            });
-        })
-        .catch(function(err) {
-            callback(false, true, null);
-        });
+    // find the solutions table
+    var exams = db.collection('exams');
+    // query
+    exams.find( {_id: ObjectId(id)} ).toArray(function (err, docs) {
+        if  (err) {
+            callback(false, true,  null);
+        } else if (!docs) {
+            callback(false, false, null);
+        }
+        else {
+            callback(true, false,  docs[0]);
+        }
+    });
 };
 
 /******************************  ADMINS *********************************/
@@ -1333,8 +1167,7 @@ exports.get_exam_byID = function (id, callback) {
 
 exports.addAdmin = function (admin_data, callback) {
     var logins = db.collection('logins');
-    // Check if the admin username already exists. Also check for user username. If it does, then we don't add the
-    // admin_data and return a message.
+    // Check if the admin username already exists. Also check for user username. If it does, then we don't add the admin_data and return a message.
     exports.adminExists( admin_data.username , function (error, exists, data, message) {
         if (!exists && !error) {
             logins.find({username: username}).toArray(function (err, result) {
@@ -1343,29 +1176,25 @@ exports.addAdmin = function (admin_data, callback) {
                 } else if (result.length) {
                     callback(false, false, 'User with given username already exists.');
                 } else {
-                    mongoFactory.getConnection(uri).then(function (db) {
 
-                        var admins = db.collection('admins');
+                    var admins = db.collection('admins');
 
-                        admins.insertOne(admin_data, function (err) {
-                            if (err) {
-                                callback(false, true, message);
-                            }
-                            else {
-                                callback(true, false, "Admin added.");
-                            }
+                    admins.insertOne(admin_data, function (err) {
+                        if (err) {
+                            callback(false, true, message);
+                        }
+                        else {
+                            callback(true, false, "Admin added.");
+                        }
 
-                        });
                     });
-            }
-            }).catch(function (err) {
-                callbackUser(false, true,  "Unable to connect.");
+
+                }
             })
         } else {
             callback(error, exists, message);
         }
     });
-
 };
 
 /**
@@ -1378,23 +1207,16 @@ exports.addAdmin = function (admin_data, callback) {
  *
  **/
 exports.adminExists = function (username, callback) {
-    // make a connection
-    mongoFactory.getConnection(uri).then(function (db) {
-
-        var admins = db.collection('admins');
-        admins.find( { username: username } ).toArray(function (err, result) {
-            if (err) {
-                callback(true, false, null, "Error: could not retrieve admin in adminExists().");
-            } else if (result.length) {
-                callback(false, true, result[0], "Admin with given username exists");
-            } else {
-                callback(false, false, null, "Admin with given username does not exist");
-            }
-        });
-    })
-        .catch(function (err) {
-            callback(true, false, "Error: could not connect to the database.");
-        })
+    var admins = db.collection('admins');
+    admins.find( { username: username } ).toArray(function (err, result) {
+        if (err) {
+            callback(true, false, null, "Error: could not retrieve admin in adminExists().");
+        } else if (result.length) {
+            callback(false, true, result[0], "Admin with given username exists");
+        } else {
+            callback(false, false, null, "Admin with given username does not exist");
+        }
+    });
 };
 
 /******************************  MAIL *********************************/
@@ -1410,23 +1232,23 @@ exports.adminExists = function (username, callback) {
 exports.sendMail = function (mail_data, callback) {
     exports.find_user_name(mail_data.receiver, function (exist){
         if (exist) {
-            mongoFactory.getConnection(uri).then(function(db) {
-                var mail = db.collection('mail');
-                mail.insertOne(mail_data, function(err) {
-                    if (err) {
-                        callback(false, true, 'Error: could not send message.');
-                    }
-                    else {
-                        callback(true, false, "Message sent.");
-                    }
 
-                });
+            var mail = db.collection('mail');
+            mail.insertOne(mail_data, function(err) {
+                if (err) {
+                    callback(false, true, 'Error: could not send message.');
+                }
+                else {
+                    callback(true, false, "Message sent.");
+                }
+
             });
+
         } else {
             callback(false, false, 'The receiver\'s  username is undefined.');
         }
     });
-}
+};
 
 /**
  * This function checks if the user with the given username has mail. If the user does, then sends a list of all
@@ -1439,21 +1261,18 @@ exports.sendMail = function (mail_data, callback) {
  **/
 exports.checkMailbox = function (username, callback) {
 
-    mongoFactory.getConnection(uri).then(function(db) {
+    var mail = db.collection('mail');
 
-        var mail = db.collection('mail');
+    mail.find({receiver: username}).toArray(function (err, data) {
+        if (err) {
+            callback(false, true, null, 'Error: could not retrieve inbox messages.');
+        } else if (!data) {
+            callback(false, false, null, 'No inbox.');
+        } else {
+            callback(true, false, data, 'Retrieved inbox');
+        }
 
-        mail.find({receiver: username}).toArray(function (err, data) {
-            if (err) {
-                callback(false, true, null, 'Error: could not retrieve inbox messages.');
-            } else if (!data) {
-                callback(false, false, null, 'No inbox.');
-            } else {
-                callback(true, false, data, 'Retrieved inbox');
-            }
-
-        });
     });
 
-}
+};
 

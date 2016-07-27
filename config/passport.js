@@ -8,34 +8,50 @@ var configAuth = require('./auth');
 
 var exports = module.exports = {};
 
+/**
+ * Encrypts password and returns hashed password.
+ *
+ * @param password - the password to be encrypted
+ * @type {exports.encryptPassword}
+ */
 var encryptPassword = exports.encryptPassword = function (password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
 };
 
+/**
+ * Compares the hashed and unhashed password, and checks if one corresponds to the other.
+ *
+ * @param password1
+ * @param password2
+ * @returns {*}
+ */
 var comparePassword = function (password1, password2) {
     return bcrypt.compareSync(password1, password2);
 };
 
 
+/**
+ * Serializes user instance to the session.
+ */
 passport.serializeUser(function (user, done) {
-    //console.log("In serialize User");
-    //console.log(user);
     done(null, user);
 });
 
+/**
+ * Deserializes user instance from the session.
+ */
 passport.deserializeUser(function(user, done) {
-    //console.log("In de-serialize User: " + user.email);
     done(null, user);
 });
 
-// fields - [email, user_name, f_name, l_name, uni, department, password, phone_num]
-
+/**
+ * Configures the Local strategy to authenticate signup request.
+ */
 passport.use('local_signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password',
     passReqToCallback: true
 }, function(req, email, password, done){
-    console.log("nothing here");
 
     var hash_pass = encryptPassword(password);
 
@@ -45,18 +61,14 @@ passport.use('local_signup', new LocalStrategy({
     dbFile.add_user(fields, function (success, error, message) {
 
         if (!success && error) {
-            console.log("!success && error");
             return done(null, false, {message:message}); // Review later, need to pass errors
         }
 
         else if (!success && !error) {
-            console.log("!success && !error");
-            console.log(message);
             return done(null, false, {message: message});
         }
 
         else  {
-            console.log("ELSE");
             var user_data = {
                 email: fields[0],
                 user_name: fields[1],
@@ -76,6 +88,10 @@ passport.use('local_signup', new LocalStrategy({
 
 }));
 
+
+/**
+ * Configures the Local strategy to authenticate the signin request.
+ */
 passport.use('local_signin', new LocalStrategy({
     usernameField: 'usrname',
     passwordField: 'password',
@@ -95,7 +111,6 @@ passport.use('local_signin', new LocalStrategy({
                 } else if (!error && !exists){
                     return done(null, false, {message: 'Username does not exist.'});
                 } else {
-                    console.log("data: " + data);
                     if (comparePassword(password, data.password)) {
                         return done(null, data);
                     } else {
@@ -111,8 +126,6 @@ passport.use('local_signin', new LocalStrategy({
                 if (!success) {
                     return done(message);
                 } else {
-                    console.log(hash_pwd);
-                    console.log("compare password: " + comparePassword(password, hash_pwd));
                     if (comparePassword(password, hash_pwd)) {
 
                         return done(null, user);
@@ -127,17 +140,8 @@ passport.use('local_signin', new LocalStrategy({
 
 
 /**
- * verification = {
- *      username: username
- *      facebook: {
- *          id: id,
- *          token: token,
- *          name: name,
- *          email: email
- *      }
- * }
+ * Configures the Facebook strategy to authenticate signin as well as signup request.
  */
-
 passport.use(new FacebookStrategy({
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
@@ -146,8 +150,6 @@ passport.use(new FacebookStrategy({
 
     },
     function(req, accessToken, refreshToken, profile, done) {
-        console.log("Profile: ");
-        console.log(profile);
         dbFile.userVerifiedBefore(req.user.user_name, function(err, data) {
             if (err) {
                 return done(err);
@@ -166,7 +168,6 @@ passport.use(new FacebookStrategy({
                     facebookToken : accessToken
 
                 }
-                console.log(verification);
                 dbFile.addVerification(verification, function (err) {
                     if (err) {
                         return done(err);

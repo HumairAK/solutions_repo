@@ -490,9 +490,6 @@ textarea {
 .table-row {
     display:table-row;
 }
-.table-row {
-    border-bottom: 3px solid red;
-}
 
 .table-cell {
     display:table-cell;
@@ -501,4 +498,10 @@ textarea {
 
 hr {
     width: 100%;
+}
+
+.scroll-menu {
+    height: auto;
+    max-height: 200px;
+    overflow: scroll ;
 }

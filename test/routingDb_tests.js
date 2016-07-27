@@ -332,7 +332,8 @@ describe('Solutions Route:', function(){
     });
 
 
-    /* COME BACK TO THIS AFTER GET_ALL_SOLUTIONS IS UPDATED*/
+    /* The path will render but an error message will be displayed
+     * To see error message, test false id on front end. */
     it('Search solutions for a non existing exam', function testSlash(done) {
         var qID = 1; //Check the first question
         var examID =  exams.nonExisting._id.$oid;
@@ -340,9 +341,6 @@ describe('Solutions Route:', function(){
             .get('/solutions/' + examID + '/' + qID)
             .end(function(err, res){
                 expect(res).to.have.status(200);
-                // Check for expected url path
-                var path = res.res.req.path;
-                assert.equal(path, '/solutions/' + examID + '/' + qID);
                 done();
             });
     });

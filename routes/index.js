@@ -184,7 +184,8 @@ router.get('/questions/:exam_id', function (req,res) {
                     pageCount : exam.page_count,
                     questionCount : exam.questions_count
                 };
-                res.render('questions', {query: qList, examInfo: examInfo});
+                res.render('questions', {query: qList, examInfo: examInfo, csrfToken: req.csrfToken()});
+                req.session.messages = null;
             });
         }else{
             req.session.messages  = {error : "Could not find exam."};

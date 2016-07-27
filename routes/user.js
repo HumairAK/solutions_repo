@@ -24,6 +24,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     var comments = [];
     var inbox = [];
     var error = null;
+    var follows = [];
     function getComments() {
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
@@ -92,6 +93,48 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
 
+    function getFollows(){
+        return new Promise(function(resolve, reject) {
+
+
+
+            dbFile.retrieveFollows(req.user.user_name, function(success, data){
+                    req.user.examfollows = [];
+                    req.user.followerCount = data.length;
+                    if(success && data.length){
+                        var count = 1;
+                        data.forEach(function(item){
+                            dbFile.get_exam_byID(item, function(success, error, data){
+                                if(success){
+                                    req.user.examfollows.push(data);
+                                    if(count == req.user.followerCount ){
+                                        console.log(req.user.examfollows);
+                                        resolve(1);
+                                    }else{
+                                        count++;
+                                    }
+                                }else{
+                                    console.log("Error: Could not fetch one or more exams;");
+                                    resolve(1);
+                                }
+                            })
+                        });
+
+                    } else if(success && !data.length){
+                        resolve(1);
+                        console.log("Success: But no follows found;");
+                    }
+                    else{ //error
+                        error = data;
+                        console.log(error);
+                        resolve(1);
+                    }
+
+            });
+        });
+    }
+
+
     /*function solutionsCount() {
         return new Promise(function (resolve, reject) {
             dbFile.retrieve_userSolutions_history(req.user.username, function (bool, results) {
@@ -110,7 +153,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
 
 
-    getComments().then(getMail).then(function (data) {
+    getComments().then(getMail).then(getFollows).then(function (data) {
         console.log('got here fere');
         res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
     });

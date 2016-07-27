@@ -175,7 +175,6 @@ header {
     /*-moz-background-size: cover;*/
     /*background-size: cover;*/
     /*-o-background-size: cover;*/
-
 }
 
 header .header-spec {
@@ -384,4 +383,6 @@ header .header-content .header-content-inner hr {
 }
 
 /********************************************/
-
+.follow-exam-btn{
+    margin: 15px;
+}

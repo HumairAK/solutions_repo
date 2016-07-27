@@ -25,7 +25,17 @@
     <!--JS-->
     <script src="/assets/js/jquery-2.2.4.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
+
     <script src="/assets/js/script.js"></script>
+    {{# if userProfile}}
+        <script src="/assets/js/user_profile.js"></script>
+    {{/if}}
+    {{# if adminPanel}}
+        <script src="/assets/js/admin_panel.js"></script>
+    {{/if}}
+    {{# if homePage }}
+        <script src="/assets/js/home_page.js"></script>
+    {{/if}}
 
 </head>
 <body>

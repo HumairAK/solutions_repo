@@ -23,6 +23,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     var comments = [];
     var inbox = [];
     var error = null;
+    var follows = [];
     function getComments() {
         return new Promise(function(resolve, reject) {
             dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
@@ -46,7 +47,8 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                     resolve(1);
                 } else if (object.length){
                     req.user.comments = object.length;
-                    comments = object;
+                    req.user.comment_list = object;
+
                     resolve(1);
                 } else {
                     req.user.comments = object.length;
@@ -90,6 +92,45 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
 
+    function getFollows(){
+        return new Promise(function(resolve, reject) {
+            dbFile.retrieveFollows(req.user.user_name, function(success, data){
+                    req.user.examfollows = [];
+                    req.user.followerCount = data.length;
+                    if(success && data.length){
+                        var count = 1;
+                        data.forEach(function(item){
+                            dbFile.get_exam_byID(item, function(success, error, data){
+                                if(success){
+                                    req.user.examfollows.push(data);
+                                    if(count == req.user.followerCount ){
+                                        console.log(req.user.examfollows);
+                                        resolve(1);
+                                    }else{
+                                        count++;
+                                    }
+                                }else{
+                                    console.log("Error: Could not fetch one or more exams;");
+                                    resolve(1);
+                                }
+                            })
+                        });
+
+                    } else if(success && !data.length){
+                        resolve(1);
+                        console.log("Success: But no follows found;");
+                    }
+                    else{ //error
+                        error = data;
+                        console.log(error);
+                        resolve(1);
+                    }
+
+            });
+        });
+    }
+
+
     /*function solutionsCount() {
         return new Promise(function (resolve, reject) {
             dbFile.retrieve_userSolutions_history(req.user.username, function (bool, results) {
@@ -108,9 +149,9 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
 
 
-    getComments().then(getMail).then(function (data) {
+    getComments().then(getMail).then(getFollows).then(function (data) {
         console.log('got here fere');
-        res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken()});
+        res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
     });
 
     //res.render('user_profile_alt', {comments : comments, inbox: inbox, csrfToken: req.csrfToken()});
@@ -338,16 +379,28 @@ router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){
 
 });
 
-router.post('/follow_exam/:examID',function (req, res) {
 
-    console.log("ENTERED THE FUNCTION FOLLOW EXAM!!");
+router.post('/follow_exam/:examID',function (req, res) {
     var examId = req.params.examID;
 
     if (req.isAuthenticated()){
         console.log("Exam Id follow exam: " + examId);
         console.log("Username follow exam: " + req.user.user_name);
+
+        dbFile.followExam(req.user.user_name,examId,function (success, message) {
+            if (success){
+                req.session.messages  = {success : message};
+                res.redirect('/questions/' + examId);
+            }else{
+                req.session.messages  = {error : message};
+                res.redirect('/questions/' + examId);
+            }
+
+        });
+
     }else{
         var message = "Must be logged in to follow an exam!";
+        console.log(message);
         req.session.messages  = {error : message};
         res.redirect('/questions/' + examId);
 

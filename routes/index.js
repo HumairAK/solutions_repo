@@ -12,7 +12,7 @@ var passport = require('passport');
 /* Render/GET homepage. */
 router.get('/', function(req, res, next) {
     //addFirstAdmin();
-    res.render('index', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    res.render('index', {homePage: true, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
     req.session.success = null;
     req.session.messages = null;
@@ -109,6 +109,16 @@ router.get('/exams/:id', function(req, res, next) {
             res.render('exams',  {query: req.params.id, result: minExamInfoArray});
         });
 
+    }
+});
+
+router.get('/user/',function (req, res) {
+    req.checkParams('username','Please enter a username').notEmpty();
+    var errors = req.validationErrors();
+    if (errors){
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/');
     }
 });
 

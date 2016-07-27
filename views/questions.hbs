@@ -2,33 +2,22 @@
     <div class = 'search container' id = 'solutions-div'>
 
         <!-- EXAM DETAILS -->
-        {{# if messages.error }}
-            <section class="alert alert-danger custom-Alert">
-                <h4>{{ messages.error }}</h4>
-            </section>
-        {{/if}}
-
-        <form action="/user/follow_exam/{{examInfo.id}}" method = 'post'>
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button class="col-xs-4 col-sm-2 col-md-2 col-lg-2
-            col-xs-offset-4 col-sm-offset-5 col-md-offset-2
-            col-lg-offset-2 rounded" id="add-solution" type="submit">
-                <h3>Follow Exam</h3>
-            </button>
-        </form>
-
-        <!--<a href="/user/follow_exam/{{../examInfo.id}}">-->
-        <!--<button class="col-xs-4 col-sm-2 col-md-2 col-lg-2-->
-        <!--col-xs-offset-4 col-sm-offset-5 col-md-offset-2-->
-        <!--col-lg-offset-2 rounded" id="add-solution">-->
-        <!--<h3>Follow Exam</h3>-->
-        <!--</button>-->
-        <!--</a>-->
-
-
-            <a href="http://www.cs.toronto.edu/~fpitt/CSC148/20131/tests/test1-0101.pdf" target='_blank'><img src="/assets/images/exam.png" class='exam-img img-responsive exam-info'></a>
-
-            <section class='exam-info'>
+        <div  class="row">
+            {{# if messages.success }}
+                <section class="alert alert-success custom-Alert">
+                    <!-- Change those to banners later -->
+                    <h4>{{ messages.success }}</h4>
+                </section>
+            {{ else }}
+                {{# if messages.error }}
+                    <section class="alert alert-danger custom-Alert">
+                        <h4>{{ messages.error }}</h4>
+                    </section>
+                {{/if}}
+            {{/if}}
+        </div>
+        <div class="row">
+            <section class='exam-info col-sm-6 col-sm-offset-3'>
                 <h3>{{examInfo.courseCode}}</h3>
                 <p>{{examInfo.term}} {{examInfo.year}} {{examInfo.type}}</p>
                 <p><em>Instructor(s): </em>{{examInfo.instructors}}</p>
@@ -36,11 +25,17 @@
                 <p><em>Uploaded by:</em> {{examInfo.uploader}}</p>
                 <p><em>Page count:</em> {{examInfo.pageCount}}</p>
                 <p><em>Question count:</em> {{examInfo.questionCount}}</p>
+                <form action="/user/follow_exam/{{examInfo.id}}" method = 'post'>
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    <button class="btn btn-primary follow-exam-btn" id="add-solution" type="submit">
+                        <h3>Follow Exam</h3>
+                    </button>
+                </form>
             </section>
+        </div>
 
-            <!-- QUESTION LISTINGS -->
-
-            {{#each query}}
+        <!-- QUESTION LISTINGS -->
+        {{#each query}}
                 <a href="/solutions/{{../examInfo.id}}/{{this.q_id}}">
                     <section class = 'solutions-card row'>
                         <div class='pull-left col-sm-8 col-md-8'>
@@ -48,7 +43,7 @@
                             <p><span class='questions-sol-num'>{{this.count}} solutions, </span> <span class = 'questions-comment'>{{this.comments}} comments</span></p>
                         </div>
                         <div class='pull-right right-arrow'>
-                            <img class='rounded' src="/assets/images/right-arrow.png">
+                            <img class='rounded questions-arrow' src="/assets/images/right-arrow.svg">
                         </div>
                     </section>
                 </a>

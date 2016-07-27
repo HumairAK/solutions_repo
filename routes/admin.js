@@ -35,7 +35,7 @@ app.use(express_validator({
 
 router.get('/', isAdmin, function(req,res){
     console.log(req.session.messages);
-    res.render('admin', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    res.render('admin', {adminPanel: true, csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
     req.session.errors = null;
     req.session.messages = null;
 });

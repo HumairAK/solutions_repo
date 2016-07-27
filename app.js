@@ -58,6 +58,10 @@ app.use(function(req, res, next) {
     res.locals.login = req.isAuthenticated(); // global variable
     res.locals.session = req.session;
     res.locals.user = req.user;
+    console.log(req.user && !req.user.login_info && (req.originalUrl != '/user/verify'));
+    if (req.user && !req.user.login_info && (req.originalUrl != '/user/verify')){
+        req.logout();
+    }
     res.locals.messages = req.session.messages;
     next();
 });

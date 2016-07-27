@@ -161,7 +161,7 @@ router.get('/signin', loggedOut, function (req, res, next) {
 
 /** Render/GET verification page. */
 router.get('/verify', function(req, res, next) {
-    if (req.user.email) {
+    if (req.user && req.user.email) {
         res.render('verification', {noHeader: true, noFooter: true});
     } else {
         res.redirect('/user/user_profile');

@@ -350,7 +350,8 @@ router.post('/follow_exam/:examID',function (req, res) {
     }else{
         var message = "Must be logged in to follow an exam!";
         req.session.messages  = {error : message};
-        res.redirect('/questions/' + examID);
+        res.redirect('/questions/' + examId);
+
     }
 });
 

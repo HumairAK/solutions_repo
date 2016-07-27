@@ -16,7 +16,7 @@ router.get('/logout', loggedIn, function (req, res, next) {
 });
 
 
-/* Render/GET user_profile page */
+/** Render/GET user_profile page */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
     req.session.messages = null;

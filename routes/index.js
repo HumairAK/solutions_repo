@@ -80,7 +80,6 @@ router.get('/exams/:id', function(req, res, next) {
 
     var errors = req.validationErrors();
     if (errors){
-        console.log("id " + errors);
         req.session.errors = errors;
         req.session.success = false;
         res.redirect('/');
@@ -89,10 +88,8 @@ router.get('/exams/:id', function(req, res, next) {
         var minExamInfoArray = [];
         dbFile.get_all_exams(req.params.id, function (exams) {
             if (exams.length == 0){
-                console.log("Nothing was found");
             }
             else {
-                //console.log(exams);
                 //only pass over the information that is necessary for the exams page
                 for (var i = 0; i<exams.length;i++){
 
@@ -106,7 +103,6 @@ router.get('/exams/:id', function(req, res, next) {
                         id:exams[i]._id,
                         questionCount : exams[i].questions_count
                     };
-                    //console.log(minExamInfo);
                     minExamInfoArray.push(minExamInfo);
                 }
             }
@@ -137,7 +133,6 @@ router.get('/user/:query', function(req,res,next){
             res.render('user_search', {users : result, query : query, resultCount: result.length});
             req.session.messages = null;
         }else{
-            console.log(result);
             res.redirect('/');
         }
     });
@@ -148,8 +143,6 @@ router.get('/user/:query', function(req,res,next){
 router.get('/search/:type', function(req, res, next) {
 
     var searchType = req.params.type;
-    console.log(req.query.search);
-    console.log(searchType);
     if(searchType == "courses"){
         var courseName = req.query.search;
         res.redirect('/exams/' + courseName);
@@ -300,7 +293,6 @@ function addFirstAdmin() {
     };
 
     dbFile.addAdmin(admin_data, function (success, error, message) {
-        console.log("admin message: " + message);
     });
 }
 

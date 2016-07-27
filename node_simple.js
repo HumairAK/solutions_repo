@@ -1,83 +1,92 @@
-// a simple node driver to interact with mongo database
-
-/* TO DO:
- * 1. get all exams given course code -- order by year desc ? DONE
- * 1B. get the title of the course ? DONE
- * 2. add upload date and user name  ? DONE
- * 3. remove exam ? DONE
- * 4a. get all questions for a given exam_id ? DONE
- * 4b. add exam id to each question returned. ? NO NEED
- * 6. get all solutions provided question_id and exam_id ? DONE
- * 5. solutions ? DONE -- need to add field for solutions provider, and updating. DONE
- * 7. add university field to courses, exams ? PENDING
- * 8. make a user ? DONE
- * 9. update user info when they comment or post a solution  ? DONE
- * 10. comment_history ? DONE
- * 11. solutions_history ? DONE
- * 12. voting for solutions ? DONE
- * 13. A search users function ? DONE
- * 14. remove user ? DONE (mostly) wat about sessions?
- * 15. remove course ? DONE
- * 16.
- * */
-
-
-/* I pass in exam id and you give me the number of questions and the comments and solutions associated with each question?*/
-
-/* Tables SO FAR:
- * 1. exams
- * 2. courses
- * 3. solutions
- * 4. users
- * 5. logins
- * 6. admins
- * 7. sessions
- * 8. mail
- *
- * */
-
-/*Tables schema SO FAR:*/
-// |======================================================exams==================================================================================|
-// |_________ _id_____________|course_code|year__|term__|type____|instructors|page_count|questions_count|questions_list_|upload_date|uploaded_by_|
-// |==========================|===========|======|======|========|===========|==========|===============|===============|===========|============|
-// |"578a44ff71ed097fc3079d6e"|"CSC240"   |2016  |"fall"|"final" |["a","b"]  |20        | 10            |[{id,q},{id,q}]| "date"    | "by"       |
-// |..........|
-
-
-// |=======================courses=========================|
-// |_________ _id_____________|course_code|title___________|
-// |==========================|===========|================|
-// |"178a42342233ff71c3079d6e"|"CSC240"   |"title"         |
-// |..........|
-
-
-// |================================solutions========================================================|
-// |_________ _id_____________|exam_id_____________________|q_id_|text____|votes|comments   | author |
-// |==========================|============================|=====|========|=====|===========|========|
-// |"354ff71ed078933079d6467e"|"578a44ff71ed097fc3079d6e"  |1    |"answer"| 1   |[{},{}]    |  joe   |
-// |..........|
-
-// |========================================users===============================================================================|
-// |_______ _id_________|email_________|user_name__|f_name__|l_name__|uni___|departm.|answered|messeges|comments|phone|followers|
-// |====================|==============|===========|========|========|======|========|========|========|========|=====|=========|
-// |"3.....efsdfsdf...."|blah@blah.com |"some_user"|"f.name"|"l.name"|"uofT"|CS      |40      |30      |15      |() - |[{},{}]  |
-// |..........|
-
-// |====================================login===================================|
-// |_________ _id_____________|email____________|user_name|pass_________________|
-// |==========================|=================|=========|=====================|
-// |"askjdfklajsdf..........."|"asdf@asdf.com   |"asdfasd"|(some hasehd thing)  |
-// |..........|
-
-/*
-
- NEW COLLECTIONS:
-
- - sessions: stores user session - no need to keep track
- - admins: stores admin name, username and password only. The logins collection will be reserved for user logins.
-
+/**
+ * A simple node driver to interact with mongo database
  */
 
+/**********************
+ **** COLLECTIONS: ****
+ * ********************
+ *
+ * * * ADMINS - Admins login info
+ *         {
+ *              fname: first name,
+ *              lname: last name,
+ *              username: admin username,
+ *              password: hashed password
+ *         }
+ *
+ * * * COURSES - Course info
+ *         {
+ *              course_code: course code,
+ *              title: course title
+ *         }
+ *
+ *
+ * * * EXAMS - Exams info
+ *         {
+ *              course_code: course code,
+ *              year: course year,
+ *              term: course term,
+ *              type: midterm or final,
+ *              instructors: array of instructor names,
+ *              page_count: the midterm/exam's number of pages,
+ *              questions_count: the midterm/exam's number of questions,
+ *              questions_list: array containing question objects, {q_id: question #, question: question},
+ *              upload_date: date,
+ *              uploaded_by: username
+ *         }
+ *
+ *
+ * * * LOGINS - Users login info
+ *         {
+ *              email: user email,
+ *              user_name: user username,
+ *              password: users hashed password
+ *         }
+ *
+ *
+ * * * MAIL - messaging system base
+ *         {
+ *              sender: the message sender's username,
+ *              receiver: the receiver's username,
+ *              message: message,
+ *              date: date message was sent
+ *         }
+ *
+ *
+ * * * SOLUTIONS - exam solutions
+ *         {
+ *              exam_id: the id of the exam this solution applies to,
+ *              q_id: question id,
+ *              text: users solution,
+ *              votes: votes,
+ *              comments: list of comment objects, {text: comment, date: comment date, by: username}
+ *         }
+ *
+ * * * USERS
+ *         {
+ *              email: user email,
+ *              username: username,
+ *              f_name: first name,
+ *              l_name: last name,
+ *              university: user's university,
+ *              department: user's department,
+ *              answered: number of solutions user posted,
+ *              messages: user's inbox count,
+ *              comments: user comment count,
+ *              phone_num: user phone number,
+ *              followers: the list of exams that the user follows
+ *         }
+ *
+ *
+ * * * VERIFICATIONS - link facebook profile to the user
+ *         {
+ *              username: user username,
+ *              facebookID: facebook profile id,
+ *              facebookToken: facebook token,
+ *         }
+ *
+ *
+ */
 
 
 var exports = module.exports = {};
@@ -85,8 +94,8 @@ var exports = module.exports = {};
 const debug_mode = false;
 
 Object.assign = require('object-assign');
-var mongodb = exports.mongodb =  require('mongodb');
-var mongoFactory = exports.mongoFactory = require('mongo-factory');
+var mongodb = require('mongodb');
+var mongoFactory = require('mongo-factory');
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
 var _ = require('underscore');
@@ -99,51 +108,11 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 //var uri = 'mongodb://localhost:27017/db';
 
 
-//***********************PRELIMINARY TESTING******************************************|
+/*******************************FUNCTIONS************************************************/
 
-/*refer to testImports.js*/
 
-//****************************FUNCTIONS************************************************|
 
-/**
- * Remvove a course from ONLY the courses table IN CASE of accidental
- * addition.
- *
- * @param {string}   course_code: the course code
- * @param {function} callback: 2 args: (boolean, <string>),
- *                             where <boolean> : err ? false : true
- *                             where <string> : error ? error_mssg : success_mssg
- */
-exports.remove_course = function (course_code, callback) {
-
-    mongoFactory.getConnection(uri).then(function(db) {
-
-        // fetch the exams table
-        var courses = db.collection('courses');
-
-        courses.createIndex(          // make the following fields searchable
-            {
-                "course_code":"text"
-            });
-        // look for the specific course
-        courses.removeOne( { $text: { $search: course_code } }, function (err, docs) {
-            // if (err) throw err;
-            if (err) callback(false, "Error: Failed to remove the course.");
-
-            else if (docs.deletedCount == 1) {
-                callback(true, "Course was removed successfully from JUST courses");
-
-            }
-            else if (docs.deletedCount == 0) {
-                callback(false, "No such user was found");
-
-                //console.log("No such exam was found");
-            }
-        });
-    }).catch(function(err) {
-        console.error(err);
-    });
-};
+/************************* USERS **********************************/
 
 /**
  * This function will remove the user given user_name from the users table
@@ -181,7 +150,6 @@ exports.remove_user = function (username, callback) {
             else if (docs.deletedCount == 0) {
                 callback(false, "No such user was found");
 
-                //console.log("No such exam was found");
             }
         });
     }).catch(function(err) {
@@ -217,7 +185,6 @@ exports.search_users = function ( token, callback ) {
         ).sort( { score: { $meta:"textScore" } } ).toArray(function (err, docs) {
             if (err) callback(false, "Error: some error while searching");
             else {
-                // console.log(docs);
                 callback(true, docs);
             }
         });
@@ -229,60 +196,6 @@ exports.search_users = function ( token, callback ) {
     });
 };
 
-/**
- * This function will add the given exam_id to the given user's followers list.
- * It simply appends the exam_id to the list and nothing else.
- * If the exam_id already exists in the user's followers list,
- * false will be returned, andnothing will be added.
- *
- * Ideally the user shouldnt even be able to attempt to follow an exam twice.
- *
- * @param {string}   user_name: the unique user name for the user
- * @param {string}   exam_id: the _id of the exam TO follow
- * @param {function} callback: with 2 args: (boolean, <string>),
- *                             where <boolean> : err ? false : true
- *                             where <string> : error ? err_messg : success_messg
- **/
-exports.followExam = function (user_name, exam_id, callback) {
-
-    exports.retrieveFollows(user_name, function (bool, result) {
-        if (!bool) console.log(result);
-        else {      // no err occured so far...
-
-            var found = false;
-            for (var i = 0; i < result.length; i++) {       // search through the list of exams followed
-                if (result[i] == exam_id) {
-                    found = true;
-                }
-            }
-
-            if (found) {    // means exam is already followed by user
-                callback(false, "user is already following this exam");
-            }
-
-            else {      // add it to the user follower list
-                mongoFactory.getConnection(uri).then(function (db) {
-
-                    // find the user table
-                    var users = db.collection('users');
-                    // insert data into table
-                    users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
-                        // if (err) throw err;
-                        if (err) callback(false, "Error: some error occurred while following the exam");
-                        else {
-                            // console.log("user is following this exam");
-                            callback(true, "Success: user is following this exam");
-                        }
-                    });
-
-
-                }).catch(function (err) {
-                    console.error(err);
-                });
-            }
-        }
-    });
-};
 
 /**
  * This function will return a list of followers of user i.e. a list of
@@ -354,7 +267,7 @@ exports.retrieve_userComments_history = function (username, callback) {
             }else{
                 var finised = _.after(res.length, doCall);      // execute "doCall" only after res.length # of attempts
                 res.forEach(function (comment) {
-                    exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {     // get the exam info
+                    exams.find( { _id: ObjectId(comment.exam_id) } ).toArray(function (err, docs) {// get the exam info
                         comment.course_code = docs[0].course_code;
                         comment.year = docs[0].year;
                         comment.term = docs[0].term;
@@ -371,7 +284,6 @@ exports.retrieve_userComments_history = function (username, callback) {
 
 
     }).catch(function (err) {
-        // console.err(err);
         callback(false, "Error: failed to connect to db");
     })
 };
@@ -455,15 +367,13 @@ exports.retrieve_userSolutions_count = function (username, callback) {
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
  *
- * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num, facebookId, facebookToken,
- * facebookName, facebookEmail]
+ * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num]
  * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>)
  *                                  where, <boolean1> -
  *                                   <boolean2> -
  *                                   <string> - error ? error_mssg : success_mssg
  **/
 exports.add_user = function (fields, callbackUser) {
-    console.log("inside add_user");
     // create a user object
     var user_data = {
         email: fields[0],
@@ -493,7 +403,6 @@ exports.add_user = function (fields, callbackUser) {
             exports.find_user_name( fields[1], function (docs) {
                 if (docs == false) {        // if not ...
                     // continue
-                    console.log("user name is valid");
 
                     // when both are valid add the user to the users and logins table
                     mongoFactory.getConnection(uri)
@@ -543,40 +452,16 @@ exports.add_user = function (fields, callbackUser) {
 
 
 
-/*
+/**
+ * This function returns whether the user with the given username has already been signed in before.
+ * This is important because we need to link a unique facebook account with a username. If the user has signed in
+ * before, return the verification object, consisting of facebook profile id.
  *
- * var login_data = {
-        facebook: {
-            id: fields[8],
-             token: fields[9],
-             name: fields[10],
-             email: fields[11]
-         }
-     };
+ * @param {string} username
+ * @param {function} callbackUser: of the form (<boolean>, verifications object (See COLLECTION)) -
+ *  callbackUser(error, object)
  *
- */
-
-
-
-
-exports.verifyExists = function(login_id, callBack) {
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-            var verif = db.collection('verifications');
-
-            verif.find( { facebookID : login_id } ).toArray(function(err, result) {
-                console.log("VERIF Y EIXSTS: ");
-                console.log(result);
-                if (err) {
-                    throw err;
-                } else {
-                    callBack(false, result);
-                }
-
-            });
-        });
-}
-
+ **/
 
 exports.userVerifiedBefore = function(username, callback) {
     mongoFactory.getConnection(uri)
@@ -596,32 +481,27 @@ exports.userVerifiedBefore = function(username, callback) {
 
 
 /**
- * verification = {
- *      username: username
- *      facebook: {
- *          id: id,
- *          token: token,
- *          name: name,
- *          email: email
- *      }
- * }
- */
-
+ * THis function adds the user's facebook account verification to the database and links it to the user's local in site
+ * account.
+ *
+ * @param {object}  - verifications object
+ * @param {function} callbackUser: of the form (<boolean>) - callback(error)
+ *
+ **/
 exports.addVerification = function(verification, callBack) {
     mongoFactory.getConnection(uri)
         .then(function (db) {
             var verif = db.collection('verifications');
 
-           verif.insertOne(verification, function (err) {
-               if (err) {
-                   callBack(true);
-               } else {
-                   callBack(false);
-               }
-           })
+            verif.insertOne(verification, function (err) {
+                if (err) {
+                    callBack(true);
+                } else {
+                    callBack(false);
+                }
+            })
         });
 }
-
 
 /**
  * This (helper) function returns true IFF user_name already exists in the database
@@ -715,7 +595,6 @@ exports.retrievePassword = function (username, callback) {
             }
 
             else {
-                console.log("NODE SIMPLE result[0]: " + result);
                 var pwd = result[0].password; //result is an array
                 callback(true, pwd, "Password retrieved");
             }
@@ -732,7 +611,6 @@ exports.retrievePassword = function (username, callback) {
  * */
 exports.find_user = function (email, callback) {
     // make a connection
-    console.log("inside find_user");
     mongoFactory.getConnection(uri)
         .then(function (db) {
 
@@ -751,6 +629,131 @@ exports.find_user = function (email, callback) {
             console.err(err);
         })
 };
+
+
+/**
+ * This function retrieves the user object from the users collection given the object id.
+ *
+ * @param {string} id
+ * @param {function} callbackUser: of the form (<boolean>, user object (See COLLECTION)) -
+ * callbackUser(error, object)
+ *
+ **/
+exports.findUserByID = function (id, callback) {
+    // make a connection
+    mongoFactory.getConnection(uri)
+        .then(function (db) {
+            var logins = db.collection('logins');
+            logins.find( { _id : id }, function (err, result) {
+                callback(err, result);
+
+            });
+        })
+        .catch(function (err) {
+            console.err(err);
+        })
+};
+
+/************************* COURSES / EXAMS **********************************/
+
+
+/**
+ * Remvove a course from ONLY the courses table IN CASE of accidental
+ * addition.
+ *
+ * @param {string}   course_code: the course code
+ * @param {function} callback: 2 args: (boolean, <string>),
+ *                             where <boolean> : err ? false : true
+ *                             where <string> : error ? error_mssg : success_mssg
+ */
+exports.remove_course = function (course_code, callback) {
+
+    mongoFactory.getConnection(uri).then(function(db) {
+
+        // fetch the exams table
+        var courses = db.collection('courses');
+
+        courses.createIndex(          // make the following fields searchable
+            {
+                "course_code":"text"
+            });
+        // look for the specific course
+        courses.removeOne( { $text: { $search: course_code } }, function (err, docs) {
+            // if (err) throw err;
+            if (err) callback(false, "Error: Failed to remove the course.");
+
+            else if (docs.deletedCount == 1) {
+                callback(true, "Course was removed successfully from JUST courses");
+
+            }
+            else if (docs.deletedCount == 0) {
+                callback(false, "No such user was found");
+
+            }
+        });
+    }).catch(function(err) {
+        console.error(err);
+    });
+};
+
+
+/**
+ * This function will add the given exam_id to the given user's followers list.
+ * It simply appends the exam_id to the list and nothing else.
+ * If the exam_id already exists in the user's followers list,
+ * false will be returned, andnothing will be added.
+ *
+ * Ideally the user shouldnt even be able to attempt to follow an exam twice.
+ *
+ * @param {string}   user_name: the unique user name for the user
+ * @param {string}   exam_id: the _id of the exam TO follow
+ * @param {function} callback: with 2 args: (boolean, <string>),
+ *                             where <boolean> : err ? false : true
+ *                             where <string> : error ? err_messg : success_messg
+ **/
+exports.followExam = function (user_name, exam_id, callback) {
+
+    exports.retrieveFollows(user_name, function (bool, result) {
+        if (!bool) console.log(result);
+        else {      // no err occured so far...
+
+            var found = false;
+            for (var i = 0; i < result.length; i++) {       // search through the list of exams followed
+                if (result[i] == exam_id) {
+                    found = true;
+                }
+            }
+
+            if (found) {    // means exam is already followed by user
+                callback(false, "user is already following this exam");
+            }
+
+            else {      // add it to the user follower list
+                mongoFactory.getConnection(uri).then(function (db) {
+
+                    // find the user table
+                    var users = db.collection('users');
+                    // insert data into table
+                    users.updateOne( {user_name: user_name}, {$push: {followers: exam_id}} , function (err) {
+                        // if (err) throw err;
+                        if (err) callback(false, "Error: some error occurred while following the exam");
+                        else {
+                            callback(true, "Success: user is following this exam");
+                        }
+                    });
+
+
+                }).catch(function (err) {
+                    console.error(err);
+                });
+            }
+        }
+    });
+};
+
+
+
+
 
 /**
  * This function returns an array where each element contains info for a particular question
@@ -924,7 +927,6 @@ exports.add_solution = function (fields, callback) {
                 users.updateOne( { user_name: fields[3] }, { $inc: { answered: 1} }, function (err) {
                     if (err) callback(false, "Error: Failed to update the user solution count");
                     else {
-                        // console.log("solution added");
                         callback(true, "Success: added solution successfully!");
                     }
                 });
@@ -1072,7 +1074,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
 
         if (result == true) {     // meaning that the exam was found
             serverCallback(false, "This exam already exists in the database.");
-            console.log("This exam already exists in the database");
         }
 
         else {    // add Data to the database
@@ -1089,7 +1090,6 @@ exports.add_exam = function (fields, questions_array, serverCallback) {
                             throw err;
                         }
                         else {
-                            console.log("exam added");
                             serverCallback(true, "Exam Successfully added.");
                         }
                     });
@@ -1117,8 +1117,6 @@ exports.find_exam = function (fields, serverCallback, callback) {
     var year = fields[1];
     var term = fields[2];
     var type = fields[3];
-
-    // console.log(Data);
 
     // check the data to see if this exam exists...
 
@@ -1175,7 +1173,6 @@ exports.add_course = function (course_code, title, serverCallback) {
 
         if (result == true){
             serverCallback(false, "Course already exists");
-            console.log("course already exists");
         }
         else if (result == false) {    // add it
             mongoFactory.getConnection(uri)
@@ -1187,7 +1184,6 @@ exports.add_course = function (course_code, title, serverCallback) {
                     courses.insert(courseData, function(err) {
                         if (err) throw err;
                         else {
-                            console.log("course added");
                             serverCallback(true, "Course added successfully.");
                         }
                     });
@@ -1276,13 +1272,9 @@ exports.remove_exam = function (fields, serverCallback) {
                     else {
                         if (docs.deletedCount == 1) {
                             serverCallback(true, "Exam was removed successfully");
-
-                            //console.log("exam was removed");
                         }
                         else if (docs.deletedCount == 0) {
                             serverCallback(false, "No such exam was found");
-
-                            //console.log("No such exam was found");
                         }
                     }
                 }
@@ -1329,24 +1321,25 @@ exports.get_exam_byID = function (id, callback) {
 
 /******************************  ADMINS *********************************/
 
-/*
- *   Adds an admin to the admins collection.
- *   Params: admin_data = {fname: firstname, lname: lastname, username: username, password: password}
- *   Callback: callback(success, error, message) => callback(boolean, boolean, String)
- */
+/**
+ * This function adds the admin given the admin data admin_data (see ADMINS in COLLECTIONS) into the admins collection.
+ * Does not add and returns a message if the username in admin_data already exists.
+ *
+ * @param {object} admin object (see ADMINS in COLLECTIONS)
+ * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>) -
+ * callback(error, success, message)
+ *
+ **/
 
 exports.addAdmin = function (admin_data, callback) {
-    console.log('addAdmin, admin_data: ' +  admin_data.fname);
-
-    console.log("inside addAdmin");
     var logins = db.collection('logins');
-    // Check if the admin username already exists. Also check for user username. If it does, then we don't add the admin_data and return a message.
+    // Check if the admin username already exists. Also check for user username. If it does, then we don't add the
+    // admin_data and return a message.
     exports.adminExists( admin_data.username , function (error, exists, data, message) {
-        console.log("adminExists: " + message);
         if (!exists && !error) {
             logins.find({username: username}).toArray(function (err, result) {
                 if (err){
-                    callback(true, false, null, "Error: could not retreive logins collection in addAdmin().");
+                    callback(true, false, "Error: could not retreive logins collection in addAdmin().");
                 } else if (result.length) {
                     callback(false, false, 'User with given username already exists.');
                 } else {
@@ -1375,14 +1368,17 @@ exports.addAdmin = function (admin_data, callback) {
 
 };
 
-/*
- *  Equivalent of function find_user, but for admins. Calls back true if admin with a
- *  given username exists. If true, also returns the admin 'object'.
- *  Callback: callback(error, exists, message)
- */
+/**
+ * This function checks if the admin username already exists in the ADMINS collection. If it does, then callback
+ * returns success, and the admin object is passed through the callback.
+ *
+ * @param {string} username - admin username
+ * @param {function} callbackUser: of the form (<boolean1>, <boolean2>,<object>, <string>) -
+ * callback(error, success, object,  message)
+ *
+ **/
 exports.adminExists = function (username, callback) {
     // make a connection
-    console.log("inside adminExists");
     mongoFactory.getConnection(uri).then(function (db) {
 
         var admins = db.collection('admins');
@@ -1403,17 +1399,14 @@ exports.adminExists = function (username, callback) {
 
 /******************************  MAIL *********************************/
 
-/*
- * mail_data = {
- *      sender: sender_username,
- *      receiver: receiver_username,
- *      message: message,
- *      date: date,
- * }
+/**
+ * This function adds the message object (see MAIL in COLLECTIONS) to the MAIL collection.
  *
- * callback(success, error, message)
+ * @param {object} mail object
+ * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>) -
+ * callback(error, success, message)
  *
- */
+ **/
 exports.sendMail = function (mail_data, callback) {
     exports.find_user_name(mail_data.receiver, function (exist){
         if (exist) {
@@ -1435,12 +1428,15 @@ exports.sendMail = function (mail_data, callback) {
     });
 }
 
-/*
+/**
+ * This function checks if the user with the given username has mail. If the user does, then sends a list of all
+ * mail through callback.
  *
- * callback(success, error, data, message)
- * Returns the user's inbox (array of message objects)
+ * @param {object} admin object (see ADMINS in COLLECTIONS)
+ * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <array of objects>, <string>) -
+ * callback(error, success, mail,  message)
  *
- */
+ **/
 exports.checkMailbox = function (username, callback) {
 
     mongoFactory.getConnection(uri).then(function(db) {
@@ -1461,87 +1457,3 @@ exports.checkMailbox = function (username, callback) {
 
 }
 
-//testing
-exports.findUserByID = function (id, callback) {
-    // make a connection
-    console.log("inside findUserByID");
-    mongoFactory.getConnection(uri)
-        .then(function (db) {
-            var logins = db.collection('logins');
-            logins.find( { _id : id }, function (err, result) {
-                callback(err, result);
-
-            });
-        })
-        .catch(function (err) {
-            console.err(err);
-        })
-};
-
-
-
-
-/*
- * userObj = {fs: fs, ls: ls, email: email, username: username, pass_hash: pass_hash, univ: univ, dept: dept}
- *
- *
- exports.addUser = function (userObj) {
- mongoFactory.getConnection(uri)
- .then(function(db) {
- var users = db.collection('users').insertOne(userObj, function (err, result) {
- assert.equal(null, error);
- console.log("User inserted");
-
- });
-
- });
- } */
-
-
-
-/*    IGNORE BELOW *********************************************************************************
-
-
-
- /!*
- * Then we need to give Boyz II Men credit for their contribution
- * to the hit "One Sweet Day".
- *!/
-
- songs.update(
- { song: 'One Sweet Day' },
- { $set: { artist: 'Mariah Carey ft. Boyz II Men' } },
- function (err, result) {
-
- if(err) throw err;
-
- /!*
- * Finally we run a query which returns all the hits that spend 10 or
- * more weeks at number 1.
- *!/
-
- songs.find({ weeksAtOne : { $gte: 10 } }).sort({ decade: 1 }).toArray(function (err, docs) {
-
- if(err) throw err;
-
- docs.forEach(function (doc) {
- console.log(
- 'In the ' + doc['decade'] + ', ' + doc['song'] + ' by ' + doc['artist'] +
- ' topped the charts for ' + doc['weeksAtOne'] + ' straight weeks.'
- );
- });
-
- // Since this is an example, we'll clean up after ourselves.
- songs.drop(function (err) {
- if(err) throw err;
-
- // Only close the connection when your app is terminating.
- db.close(function (err) {
- if(err) throw err;
- });
- });
- });
- }
- );
- });
- });*/

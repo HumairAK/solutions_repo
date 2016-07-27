@@ -130,25 +130,6 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         });
     }
 
-
-    /*function solutionsCount() {
-        return new Promise(function (resolve, reject) {
-            dbFile.retrieve_userSolutions_history(req.user.username, function (bool, results) {
-                if (!bool) {
-                    error = 'Error: could not retrieve Answered count';
-                    resolve(1);
-                }
-                else {
-                    console.log("RESULTS: ");
-                    console.log(results);
-                    resolve(1);
-                }
-            });
-        });
-    }*/
-
-
-
     getComments().then(getMail).then(getFollows).then(function (data) {
         console.log('got here fere');
         res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
@@ -348,21 +329,28 @@ router.post('/comment/submit/:examID/:qID/:solID', function(req, res, next){
     var solutionID = req.params.solID;
     // Must be a logged in user to access
     var fields = [comment, username];
-    if(req.isAuthenticated()){
-        dbFile.add_comment(solutionID, fields, function(commentAdded, statusMsg){
-           if(commentAdded){
-               req.session.messages  = {success : statusMsg};
-           } else{
-               req.session.messages  = {error : statusMsg};
-           }
-           res.redirect('/solutions/' + examID + '/' + qID);
-        });
-
-    } else { //User not logged in
-        var message = "Must be logged in to comment!";
-        req.session.messages  = {error : message};
+    console.log(req.body.comment);
+    if (!req.body.comment ==='') {
+        req.session.messages  = {error : 'Cannot submit an empty comment.'};
         res.redirect('/solutions/' + examID + '/' + qID);
+    } else {
+        if(req.isAuthenticated()){
+            dbFile.add_comment(solutionID, fields, function(commentAdded, statusMsg){
+                if(commentAdded){
+                    req.session.messages  = {success : statusMsg};
+                } else{
+                    req.session.messages  = {error : statusMsg};
+                }
+                res.redirect('/solutions/' + examID + '/' + qID);
+            });
+
+        } else { //User not logged in
+            var message = "Must be logged in to comment!";
+            req.session.messages  = {error : message};
+            res.redirect('/solutions/' + examID + '/' + qID);
+        }
     }
+
 });
 
 router.post('/solution/vote/:examID/:qID/:solID', function(req, res, next){

@@ -1,0 +1,752 @@
+[
+  {
+    "id": 1,
+    "serial": 321,
+    "course_code": "CSC321",
+    "year": 2014,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Sandra Crane",
+      "Mcintyre Holmes"
+    ],
+    "page_count": 17,
+    "questions_count": 17,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 2,
+    "serial": 307,
+    "course_code": "CSC307",
+    "year": 2013,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Erickson Hess",
+      "Frieda Burns"
+    ],
+    "page_count": 16,
+    "questions_count": 16,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 3,
+    "serial": 303,
+    "course_code": "CSC303",
+    "year": 2016,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Jeanette Chapman",
+      "Suzanne Chaney"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 4,
+    "serial": 309,
+    "course_code": "CSC309",
+    "year": 2013,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Jarvis Strickland",
+      "Richardson Goodman"
+    ],
+    "page_count": 12,
+    "questions_count": 12,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 5,
+    "serial": 307,
+    "course_code": "CSC307",
+    "year": 2015,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Jessica Heath",
+      "Rosario Pratt"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 6,
+    "serial": 325,
+    "course_code": "CSC325",
+    "year": 2012,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Virginia Higgins",
+      "Paul Owen"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 7,
+    "serial": 306,
+    "course_code": "CSC306",
+    "year": 2013,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Estes Shaw",
+      "Wilcox Peterson"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 8,
+    "serial": 324,
+    "course_code": "CSC324",
+    "year": 2016,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Melinda Clayton",
+      "Rosario Hanson"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 9,
+    "serial": 304,
+    "course_code": "CSC304",
+    "year": 2015,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Molina Oneill",
+      "Wilkins Knox"
+    ],
+    "page_count": 15,
+    "questions_count": 15,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 10,
+    "serial": 324,
+    "course_code": "CSC324",
+    "year": 2016,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Brittney Rivas",
+      "Walker Morin"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 11,
+    "serial": 300,
+    "course_code": "CSC300",
+    "year": 2015,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Constance Morgan",
+      "Tamra Reid"
+    ],
+    "page_count": 13,
+    "questions_count": 13,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 12,
+    "serial": 306,
+    "course_code": "CSC306",
+    "year": 2016,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Johns Flowers",
+      "Burris Diaz"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 13,
+    "serial": 305,
+    "course_code": "CSC305",
+    "year": 2016,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Allen Quinn",
+      "Sandoval Wiley"
+    ],
+    "page_count": 18,
+    "questions_count": 18,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 14,
+    "serial": 309,
+    "course_code": "CSC309",
+    "year": 2012,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Mueller Nolan",
+      "Robyn King"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 15,
+    "serial": 303,
+    "course_code": "CSC303",
+    "year": 2015,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Erma Mullen",
+      "Gillespie Odonnell"
+    ],
+    "page_count": 17,
+    "questions_count": 17,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 16,
+    "serial": 301,
+    "course_code": "CSC301",
+    "year": 2014,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Tillman Weaver",
+      "Walter Haynes"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 17,
+    "serial": 313,
+    "course_code": "CSC313",
+    "year": 2015,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Becky Rivera",
+      "Cabrera Vaughan"
+    ],
+    "page_count": 12,
+    "questions_count": 12,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 18,
+    "serial": 318,
+    "course_code": "CSC318",
+    "year": 2014,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Ofelia Hinton",
+      "Terrie Oneil"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 19,
+    "serial": 306,
+    "course_code": "CSC306",
+    "year": 2013,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Hardy Perkins",
+      "Lydia Dillon"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 20,
+    "serial": 306,
+    "course_code": "CSC306",
+    "year": 2016,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Margery Mooney",
+      "Justine Walls"
+    ],
+    "page_count": 18,
+    "questions_count": 18,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 21,
+    "serial": 308,
+    "course_code": "CSC308",
+    "year": 2013,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Cherry Miranda",
+      "Gail Dalton"
+    ],
+    "page_count": 13,
+    "questions_count": 13,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 22,
+    "serial": 304,
+    "course_code": "CSC304",
+    "year": 2014,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Winters Larsen",
+      "Kathryn Decker"
+    ],
+    "page_count": 19,
+    "questions_count": 19,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 23,
+    "serial": 312,
+    "course_code": "CSC312",
+    "year": 2016,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Odessa Blanchard",
+      "Lily Jenkins"
+    ],
+    "page_count": 17,
+    "questions_count": 17,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 24,
+    "serial": 319,
+    "course_code": "CSC319",
+    "year": 2012,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Christian Mcconnell",
+      "Ingrid Russo"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 25,
+    "serial": 325,
+    "course_code": "CSC325",
+    "year": 2012,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Lorie Drake",
+      "Wendy Gilliam"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 26,
+    "serial": 316,
+    "course_code": "CSC316",
+    "year": 2016,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Mayra Mercer",
+      "Kasey Gamble"
+    ],
+    "page_count": 13,
+    "questions_count": 13,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 27,
+    "serial": 321,
+    "course_code": "CSC321",
+    "year": 2016,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Clarke Shannon",
+      "Poole Emerson"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 28,
+    "serial": 307,
+    "course_code": "CSC307",
+    "year": 2013,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Eugenia Herring",
+      "Corine Barnett"
+    ],
+    "page_count": 18,
+    "questions_count": 18,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 29,
+    "serial": 324,
+    "course_code": "CSC324",
+    "year": 2013,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Sosa Hall",
+      "Hallie Walters"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 30,
+    "serial": 302,
+    "course_code": "CSC302",
+    "year": 2014,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "King Hopkins",
+      "Sanchez Duncan"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 31,
+    "serial": 311,
+    "course_code": "CSC311",
+    "year": 2015,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Higgins Nichols",
+      "Nanette Levy"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 32,
+    "serial": 305,
+    "course_code": "CSC305",
+    "year": 2016,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Dillon Mclean",
+      "Lawanda Tillman"
+    ],
+    "page_count": 17,
+    "questions_count": 17,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 33,
+    "serial": 316,
+    "course_code": "CSC316",
+    "year": 2015,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Erin Hendrix",
+      "Cannon Michael"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 34,
+    "serial": 314,
+    "course_code": "CSC314",
+    "year": 2012,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Norman Schultz",
+      "Manning Osborn"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 35,
+    "serial": 303,
+    "course_code": "CSC303",
+    "year": 2014,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Bowen Blevins",
+      "Hazel Floyd"
+    ],
+    "page_count": 12,
+    "questions_count": 12,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 36,
+    "serial": 321,
+    "course_code": "CSC321",
+    "year": 2014,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Jenifer Wade",
+      "Connie Day"
+    ],
+    "page_count": 19,
+    "questions_count": 19,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 37,
+    "serial": 304,
+    "course_code": "CSC304",
+    "year": 2012,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Ernestine Schmidt",
+      "Aimee Evans"
+    ],
+    "page_count": 13,
+    "questions_count": 13,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 38,
+    "serial": 319,
+    "course_code": "CSC319",
+    "year": 2012,
+    "term": "summer",
+    "type": "midterm",
+    "instructors": [
+      "Landry Foreman",
+      "Melva Koch"
+    ],
+    "page_count": 10,
+    "questions_count": 10,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 39,
+    "serial": 309,
+    "course_code": "CSC309",
+    "year": 2013,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Hayden Rodriquez",
+      "Luann Avila"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 40,
+    "serial": 324,
+    "course_code": "CSC324",
+    "year": 2015,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Ericka Stewart",
+      "Darcy Holloway"
+    ],
+    "page_count": 16,
+    "questions_count": 16,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 41,
+    "serial": 313,
+    "course_code": "CSC313",
+    "year": 2016,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Maria Vasquez",
+      "Palmer Sosa"
+    ],
+    "page_count": 15,
+    "questions_count": 15,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 42,
+    "serial": 317,
+    "course_code": "CSC317",
+    "year": 2014,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Patricia Hunter",
+      "Leonard Salazar"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 43,
+    "serial": 321,
+    "course_code": "CSC321",
+    "year": 2013,
+    "term": "fall",
+    "type": "midterm",
+    "instructors": [
+      "Ortiz Hart",
+      "Yates William"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 44,
+    "serial": 320,
+    "course_code": "CSC320",
+    "year": 2014,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Kathleen Robbins",
+      "Moran Blake"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 45,
+    "serial": 308,
+    "course_code": "CSC308",
+    "year": 2013,
+    "term": "summer",
+    "type": "final",
+    "instructors": [
+      "Cecile Franklin",
+      "Douglas Brooks"
+    ],
+    "page_count": 20,
+    "questions_count": 20,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 46,
+    "serial": 324,
+    "course_code": "CSC324",
+    "year": 2012,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Marilyn Adkins",
+      "Watts Marsh"
+    ],
+    "page_count": 14,
+    "questions_count": 14,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 47,
+    "serial": 303,
+    "course_code": "CSC303",
+    "year": 2012,
+    "term": "fall",
+    "type": "final",
+    "instructors": [
+      "Powell Lawson",
+      "Bowman Reynolds"
+    ],
+    "page_count": 19,
+    "questions_count": 19,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 48,
+    "serial": 323,
+    "course_code": "CSC323",
+    "year": 2015,
+    "term": "winter",
+    "type": "midterm",
+    "instructors": [
+      "Pacheco Gardner",
+      "Nixon Summers"
+    ],
+    "page_count": 15,
+    "questions_count": 15,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 49,
+    "serial": 322,
+    "course_code": "CSC322",
+    "year": 2013,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Celia Hodge",
+      "Deborah Mcgee"
+    ],
+    "page_count": 17,
+    "questions_count": 17,
+    "uploaded_by": "admin0"
+  },
+  {
+    "id": 50,
+    "serial": 311,
+    "course_code": "CSC311",
+    "year": 2013,
+    "term": "winter",
+    "type": "final",
+    "instructors": [
+      "Edna Conrad",
+      "Nadia Dejesus"
+    ],
+    "page_count": 11,
+    "questions_count": 11,
+    "uploaded_by": "admin0"
+  }
+]

@@ -1,0 +1,53 @@
+CREDIT TO:
+http://www.json-generator.com/
+
+***************************************
+User template:
+
+[
+  {
+    'repeat(50, 50)': {
+      serial: '{{index(1)}}',
+      name: { 
+        first: '{{firstName()}}',
+        last: '{{surname()}}'
+      },
+      user_name: function () {
+        return ('username' + this.serial);
+      },      
+      password: '{{objectId()}}',
+      phone: '+1 {{phone()}}',
+      email: function () {
+        // Email tag is deprecated, because now you can produce an email as simple as this:
+        return (this.name.first + '.' + this.name.last + '@' + this.name.first + this.name.last + '.com');
+      }
+    }
+  }
+]
+
+***************************************
+Exam template:
+
+[
+  {
+    'repeat(50, 50)': {
+      id: '{{index(1)}}'
+      serial: '{{integer(300, 325)}}',
+      course_code: function () {
+        return ('CSC' + this.serial);
+      },
+      year: '{{integer(2012,2016)}}',
+      term: '{{random("fall", "winter", "summer")}}',
+      type: '{{random("final", "midterm")}}',
+      instructors: ['{{firstName()}} {{surname()}}',
+                    '{{firstName()}} {{surname()}}'],
+      page_count: '{{integer(10,20)}}',
+      questions_count: function () {
+        return (this.page_count);
+      },
+      uploaded_by: 'admin0'
+    }
+  }
+]
+
+*************************************

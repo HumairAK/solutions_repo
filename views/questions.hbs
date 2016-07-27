@@ -3,6 +3,24 @@
 
             <!-- EXAM DETAILS -->
 
+        <form action="/user/follow_exam/{{../examInfo.id}}" method = 'post'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            <button class="col-xs-4 col-sm-2 col-md-2 col-lg-2
+            col-xs-offset-4 col-sm-offset-5 col-md-offset-2
+            col-lg-offset-2 rounded" id="add-solution" type="submit">
+                <h3>Follow Exam</h3>
+            </button>
+        </form>
+
+        <!--<a href="/user/follow_exam/{{../examInfo.id}}">-->
+        <!--<button class="col-xs-4 col-sm-2 col-md-2 col-lg-2-->
+        <!--col-xs-offset-4 col-sm-offset-5 col-md-offset-2-->
+        <!--col-lg-offset-2 rounded" id="add-solution">-->
+        <!--<h3>Follow Exam</h3>-->
+        <!--</button>-->
+        <!--</a>-->
+
+
             <a href="http://www.cs.toronto.edu/~fpitt/CSC148/20131/tests/test1-0101.pdf" target='_blank'><img src="/assets/images/exam.png" class='exam-img img-responsive exam-info'></a>
 
             <section class='exam-info'>

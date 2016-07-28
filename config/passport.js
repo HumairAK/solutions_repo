@@ -152,7 +152,6 @@ passport.use(new FacebookStrategy({
     function(req, accessToken, refreshToken, profile, done) {
         dbFile.userVerifiedBefore(req.user.user_name, function(err, data) {
             if (err) {
-                req.logout();
                 return done(err);
             } else if (data.length) {
                 if (data[0].facebookID == profile.id) {
@@ -160,7 +159,6 @@ passport.use(new FacebookStrategy({
                     user.login_info = data[0];
                     return done(null, user);
                 } else {
-                    req.logout();
                     return done(null, false, {message: "The verification account doesn't match."});
                 }
             } else {
@@ -172,7 +170,6 @@ passport.use(new FacebookStrategy({
                 }
                 dbFile.addVerification(verification, function (err) {
                     if (err) {
-                        req.logout();
                         return done(err);
                     } else {
                         var user = req.user;

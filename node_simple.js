@@ -884,7 +884,6 @@ exports.get_all_exams = function (course_code, callback) {
                     /*callback(docs);     // send back the data*/
                 }
                 else if (result == false) {    // no such course was found
-                    console.log("This course has not been added to the database.");
                 }
                 callback(docs);     // send back the data
 

@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
     res.locals.session = req.session;
     res.locals.user = req.user;
 
-    if (req.user && !req.user.login_info && (req.originalUrl != '/user/verify')
+    if (req.user && req.email && !req.user.login_info && (req.originalUrl != '/user/verify')
         && (!req.originalUrl.toString().includes('facebook'))){
         req.logout();
     }

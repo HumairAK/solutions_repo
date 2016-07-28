@@ -1,18 +1,18 @@
 {
   "existingUser": {
     "_id": {
-      "$oid": "57950d18543bc2fe7681f28c"
+      "$oid": "579971d988a20f0010cb627b"
     },
-    "email": "kumar@kumar.com",
-    "user_name": "kumar",
-    "f_name": "KUMAR",
-    "l_name": "DAMANI",
-    "university": "",
-    "department": "",
-    "answered": 1,
+    "email": "janetarzan@gmail.com",
+    "user_name": "janeT",
+    "f_name": "Jane",
+    "l_name": "Tarzan",
+    "university": "University of Toronto",
+    "department": "Computer Science",
+    "answered": 0,
     "messages": 0,
-    "comments": 4,
-    "phone_num": "",
+    "comments": 0,
+    "phone_num": "6478495738",
     "followers": []
   },
 

@@ -114,11 +114,7 @@
                 </li>
                 {{# if login }}
                     {{# if user.email }}
-                        {{# if user.login_info}}
                         <li><a href="/user/user_profile">Profile Page</a></li>
-                         {{else}}
-                            <li><a href="/user/signin" >Sign In</a></li>
-                        {{/if}}
                     {{else}}
                         <li><a href="/admin">Admin Panel</a></li>
                     {{/if}}
@@ -128,14 +124,7 @@
 
                 <!--<li><a href="#" data-toggle="modal" data-target=".registration-window">Sign up</a></li>-->
                 {{# if login }}
-                    {{# if user.login_info}}
                     <li><a href="/user/logout">Logout</a> </li>
-                     {{else if user.email}}
-                        <li><a href="/user/signup" >Sign up</a></li>
-                     {{ else }}
-                        <li><a href="/user/logout">Logout</a> </li>
-
-                    {{/if}}
                 {{ else }}
                     <li><a href="/user/signup" >Sign up</a></li>
                 {{/if}}

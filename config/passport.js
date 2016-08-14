@@ -56,7 +56,7 @@ passport.use('local_signup', new LocalStrategy({
     var hash_pass = encryptPassword(password);
 
     var fields = [email, req.body.usrname, req.body.fname, req.body.lname, req.body.univ, req.body.dept, hash_pass,
-        req.body.phone_num];
+        req.body.phone_num, 0];
 
     dbFile.add_user(fields, function (success, error, message) {
 
@@ -80,7 +80,8 @@ passport.use('local_signup', new LocalStrategy({
                 messages: 0,
                 comments: 0,
                 phone_num: fields[7],
-                followers: []
+                followers: [],
+                fb_id: 0
             };
             return done(null, user_data);
         }
@@ -141,42 +142,74 @@ passport.use('local_signin', new LocalStrategy({
 
 /**
  * Configures the Facebook strategy to authenticate signin as well as signup request.
+ *
+ * var user_data = {
+        email: fields[0],
+        user_name: fields[1],
+        f_name: fields[2],
+        l_name: fields[3],
+        university: fields[4],
+        department: fields[5],
+        answered: 0,
+        messages: 0,
+        comments: 0,
+        phone_num: fields[7],
+        followers: []
+    };
  */
 passport.use(new FacebookStrategy({
         clientID: configAuth.facebookAuth.clientID,
         clientSecret: configAuth.facebookAuth.clientSecret,
         callbackURL: configAuth.facebookAuth.callbackURL,
-        passReqToCallback: true
+        passReqToCallback: true,
+        profileFields: ['id', 'emails', 'name']
 
     },
     function(req, accessToken, refreshToken, profile, done) {
-        dbFile.userVerifiedBefore(req.user.user_name, function(err, data) {
-            if (err) {
-                return done(err);
-            } else if (data.length) {
-                if (data[0].facebookID == profile.id) {
-                    var user = req.user;
-                    user.login_info = data[0];
-                    return done(null, user);
-                } else {
-                    return done(null, false, {message: "The verification account doesn't match."});
-                }
-            } else {
-                var verification = {
-                    username : req.user.user_name,
-                    facebookID : profile.id,
-                    facebookToken : accessToken
+        // Find by user facebook id, if not, add user
+        dbFile.retrieveUserById(profile.id, function(success, error, user, message) {
+            if (!success && error) {
+                return done(message);
+            }
 
-                }
-                dbFile.addVerification(verification, function (err) {
-                    if (err) {
-                        return done(err);
-                    } else {
-                        var user = req.user;
-                        user.login_info = verification;
-                        return done(null, user);
+            else if (!success && !error) { // id is undefined
+                var fields = [profile.emails[0].value, profile.name.givenName + ' ' + profile.name.familyName,
+                    profile.name.givenName, profile.name.familyName, null, null, null,
+                    null, profile.id];
+
+                dbFile.add_user(fields, function (success, error, message) {
+                    console.log('inside add_user');
+                    console.log("SUCCESS: " + success);
+                    console.log("ERROR: " + error);
+                    console.log(message);
+                    if (!success && error) {
+                        return done(null, false, {message:message}); // Review later, need to pass errors
+                    } else if (!success && !error) {
+                        return done(null, false, {message: message});
+                    }
+
+                    else  {
+                        var user_data = {
+                            email: fields[0],
+                            user_name: fields[1],
+                            f_name: fields[2],
+                            l_name: fields[3],
+                            university: fields[4],
+                            department: fields[5],
+                            answered: 0,
+                            messages: 0,
+                            comments: 0,
+                            phone_num: fields[7],
+                            followers: [],
+                            fb_id: profile.id
+                        };
+                        return done(null, user_data);
                     }
                 });
+            }
+
+            else  {
+                return done(null, user);
             }
         });
     }

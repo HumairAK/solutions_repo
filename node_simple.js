@@ -270,6 +270,7 @@ exports.retrieve_userComments_history = function (username, callback) {
         }
     });
 
+
     function doCall() {
         callback(true, mylist);
     }
@@ -346,7 +347,7 @@ exports.retrieve_userSolutions_count = function (username, callback) {
  * IFF both the email and the user_name are not in the database already.
  * If either of them exist, the user is NOT added.
  *
- * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num]
+ * @param {string[]} fields: [email, user_name, f_name, l_name, uni, department, password, phone_num, facebook_id]
  * @param {function} callbackUser: of the form (<boolean1>, <boolean2>, <string>)
  *                                  where, <boolean1> -
  *                                   <boolean2> -
@@ -365,7 +366,8 @@ exports.add_user = function (fields, callbackUser) {
         messages: 0,
         comments: 0,
         phone_num: fields[7],
-        followers: []
+        followers: [],
+        fb_id: fields[8]
     };
 
     var login_data = {
@@ -527,6 +529,31 @@ exports.retrieveUser = function (username, callback) {
         }
     });
 };
+
+/**
+ * This function retrieves the user object given their Facebook username.
+ *
+ * @param {string}   id: the user's facebook id
+ * @param {function} callback: with args (<bool1>,<bool2>,<string1>,<string2>)
+ *                            where, <bool1> : success ? true : false
+ *                            where, <bool2> : error ? true : false
+ *                            where, <string1> : success ? {Obj} : null
+ *                            where, <string2> : success ? success_mssg : err_mssg
+ * */
+exports.retrieveUserById = function(id, callback){
+    var users = db.collection('users');
+
+    users.find({fb_id: id}).toArray(function(err, result) {
+        if (err) {
+            // callback(success, error, user, message)
+            callback(false, true,  null, "Error : Could not retrieve user.");
+        } else if (result.length) {
+            callback(true, false, result[0], "User retrieved");
+        } else {
+            callback(false, false, null, "ID is undefined.");
+        }
+    });
+}
 
 /**
  * Returns the hashed password given the username. Assume username exists.

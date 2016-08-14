@@ -125,7 +125,7 @@ router.post('/add/course', function(req,res){
 
     req.sanitize('title').escape();
     req.sanitize('title').trim();
-    req.check('title','Invalid title').isAlpha();
+    //req.check('title','Invalid title');
 
     var errors = req.validationErrors();
 
@@ -262,7 +262,7 @@ router.post('/remove/user', function(req,res){
     req.sanitize('username').escape();
     req.check('username','Invalid user name format').notEmpty();
 
-    var errors = validationErrors();
+    var errors = req.validationErrors();
     if (errors){
         req.session.errors = errors;
         req.session.success = false;

@@ -190,7 +190,7 @@ router.post('/signup', loggedOut, function(req, res, next) {
         res.redirect('/user/signup');
     } else {
         passport.authenticate('local_signup', {
-            successRedirect: '/user/verify',
+            successRedirect: '/user/user_profile',
             failureRedirect: '/user/signup/failed',
             failureFlash: true
         })(req, res);
@@ -210,7 +210,7 @@ router.post('/signin', loggedOut, function(req, res, next) {
         res.redirect('/signin');
     } else {
         passport.authenticate('local_signin', {
-            successRedirect: '/user/verify',
+            successRedirect: '/user/user_profile',
             failureRedirect: '/user/signin',
             failureFlash: true
         })(req, res);

@@ -24,7 +24,12 @@
                 </section>
             {{/if}}
 
-            <h3><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</h3>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="insite-signin col-sm-3 col-sm-offset-3 col-md-3 col-md-offset-3">
+            <h3><i class="fa fa-sign-in" aria-hidden="true"></i> Sign in</h3>
             <form action="/user/signin" method="post">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="New Username" name="usrname">
@@ -36,7 +41,12 @@
                 <button class="btn btn-primary">Sign In</button>
             </form>
         </div>
-
+        <div class="col-sm-3 col-md-3">
+            <h3><i class="fa fa-sign-in" aria-hidden="true"></i> Sign in with:</h3>
+            <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
+        </div>
     </div>
+
+
 
 </main>

@@ -158,16 +158,6 @@ router.get('/signin', loggedOut, function (req, res, next) {
     });
 });
 
-/** Render/GET verification page. */
-router.get('/verify', function(req, res, next) {
-    if (req.user && req.user.email) {
-        res.render('verification', {noHeader: true, noFooter: true});
-    } else {
-        res.redirect('/user/user_profile');
-    }
-
-});
-
 /** Retrieves infomation from the signup form, form validates and sends it to passport.js to authenticate. */
 router.post('/signup', loggedOut, function(req, res, next) {
     req.assert('fname', 'Please enter a valid first name.').notEmpty().withMessage('First name required.').isAlpha();
@@ -207,7 +197,7 @@ router.post('/signin', loggedOut, function(req, res, next) {
     if (errors) {
         req.session.errors = errors;
         req.session.success = false;
-        res.redirect('/signin');
+        res.redirect('/user/signin');
     } else {
         passport.authenticate('local_signin', {
             successRedirect: '/user/user_profile',

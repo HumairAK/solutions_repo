@@ -26,20 +26,28 @@
 
                     <h3 class="signin"><hr><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In<hr></h3>
                     <form action="/user/signin" method="post">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="New Username" name="usrname">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" placeholder="New Password" name="password">
+                        <div class="form-group signin-group">
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-addon addon-username">
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                </div>
+                                <input type="text" class="form-control input-username" placeholder="email" name="usrname">
+                            </div>
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-addon addon-password">
+                                    <i class="fa fa-key" aria-hidden="true"></i>
+                                </div>
+                                <input type="password" class="form-control input-lg input-password" placeholder="password" name="password">
+                            </div>
                         </div>
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                         <button class="signin-btn signin-insite btn-lg btn btn-primary btn-block"><span>Sign In</span></button>
                     </form>
 
 
-                    <h3 class="signin signin-or">or</h3>
-                    <a href="/auth/facebook" class=" signin-btn btn-lg btn btn-primary btn-block"><span>
-                        <span class="fa fa-facebook"> </span>   Facebook connect</span></a>
+                    <h4 class="signin signin-or">or</h4>
+                    <a href="/auth/facebook" class="signin-fb signin-btn btn-lg btn btn-primary btn-block"><span>
+                        <span class="fa fa-facebook"> </span>   Sign in with Facebook</span></a>
 
                     </div>
                 </div>

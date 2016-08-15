@@ -2,7 +2,8 @@
 
 <div class="row" id="solutions-main">
 
-    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+    <div class="slate signup-page col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4">
+        <div class="container">
         {{# if success }}
             <section class="alert alert-success">
                 <!-- Change those to banners later -->
@@ -27,7 +28,7 @@
 
 
 
-        <h3><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</h3>
+        <h3 class="signup"><hr><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up<hr></h3>
         <form action="/user/signup" method="post">
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="First Name" name="fname">
@@ -62,8 +63,9 @@
                 <input type="text" class="form-control" placeholder="Department (optional)" name="dept">
             </div>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <button class="btn btn-primary">Sign Up</button>
+            <button class="signup-btn btn-lg btn btn-primary btn-block">Sign Up</button>
         </form>
+        </div>
     </div>
 
 </div>

@@ -567,7 +567,7 @@ hr {
 .input-confirm, .input-phone, .input-univ{
     font-size: 1em !important;
     border-radius: 0 !important;
-    border-bottom: 0 !important;
+    border-bottom: 1px !important;
     box-shadow: none !important;
 }
 
@@ -575,7 +575,7 @@ hr {
     font-size: 1em !important;
     border-radius: 0 !important;
     border-top-right-radius: 8px !important;
-    border-bottom: 0 !important;
+    border-bottom: 1px !important;
     box-shadow: none !important;
 }
 
@@ -607,4 +607,16 @@ hr {
 .input-group-addon {
     min-width:50px;
     text-align:left;
+}
+
+.signin-window {
+	padding: 0 !important;
+	width: auto !important;
+
+}
+
+.signin-window .modal-content {
+	height: auto !important;
+	width: 65% !important;
+	margin-left: 17%;
 }

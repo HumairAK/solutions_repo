@@ -42,6 +42,15 @@ router.get('/', isAdmin, function(req,res){
     req.session.messages = null;
 });
 
+router.get('/signin', function (req, res, next) {
+    var msg = req.flash('error');
+    res.render('signin_admin', {
+        csrfToken: req.csrfToken(),
+        success: req.session.success,
+        errors: req.session.errors,
+        flashMsg: msg
+    });
+});
 
 /** Retrieves infomation from the exam adding form and sends it to the database to add.  */
 router.post('/add/exam', function(req,res){

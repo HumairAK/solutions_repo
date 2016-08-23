@@ -119,7 +119,7 @@
                         <li><a href="/admin">Admin Panel</a></li>
                     {{/if}}
                 {{ else }}
-                    <li><a href="/user/signin" >Sign In</a></li>
+                    <li><a href="/user/signin">Sign In</a></li>
                 {{/if}}
 
                 <!--<li><a href="#" data-toggle="modal" data-target=".registration-window">Sign up</a></li>-->
@@ -127,6 +127,7 @@
                     <li><a href="/user/logout">Logout</a> </li>
                 {{ else }}
                     <li><a href="/user/signup" >Sign up</a></li>
+                    <li><a href="/admin/signin">Admin</a></li>
                 {{/if}}
 
             </ul>
@@ -135,3 +136,69 @@
     </div>
     <!-- /.container-fluid -->
 </nav> <!-- Ignore error, opening tag will be generated at render time -->
+
+<article class="modal fade signin-window">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <section class="modal-body">
+                <div class="row">
+                    <div class="slate signin-page col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0">
+                        <div class="container">
+                            {{# if success }}
+                                <section class="alert alert-success">
+                                    <!-- Change those to banners later -->
+                                    <h2>Signup Successful!</h2>
+                                </section>
+                            {{ else }}
+                                {{# if errors }}
+                                    <section class="alert alert-danger">
+                                        <ul>
+                                            {{# each errors }}
+                                                <li>{{ this.msg }}</li>
+                                            {{/each}}
+                                        </ul>
+                                    </section>
+                                {{/if}}
+                            {{/if}}
+                            {{#if flashMsg}}
+                                <section class="alert alert-danger">
+                                    {{flashMsg}}
+                                </section>
+                            {{/if}}
+
+                            <h3 class="signin"><hr><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In<hr></h3>
+                            <form action="/user/signin" method="post">
+                                <div class="form-group signin-group">
+                                    <div class="input-group input-group-lg">
+                                        <div class="input-group-addon addon-username">
+                                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                                        </div>
+                                        <input type="text" class="form-control input-username" placeholder="email" name="usrname" required>
+                                    </div>
+                                    <div class="input-group input-group-lg">
+                                        <div class="input-group-addon addon-password">
+                                            <i class="fa fa-key" aria-hidden="true"></i>
+                                        </div>
+                                        <input type="password" class="form-control input-lg input-password" placeholder="password" name="password" required>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                                <button class="signin-btn signin-insite btn-lg btn btn-primary btn-block"><span>Sign In</span></button>
+                            </form>
+
+
+                            <h4 class="signin signin-or">or</h4>
+                            <a href="/auth/facebook" class="signin-fb signin-btn btn-lg btn btn-primary btn-block"><span>
+                        <span class="fa fa-facebook"> </span>   Sign In with Facebook</span></a>
+
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+</article>
+

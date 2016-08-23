@@ -31,13 +31,13 @@
                                 <div class="input-group-addon addon-username">
                                     <i class="fa fa-envelope" aria-hidden="true"></i>
                                 </div>
-                                <input type="text" class="form-control input-username" placeholder="email" name="usrname">
+                                <input type="text" class="form-control input-username" placeholder="email" name="usrname" required>
                             </div>
                             <div class="input-group input-group-lg">
                                 <div class="input-group-addon addon-password">
                                     <i class="fa fa-key" aria-hidden="true"></i>
                                 </div>
-                                <input type="password" class="form-control input-lg input-password" placeholder="password" name="password">
+                                <input type="password" class="form-control input-lg input-password" placeholder="password" name="password" required>
                             </div>
                         </div>
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
@@ -47,7 +47,7 @@
 
                     <h4 class="signin signin-or">or</h4>
                     <a href="/auth/facebook" class="signin-fb signin-btn btn-lg btn btn-primary btn-block"><span>
-                        <span class="fa fa-facebook"> </span>   Sign in with Facebook</span></a>
+                        <span class="fa fa-facebook"> </span>   Sign In with Facebook</span></a>
 
                     </div>
                 </div>

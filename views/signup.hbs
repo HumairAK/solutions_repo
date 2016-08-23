@@ -29,25 +29,29 @@
 
 
         <h3 class="signup"><hr><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up<hr></h3>
-        <form action="/user/signup" method="post">
-            <div class="form-group signup-group ">
+        <form action="/user/signup" method="post" id="signup-form">
+            <div class="form-group  signup-group ">
+
                 <div class="input-group input-group-lg">
                     <div class="input-group-addon addon-fname">
                         <i class="fa fa-male" aria-hidden="true"></i>
                     </div>
                     <input type="text" class="form-control input-fname" placeholder="first name" name="fname">
+                    <p class="help-block"></p>
                 </div>
                 <div class="input-group input-group-lg">
                     <div class="input-group-addon">
                         <i class="fa fa-cube" aria-hidden="true"></i>
                     </div>
                     <input type="text" class="form-control input-lname" placeholder="last name" name="lname">
+                    <p class="help-block"></p>
                 </div>
                 <div class="input-group input-group-lg">
-                    <div class="input-group-addon">
-                        <i class="fa fa-at" aria-hidden="true"></i>
-                    </div>
-                    <input type="email" class="form-control input-email" placeholder="email" name="email">
+                        <div class="input-group-addon">
+                            <i class="fa fa-at" aria-hidden="true"></i>
+                        </div>
+                        <input type="email" class="form-control input-email" placeholder="email" name="email" required>
+                        <p class="help-block"></p>
                 </div>
                 <div class="input-group input-group-lg">
                     <div class="input-group-addon">

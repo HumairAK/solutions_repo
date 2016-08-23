@@ -104,21 +104,8 @@ passport.use('local_signin', new LocalStrategy({
         }
 
         else if (!success && !error) { // Username is undefined
-            //return done(null, false, {message: message});
-            // ADMIN
-            dbFile.adminExists(usrname, function (error, exists, data, message) {
-                if (error) {
-                    return done(message);
-                } else if (!error && !exists){
-                    return done(null, false, {message: 'Username does not exist.'});
-                } else {
-                    if (comparePassword(password, data.password)) {
-                        return done(null, data);
-                    } else {
-                        return done(null, false, {message: 'Password incorrect.'});
-                    }
-                }
-            });
+
+            return done(null, false, {message: 'Username does not exist.'});
         }
 
         else  {
@@ -135,6 +122,30 @@ passport.use('local_signin', new LocalStrategy({
                     }
                 }
             });
+        }
+    });
+}));
+
+
+/**
+ * Configures the Local strategy to authenticate the Admin signin request.
+ */
+passport.use('admin_signin', new LocalStrategy({
+    usernameField: 'usrname',
+    passwordField: 'password',
+    passReqToCallback: true
+}, function (req, usrname, password, done) {
+    dbFile.adminExists(usrname, function (error, exists, data, message) {
+        if (error) {
+            return done(message);
+        } else if (!error && !exists){
+            return done(null, false, {message: 'Username does not exist.'});
+        } else {
+            if (comparePassword(password, data.password)) {
+                return done(null, data);
+            } else {
+                return done(null, false, {message: 'Password incorrect.'});
+            }
         }
     });
 }));

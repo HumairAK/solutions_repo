@@ -52,6 +52,27 @@ router.get('/signin', function (req, res, next) {
     });
 });
 
+/** Retrieves infomation from the signin form, form validates and sends it to passport.js to authenticate. */
+router.post('/signin', function(req, res, next) {
+    req.check('usrname', 'Username field is empty.').notEmpty();
+    req.check('password', "Password field is empty.").notEmpty();
+
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/admin/signin');
+    } else {
+        passport.authenticate('admin_signin', {
+            successRedirect: '/admin/',
+            failureRedirect: '/admin/signin',
+            failureFlash: true
+        })(req, res);
+    }
+
+
+});
+
 /** Retrieves infomation from the exam adding form and sends it to the database to add.  */
 router.post('/add/exam', function(req,res){
     req.sanitize('course_code').escape();

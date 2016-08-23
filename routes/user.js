@@ -130,6 +130,11 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
 });
 
+router.get('/resetPassword', loggedOut, function(req, res, next) {
+    res.render('reset_password', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+    req.session.errors = null;
+});
+
 
 /** Render/GET signin page. */
 router.get('/signup', loggedOut, function(req, res, next) {

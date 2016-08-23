@@ -585,7 +585,7 @@ hr {
     border-bottom-right-radius: 8px !important;
     box-shadow: none !important;
 }
-.input-username {
+.input-username, .input-email-reset {
     font-size: 1em !important;
     border-top-right-radius: 8px !important;
 }
@@ -619,4 +619,30 @@ hr {
 	height: auto !important;
 	width: 65% !important;
 	margin-left: 17%;
+}
+
+.signin-bottom, .reset-bottom {
+	text-align: center;
+	color: white;
+	font-weight: 200;
+	margin-top: 2%;
+}
+
+.signin-bottom a, .reset-bottom a {
+	color: white;
+	font-weight: bold;
+
+}
+
+.reset-bottom {
+	margin-top: 4%;
+}
+
+.signin-bottom a:hover, .reset-bottom a:hover {
+	color: #E8E8E8;
+}
+
+.addon-email-reset {
+	border-top-left-radius: 8px !important;
+	border-bottom-left-radius: 8px !important;
 }

@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/creative.css">
 
+    <!-- Partial Scripts, Order important -->
+    {{# if userProfile}}
+        <link href="/assets/css/user_profile.css" rel="stylesheet" type="text/css">
+    {{/if}}
+
     <!--Fonts-->
     <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
@@ -36,6 +41,7 @@
     {{# if homePage }}
         <script src="/assets/js/home_page.js"></script>
     {{/if}}
+
 
 </head>
 <body>

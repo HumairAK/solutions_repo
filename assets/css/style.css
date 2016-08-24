@@ -377,32 +377,6 @@ section.exam-info em {
 }
 /*** EXAM QUESTIONS PAGE END ***/
 
-/*** USER PROFILE PAGE  ***/
-.user-info-content{
-    padding-top: 100px;
-}
-
-.user-info-content img{
-    max-width: 100px;
-}
-
-.user-info-content p{
-    color: gray;
-}
-
-.prf-sign-off{
-    margin: 15px;
-}
-
-.prf-tables{
-    text-align: left;
-}
-
-.prf-details{
-	text-align: center;
-}
-/*** USER PROFILE PAGE END ***/
-
 /*** ABOUT PAGE  ***/
 .about-p{
 	padding: 30px 30px 0 30px;

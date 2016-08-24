@@ -620,6 +620,32 @@ exports.findUserByID = function (id, callback) {
     });
 };
 
+exports.updatePassword = function (email, password, callback) {
+    var logins = db.collection('logins');
+    logins.updateOne({email: email}, {$set: {password: password}}, function(err, docs) {
+        if (err) callback(true, "Error: Failed to update password.");
+
+        else {
+            callback(false, "Success");
+        }
+    });
+}
+
+/*exports.findUserByEmail = function (email, callback) {
+    var users = db.collection('users');
+    users.find({email: email}).toArray(function(err, result) {
+        if (err) {
+            // callback(success, error, user, message)
+            callback(false, true,  null, "Error : Could not retrieve user.");
+        } else if (result.length) {
+            callback(true, false, result[0], "User retrieved");
+        } else {
+            callback(false, false, null, "ID is undefined.");
+        }
+    });
+
+}*/
+
 /************************* COURSES / EXAMS **********************************/
 
 /**
@@ -1213,6 +1239,7 @@ exports.addAdmin = function (admin_data, callback) {
     });
 };
 
+
 /**
  * This function checks if the admin username already exists in the ADMINS collection. If it does, then callback
  * returns success, and the admin object is passed through the callback.
@@ -1290,5 +1317,51 @@ exports.checkMailbox = function (username, callback) {
 
     });
 
+};
+
+exports.addToken = function (email, userToken, token, callback) {
+
+    var tokens = db.collection('tokens');
+
+    var userToken = {
+        userToken: userToken,
+        email: email,
+        token: token
+    };
+
+    tokens.insertOne(userToken, function (err) {
+        if (err) {
+            //callback(error, message)
+            callback(true, "Error : Token has not been added.");
+        }
+
+        else {
+            callback(false, "Token has been added");
+        }
+    });
+
+
+};
+
+exports.getToken = function(token, callback) {
+    var tokens = db.collection('tokens');
+    tokens.find({token: token}).toArray(function(err, result) {
+        if (err) {
+            callback(true, null);
+        } else {
+            callback(false, result);
+        }
+    });
+};
+
+exports.removeToken = function(token, callback) {
+    var tokens = db.collection('tokens');
+    tokens.removeOne({token: token}, function(err, docs) {
+        if (err) {
+            callback(true, "There was an error.");
+        } else if (docs.deletedCount) {
+            callback(false, "Token removed");
+        }
+    });
 };
 

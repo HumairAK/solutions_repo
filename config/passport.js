@@ -25,7 +25,7 @@ var encryptPassword = exports.encryptPassword = function (password) {
  * @param password2
  * @returns {*}
  */
-var comparePassword = function (password1, password2) {
+var comparePassword = exports.comparePassword = function (password1, password2) {
     return bcrypt.compareSync(password1, password2);
 };
 

@@ -127,7 +127,57 @@
                     <h4>Inbox </h4>
 
                     <hr>
-                    <p>[PlaceHolder]</p>
+                    {{# if inbox }}
+                        <div class="col-sm-12">
+                            <table class="table table-striped u-table">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Sender</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{# each inbox }}
+                                <tr class="u-table-row" data-toggle="modal"  data-target=".{{ this.class }}">
+                                    <td>{{ this.date }}</td>
+                                    <td>{{ this.subject }}</td>
+                                    <td>{{ this.sender }}</td>
+                                </tr>
+                                {{/each}}
+                                </tbody>
+                            </table>
+
+
+
+                            {{# each inbox}}
+                                <article class="modal fade {{this.class}}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <section class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title"><em>Subject: </em>{{ this.subject }}</h4>
+                                                <h5><em>From: </em>{{ this.sender }}</h5>
+                                                <em>Date: </em> {{this.date}}
+                                            </section>
+
+                                            <section class="modal-body">
+                                                {{ this.message }}
+                                            </section>
+
+                                            <div class="modal-footer">
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </article>
+                            {{/each}}
+                        </div>
+                    {{ else }}
+                        <h3>No Messages.</h3>
+                    {{/if}}
                 </section>
 
 

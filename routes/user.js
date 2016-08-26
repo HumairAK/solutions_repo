@@ -157,6 +157,14 @@ router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, funct
                     req.user.messages = inbox.length; // Give user message length
                     console.log("Success: " + message);
 
+                    // needed to display in layout (used for modal popup classes)
+                    var i = 0;
+                    inbox.forEach(function(element) {
+                        element.class = i;
+                        i ++;
+                    });
+
+
                     resolve(1);
                 } else if (error) {
                     // Need to redirect to an error page instead.

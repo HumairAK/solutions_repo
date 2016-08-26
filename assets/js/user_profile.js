@@ -42,5 +42,13 @@ function main(){
             default:
                 console.log("Error: User page not found");
         }
-    });}
+    });
+
+
+
+
+}
+
+
+
 $(document).ready(main);

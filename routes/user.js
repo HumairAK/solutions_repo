@@ -13,12 +13,10 @@ var pass = require('../config/passport');
 var csrfProtection = csrf();
 router.use(csrfProtection); // router is protected
 
-
 router.get('/logout', loggedIn, function (req, res, next) {
     req.logout();
     res.redirect('/');
 });
-
 
 /** Render/GET user_profile page. */
 router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
@@ -64,6 +62,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     function getMail(){
         return new Promise(function(resolve, reject) {
 
+            // We assume that the messages stored in data are sorted by date
             dbFile.checkMailbox(req.user.user_name, function(success, error, data, message){
                 if (success) {
                     inbox = data;
@@ -97,32 +96,33 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
     function getFollows(){
         return new Promise(function(resolve, reject) {
             dbFile.retrieveFollows(req.user.user_name, function(success, data){
-                    req.user.examfollows = [];
-                    req.user.followerCount = data.length;
-                    if(success && data.length){
-                        var count = 1;
-                        data.forEach(function(item){
-                            dbFile.get_exam_byID(item, function(success, error, data){
-                                if(success){
-                                    req.user.examfollows.push(data);
-                                    if(count == req.user.followerCount ){
-                                        resolve(1);
-                                    }else{
-                                        count++;
-                                    }
-                                }else{
-                                    resolve(1);
-                                }
-                            })
-                        });
 
-                    } else if(success && !data.length){
-                        resolve(1);
-                    }
-                    else{ //error
-                        error = data;
-                        resolve(1);
-                    }
+                // Add a new attribute to users, examFollows & followerCount
+                req.user.examfollows = [];
+                req.user.followerCount = data.length;
+                if(success && data.length){
+                    var count = 1;
+                    data.forEach(function(item){
+                        dbFile.get_exam_byID(item, function(success, error, data){
+                            if(success){
+                                req.user.examfollows.push(data);
+                                if(count == req.user.followerCount ){
+                                    resolve(1);
+                                }else{
+                                    count++;
+                                }
+                            }else{
+                                resolve(1);
+                            }
+                        })
+                    });
+                } else if(success && !data.length){
+                    resolve(1);
+                }
+                else{ //error
+                    error = data;
+                    resolve(1);
+                }
 
             });
         });
@@ -132,6 +132,77 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
         res.render('user_profile_alt', {inbox: inbox, error: error, csrfToken: req.csrfToken(), userProfile: true});
     });
 
+});
+
+/**
+ * Serve mail messages for page pageNum with messageCount messages as a JSON object
+ */
+router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, function(req, res, next) {
+
+    req.session.messages = null;
+    var inbox = [];
+    var error = null;
+    var pageNum = parseInt(req.params.pageNum);
+    var messageCount = parseInt(req.params.messageCount);
+
+    function getMail(){
+        return new Promise(function(resolve, reject) {
+
+            // We assume that the messages stored in data are sorted by date
+            dbFile.checkMailbox(req.user.user_name,
+                function(success, error, data, message){
+
+                if (success) {
+                    inbox = data;
+                    req.user.messages = inbox.length; // Give user message length
+                    console.log("Success: " + message);
+
+                    resolve(1);
+                } else if (error) {
+                    // Need to redirect to an error page instead.
+                    console.log("Error: " + message);
+                    resolve(1);
+                }
+            });
+        });
+    }
+
+
+    getMail().then(function (data) {
+
+        var mail = [];
+        var index = (pageNum - 1) * messageCount;
+        var indexMax = index + messageCount;
+        var inboxLength = inbox.length;
+        var count = 0;
+
+        /* Testing Purposes
+        var notification = "index = " + index + "\n" +
+            "indexMax = " + indexMax + "\n" +
+            "inboxLength = " + inbox.length + "\n";
+        console.log(notification); */
+
+        // Find the 10 messages situated at page num in inbox, store in mail
+        if(index >= inboxLength){
+            res.writeHead(400, {"Content-Type": "application/json"});
+            console.log("Specified index is out of bounds");
+        }else if (inboxLength <= messageCount) {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            mail = inbox;
+        }else {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            while((index < inboxLength) && (index < indexMax)){
+                mail.push(inbox[index]);
+                index++;
+                count++;
+                console.log("in while: " + count);
+            }
+        }
+
+        // return mail JSON object ::  JSON.stringify({json});
+        var mailJSON = JSON.stringify(mail);
+        res.end(mailJSON);
+    });
 });
 
 router.get('/resetPassword', loggedOut, function(req, res, next) {

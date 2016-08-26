@@ -28,7 +28,7 @@
 
         <!-- User name Header row -->
             <div class="u-name-header col-xs-12">
-                <h2>ChrisHopper89</h2>
+                <h2>{{user.user_name}}</h2>
             </div>
 
         <!-- Main Content row -->
@@ -37,36 +37,36 @@
                 <!-- User Image -->
                 <img alt="User Pic" src="../assets/images/avatar.png"
                      class="img-circle img-responsive">
-                <h3>Jim Hopper</h3>
-                <h4>jhop@gmail.com</h4>
+                <h3>{{ user.f_name }} {{ user.l_name }}</h3>
+                <h4>{{ user.email }}</h4>
 
                 <!-- Side Nav -->
                 <nav>
-                    <button class="nav-o">
+                    <button class="nav-o" id="nav-profile">
                         <div class="nav-o-container">
                             <h5><i class="fa fa-home" aria-hidden="true"></i> My Profile</h5>
                         </div>
                     </button>
 
-                    <button class="nav-o">
+                    <button class="nav-o" id="nav-comments">
                         <div class="nav-o-container">
                             <h5><i class="fa fa-comment-o" aria-hidden="true"></i> Comments</h5>
                         </div>
                     </button>
 
-                    <button class="nav-o">
+                    <button class="nav-o" id="nav-follows">
                         <div class="nav-o-container">
                             <h5><i class="fa fa-list" aria-hidden="true"></i> Follows</h5>
                         </div>
                     </button>
 
-                    <button class="nav-o">
+                    <button class="nav-o" id="nav-inbox">
                         <div class="nav-o-container">
                             <h5><i class="fa fa-envelope" aria-hidden="true"></i> Inbox</h5>
                         </div>
                     </button>
 
-                    <button class="nav-o">
+                    <button class="nav-o" id="nav-logout">
                         <div class="nav-o-container">
                             <h5><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</h5>
                         </div>
@@ -78,34 +78,110 @@
 
             <!-- Content Pages (On Right) -->
             <article class="col-xs-12 col-sm-9 u-pages">
-                <section class="u-profile">
+                <section class="u-profile" id="profile-general">
                     <h4>Profile </h4>
 
                     <hr>
 
                     <h5>Personal Info</h5>
-                    <p>Username: <em>ChiefHopper86</em></p>
-                    <p>Name: <em>Jim Hopper</em></p>
-                    <p>University: <em>University of Toronto</em></p>
+                    <p>Username: <em>{{user.user_name}}</em></p>
+                    <p>Name: <em>{{ user.f_name }} {{ user.l_name }}</em></p>
+
+
+                    {{# if user.university }}
+                        <p>University: <em>{{ user.university }}</em></p>
+                    {{/if}}
+                    {{# if user.department }}
+                        <p>Department: <em>{{ user.department }}</em></p>
+                    {{/if}}
 
                     <hr>
                     <h5>User Stats</h5>
-                    <p>Answered: <em>20</em></p>
-                    <p>Comments: <em>25</em></p>
-                    <p>Score: <em>205</em></p>
+                    <p>Answered: <em>{{ user.answered }}</em></p>
+                    <p>Comments: <em>{{ user.comments }}</em></p>
+                    <p>Inbox: <em>{{ user.messages }}</em></p>
 
-
+                    <!-- Need to add -->
+                    <p>Score: <em>N/A</em></p>
 
                 </section>
 
+
+                <!-- Add Script for paging -->
+                <section class="u-profile" id="profile-follows">
+                    <h4>Follows </h4>
+
+                    <hr>
+                    <p>[PlaceHolder]</p>
+                </section>
+
+                <section class="u-profile" id="profile-comments">
+                    <h4>Comments </h4>
+
+                    <hr>
+                    <p>[PlaceHolder]</p>
+                </section>
+
+                <!-- Inbox page -->
+                <section class="u-profile" id="profile-inbox">
+                    <h4>Inbox </h4>
+
+                    <hr>
+                    {{# if inbox }}
+                        <div class="col-sm-12">
+                            <table class="table table-striped u-table">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Sender</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{# each inbox }}
+                                <tr class="u-table-row" data-toggle="modal"  data-target=".{{ this.class }}">
+                                    <td>{{ this.date }}</td>
+                                    <td>{{ this.subject }}</td>
+                                    <td>{{ this.sender }}</td>
+                                </tr>
+                                {{/each}}
+                                </tbody>
+                            </table>
+
+
+
+                            {{# each inbox}}
+                                <article class="modal fade {{this.class}}">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                            <section class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title"><em>Subject: </em>{{ this.subject }}</h4>
+                                                <h5><em>From: </em>{{ this.sender }}</h5>
+                                                <em>Date: </em> {{this.date}}
+                                            </section>
+
+                                            <section class="modal-body">
+                                                {{ this.message }}
+                                            </section>
+
+                                            <div class="modal-footer">
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </article>
+                            {{/each}}
+                        </div>
+                    {{ else }}
+                        <h3>No Messages.</h3>
+                    {{/if}}
+                </section>
+
+
             </article>
-
-
-
-
-            <!-- Pages -->
-
-
 
     </div>
 

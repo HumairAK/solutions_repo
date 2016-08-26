@@ -1,4 +1,4 @@
-/*** USER PROFILE PAGE  ***/
+        /*** USER PROFILE PAGE  ***/
 
 .user-info-content img{
     max-width: 120px;
@@ -134,6 +134,17 @@ nav .nav-o:hover .nav-o-container{
     color: #737373;
 }
 
+
+/* Inbox */
+
+
+.u-table-row {
+    display:table-row;
+    cursor: pointer;
+}
+.u-table tbody tr:hover{
+    background-color: #ededed;
+}
 
 
 /*** USER PROFILE PAGE END ***/

@@ -1365,3 +1365,30 @@ exports.removeToken = function(token, callback) {
     });
 };
 
+
+
+/**
+ * Check if the user with the given username has mail.
+ * If the user does, then send the mail that falls within the specified page range.
+ *
+ * @param {object} username object
+ * @param {function} callback of the form (<boolean1>, <boolean2>, <array of objects>, <string>)
+ * - callback(error, success, mail,  message)
+ * */
+exports.getMail = function (username, callback) {
+
+    var mail = db.collection('mail');
+
+    mail.find({receiver: username}).toArray(function (err, data) {
+        if (err) {
+            callback(false, true, null, 'Error: could not retrieve inbox messages.');
+        } else if (!data) {
+            callback(false, false, null, 'No inbox.');
+        } else {
+            // Mail retrieved
+            callback(true, false, data, 'Retrieved inbox');
+        }
+
+    });
+
+};

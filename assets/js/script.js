@@ -25,6 +25,5 @@ function main(){
 
     $('.table-row').trigger('create');
 
-
 }
 $(document).ready(main);

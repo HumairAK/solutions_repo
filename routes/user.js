@@ -136,6 +136,7 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
 
 /**
  * Serve mail messages for page pageNum with messageCount messages as a JSON object
+ * mail is sorted by date.
  */
 router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, function(req, res, next) {
 
@@ -182,13 +183,11 @@ router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, funct
         var index = (pageNum - 1) * messageCount;
         var indexMax = index + messageCount;
         var inboxLength = inbox.length;
-        var count = 0;
 
-        /* Testing Purposes
-        var notification = "index = " + index + "\n" +
-            "indexMax = " + indexMax + "\n" +
-            "inboxLength = " + inbox.length + "\n";
-        console.log(notification); */
+        // Consider a more efficient alternative to sorting mail
+        inbox.sort(function(b,a){
+            return new Date(a.date).getTime() - new Date(b.date).getTime()
+        });
 
         // Find the 10 messages situated at page num in inbox, store in mail
         if(index >= inboxLength){
@@ -202,14 +201,17 @@ router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, funct
             while((index < inboxLength) && (index < indexMax)){
                 mail.push(inbox[index]);
                 index++;
-                count++;
-                console.log("in while: " + count);
             }
         }
 
         // return mail JSON object ::  JSON.stringify({json});
-        var mailJSON = JSON.stringify(mail);
-        res.end(mailJSON);
+        var mailbox = {
+            mailCount : inboxLength,
+            mail : mail
+        };
+        var mailboxJSON = JSON.stringify(mailbox);
+
+        res.end(mailboxJSON);
     });
 });
 

@@ -222,55 +222,65 @@ router.get('/resetPassword', loggedOut, function(req, res, next) {
 
 router.post('/sendReset', loggedOut, function(req, res, next){
 
-    dbFile.find_user(req.body.email, function(found){
-        if (!found) {
-            res.render('reset_password', {errors: "This email does not exist in our database."});
-        } else {
-            var token = crypto.randomBytes(32).toString('hex');
-            var userToken = crypto.randomBytes(8).toString('hex');
+    req.check('email', 'Enter a valid Email address').notEmpty().withMessage('Email required').isEmail();
 
-            dbFile.addToken(req.body.email, userToken, token, function(error, message){
-                if (error) {
-                    res.render('reset_password', {errors: "An error has occurred. Please try again."});
-                } else {
-                    var transporter = nodemailer.createTransport({
-                        service: "Gmail",
-                        auth: {
-                            user: 'solutionsrepo0@gmail.com',
-                            pass: 'lamptable'
-                        }
-                    });
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+        res.redirect('/user/resetPassword');
+    } else {
+        dbFile.find_user(req.body.email, function(found){
+            if (!found) {
+                res.render('reset_password', {error: "This email does not exist in our database."});
+            } else {
+                var token = crypto.randomBytes(32).toString('hex');
+                var userToken = crypto.randomBytes(8).toString('hex');
 
-                    var mailOptions = {
-                        from: "Solutions.Repo < solutionsrepo0@gmail.com >",
-                        to: req.body.email,
-                        subject: 'Password reset on Solutions.Repo',
-                        text: "Hello!\n" +
-                        "You are receiving this email because you requested a password reset for your account at Solutions.Repo.\n" +
-                        "In order to reset your password, please visit the following link:\n" +
-                        resetLink + userToken + '/' + token + '\n' +
-                        'Thanks for using Solutions.Repo! The Solutions.Repo Team.',
-                        html: "<p>Hello!</p>" +
-                        "<p>You are receiving this email because you requested a password reset for your account at Solutions.Repo.</p>" +
-                        "<p>In order to reset your password, please visit the following link:</p>" +
-                        "<a href='"+ resetLink + userToken + '/' + token + "'>Click here!</a>" +
-                        "<p>Thanks for using Solutions.Repo! The Solutions.Repo Team.</p>"
-                    };
+                dbFile.addToken(req.body.email, userToken, token, function(error, message){
+                    if (error) {
+                        res.render('reset_password', {error: "An error has occurred. Please try again."});
+                    } else {
+                        var transporter = nodemailer.createTransport({
+                            service: "Gmail",
+                            auth: {
+                                user: 'solutionsrepo0@gmail.com',
+                                pass: 'lamptable'
+                            }
+                        });
 
-                    transporter.sendMail(mailOptions, function(error, info) {
-                        if (error) {
-                            console.log(error);
-                            res.render('reset_password', {errors: "An error has occurred. Please try again."});
-                        } else {
-                            console.log("Message Sent");
-                            res.render('reset_password', {success: "We've e-mailed you instructions for resetting your password." +
-                            " You should be receiving the email shortly. Please check your inbox."});
-                        }
-                    });
-                }
-            });
-        }
-    });
+                        var mailOptions = {
+                            from: "Solutions.Repo < solutionsrepo0@gmail.com >",
+                            to: req.body.email,
+                            subject: 'Password reset on Solutions.Repo',
+                            text: "Hello!\n" +
+                            "You are receiving this email because you requested a password reset for your account at Solutions.Repo.\n" +
+                            "In order to reset your password, please visit the following link:\n" +
+                            resetLink + userToken + '/' + token + '\n' +
+                            'Thanks for using Solutions.Repo! The Solutions.Repo Team.',
+                            html: "<p>Hello!</p>" +
+                            "<p>You are receiving this email because you requested a password reset for your account at Solutions.Repo.</p>" +
+                            "<p>In order to reset your password, please visit the following link:</p>" +
+                            "<a href='"+ resetLink + userToken + '/' + token + "'>Click here!</a>" +
+                            "<p>Thanks for using Solutions.Repo! The Solutions.Repo Team.</p>"
+                        };
+
+                        transporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                                console.log(error);
+                                res.render('reset_password', {error: "An error has occurred. Please try again."});
+                            } else {
+                                console.log("Message Sent");
+                                res.render('reset_password', {success: "We've e-mailed you instructions for resetting your password." +
+                                " You should be receiving the email shortly. Please check your inbox."});
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+    }
 
 });
 
@@ -283,13 +293,13 @@ router.get('/password/reset/:emailHash/:token', loggedOut, function(req, res, ne
             res.redirect('/');
         } else {
             if (data[0].userToken === emailHash) {
-                dbFile.removeToken(token, function(err, message) {
+                /*dbFile.removeToken(token, function(err, message) {
                     if (err)
                         console.log('could not remove token from db');
                     else {
                         console.log('token removed');
                     }
-                });
+                });*/
                 res.render('password_edit', {email: data[0].email, csrfToken: req.csrfToken()});
 
             } else {
@@ -300,16 +310,30 @@ router.get('/password/reset/:emailHash/:token', loggedOut, function(req, res, ne
 });
 
 router.post('/password/change', loggedOut, function(req, res, next) {
-    var email = req.body._email.valueOf();
-    var password = req.body.password;
-    var hashed = pass.encryptPassword(password);
-    dbFile.updatePassword(email, hashed, function(err, message) {
-        if (err) {
-            res.render('password_edit', {errors: "Could not change password!"});
-        } else {
-            res.render('password_edit', {success: "Password changed."});
-        }
-    });
+    req.check('password', "Password should be between 6 and 12 characters.")
+        .notEmpty().withMessage('Password required.').isLength({min: 6, max: 12});
+    req.check('password', "The confirmation password doesn't match.").equals(req.body.confirmPassword);
+
+    var errors = req.validationErrors();
+    if (errors) {
+        req.session.errors = errors;
+        req.session.success = false;
+        /*res.redirect('/user/resetPassword');*/
+        res.render('password_edit', {
+            errors : errors
+        });
+    } else {
+        var email = req.body._email.valueOf();
+        var password = req.body.password;
+        var hashed = pass.encryptPassword(password);
+        dbFile.updatePassword(email, hashed, function(err, message) {
+            if (err) {
+                res.render('password_edit', {error: "Could not change password!"});
+            } else {
+                res.render('password_edit', {success: "Password changed."});
+            }
+        });
+    }
 });
 
 /** Render/GET signin page. */

@@ -42,14 +42,11 @@ router.get('/user_profile', loggedIn, isUser, function(req, res, next) {
                         };
                         comments.push(obj);
                         comments.push(obj);
-
                     }
-
                     resolve(1);
                 } else if (object.length){
                     req.user.comments = object.length;
                     req.user.comment_list = object;
-
                     resolve(1);
                 } else {
                     req.user.comments = object.length;
@@ -213,6 +210,45 @@ router.get('/user_profile/inbox/:messageCount/:pageNum', loggedIn, isUser, funct
 
         res.end(mailboxJSON);
     });
+});
+
+/**
+ * Serve comment history for page pageNum with commentCount messages as a JSON object
+ * comments are sorted by date.
+ */
+router.get('/user_profile/comments/:commentCount/:pageNum', loggedIn, isUser, function(req, res, next) {
+    var commentList = [];
+    var commentCount = 0;
+
+    function getComments() {
+        return new Promise(function(resolve, reject) {
+            dbFile.retrieve_userComments_history(req.user.user_name, function (success, object) {
+                if (!success) {
+                    // Set status code to client error 400
+                    res.writeHead(400, {"Content-Type": "application/json"});
+                    console.log('No comments found');
+                    resolve(1);
+                } else {
+                    if (object.length){
+                        commentList = object;
+                    }
+                    commentCount = object.length;
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    resolve(1);
+                }
+            });
+        });
+    }
+
+    getComments().then(function (data) {
+        var commentBox = {
+            commentList : commentList,
+            commentCount : commentCount
+        };
+        var commentBoxJSON = JSON.stringify(commentBox);
+        res.end(commentBoxJSON);
+    });
+
 });
 
 router.get('/resetPassword', loggedOut, function(req, res, next) {

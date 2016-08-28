@@ -1366,7 +1366,6 @@ exports.removeToken = function(token, callback) {
 };
 
 
-
 /**
  * Check if the user with the given username has mail.
  * If the user does, then send the mail that falls within the specified page range.

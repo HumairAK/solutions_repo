@@ -205,35 +205,89 @@ var returnRouter = function(io) {
             var index = (pageNum - 1) * messageCount;
             var indexMax = index + messageCount;
             var inboxLength = inbox.length;
-            var count = 0;
 
-            /* Testing Purposes
-             var notification = "index = " + index + "\n" +
-             "indexMax = " + indexMax + "\n" +
-             "inboxLength = " + inbox.length + "\n";
-             console.log(notification); */
+            // Consider a more efficient alternative to sorting mail
+            inbox.sort(function(b,a){
+                return new Date(a.date).getTime() - new Date(b.date).getTime()
+            });
 
             // Find the 10 messages situated at page num in inbox, store in mail
-            if (index >= inboxLength) {
+            if(index >= inboxLength){
                 res.writeHead(400, {"Content-Type": "application/json"});
                 console.log("Specified index is out of bounds");
-            } else if (inboxLength <= messageCount) {
+            }else if (inboxLength <= messageCount) {
                 res.writeHead(200, {"Content-Type": "application/json"});
                 mail = inbox;
-            } else {
+            }else {
                 res.writeHead(200, {"Content-Type": "application/json"});
-                while ((index < inboxLength) && (index < indexMax)) {
+                while((index < inboxLength) && (index < indexMax)){
                     mail.push(inbox[index]);
                     index++;
-                    count++;
-                    console.log("in while: " + count);
                 }
             }
 
             // return mail JSON object ::  JSON.stringify({json});
-            var mailJSON = JSON.stringify(mail);
-            res.end(mailJSON);
+            var mailbox = {
+                mailCount : inboxLength,
+                mail : mail
+            };
+            var mailboxJSON = JSON.stringify(mailbox);
+
+            res.end(mailboxJSON);
         });
+    });
+
+    router.get('/resetPassword', loggedOut, function(req, res, next) {
+        res.render('reset_password', {csrfToken: req.csrfToken(), success: req.session.success, errors: req.session.errors});
+        req.session.errors = null;
+    });
+
+    router.post('/sendReset', loggedOut, function(req, res, next){
+
+        req.check('email', 'Enter a valid Email address').notEmpty().withMessage('Email required').isEmail();
+
+        var errors = req.validationErrors();
+        if (errors) {
+            req.session.errors = errors;
+            req.session.success = false;
+            res.redirect('/user/resetPassword');
+        } else {
+            dbFile.find_user(req.body.email, function (found) {
+                if (!found) {
+                    res.render('reset_password', {error: "This email does not exist in our database."});
+                } else {
+                    var token = crypto.randomBytes(32).toString('hex');
+                    var userToken = crypto.randomBytes(8).toString('hex');
+
+                    /* Testing Purposes
+                     var notification = "index = " + index + "\n" +
+                     "indexMax = " + indexMax + "\n" +
+                     "inboxLength = " + inbox.length + "\n";
+                     console.log(notification); */
+
+                    // Find the 10 messages situated at page num in inbox, store in mail
+                    if (index >= inboxLength) {
+                        res.writeHead(400, {"Content-Type": "application/json"});
+                        console.log("Specified index is out of bounds");
+                    } else if (inboxLength <= messageCount) {
+                        res.writeHead(200, {"Content-Type": "application/json"});
+                        mail = inbox;
+                    } else {
+                        res.writeHead(200, {"Content-Type": "application/json"});
+                        while ((index < inboxLength) && (index < indexMax)) {
+                            mail.push(inbox[index]);
+                            index++;
+                            count++;
+                            console.log("in while: " + count);
+                        }
+                    }
+
+                    // return mail JSON object ::  JSON.stringify({json});
+                    var mailJSON = JSON.stringify(mail);
+                    res.end(mailJSON);
+                }
+            });
+        }
     });
 
     router.get('/resetPassword', loggedOut, function (req, res, next) {

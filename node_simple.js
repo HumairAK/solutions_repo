@@ -1392,3 +1392,48 @@ exports.getMail = function (username, callback) {
     });
 
 };
+
+/**
+ * Adds a notification to a user.
+ * @param email
+ * @param notification
+ * @param callback
+ */
+
+exports.addNotification = function(email, notification, callback) {
+
+    var notif = db.collection('notifications');
+    notification['email'] = email;
+
+    notif.insertOne(notification, function (err) {
+        if (err) {
+            //callback(error, message)
+            callback(true, "Error : Notification has not been added.");
+        }
+
+        else {
+            callback(false, "Notification has been added");
+        }
+    });
+}
+
+/**
+ * Retrieves a list of all notifications related to a user's email.
+ * @param email
+ * @param callback
+ */
+exports.getNotifications = function(email, callback) {
+    var notif = db.collection('notifications');
+
+    notif.find({email: email}).toArray(function (err, data) {
+        if (err) {
+            callback(false, true, null, 'Error: could not retrieve notifications.');
+        } else if (!data) {
+            callback(false, false, null, 'No notifications.');
+        } else {
+            callback(true, false, data, 'Retrieved notifications');
+        }
+
+    });
+
+}

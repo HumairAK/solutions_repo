@@ -18,7 +18,7 @@ var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 
-var port = '3000';
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 var routes = require('./routes/index');
@@ -105,7 +105,7 @@ app.use(function(error, req, res, next) {
 dbFile.setupDB(function (success, mssg) {
     if (success) {      // db establiseh
         server.listen(port, function(){         // now accept connections
-            console.log('listening on port 3000');
+            console.log('listening on port 8080');
         });
     }
     else {

@@ -1,9 +1,9 @@
-# solutions_repo  
+#  
 A web app that allows students to view and share test/exam solutions. The app is currently designed for U of T students with
 plans of making it available to students in universities all over the world.
   
   
-#installation
+## installation
 
     Heroku-
     In order to the use the live version of the application deployed on Heroku simply go to the following url on your browser:

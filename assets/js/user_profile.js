@@ -4,7 +4,7 @@ function main(){
     var CURRENT_INBOX_PAGE = 1;
 
     // CommentsConstants and Globals
-    var COMMENT_MESSAGE_COUNT = 4; // Number of message per page in comments
+    var COMMENT_MESSAGE_COUNT = 6; // Number of message per page in comments
     var CURRENT_COMMENT_PAGE = 1;
     var COMMENT_BOX; // {commentCount : int, commentList : array}
     var COMMENT_PAGES = {}; // {pgNum : commentList}

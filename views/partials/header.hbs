@@ -115,6 +115,21 @@
                 {{# if login }}
                     {{# if user.email }}
                         <li><a href="/user/user_profile">Profile Page</a></li>
+                        <li class="dropdown notification-dropdown">
+                            <a class="dropdown-toggle notification-icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                               aria-expanded="false">
+                                <i class="fa fa-bell fa-lg" aria-hidden="true"></i> <span class="badge"></span> <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu notification-dropdown-menu">
+                                {{# if user.notifications.length}}
+                                    {{# each user.notifications }}
+                                        <li><a href="#">{{this.author}} added a solution to an exam.</a></li>
+                                    {{/each}}
+                                {{else}}
+                                    <li><a href="#" class="generic-notification">This is a random thing</a></li>
+                                {{/if}}
+                            </ul>
+                        </li>
                     {{else}}
                         <li><a href="/admin">Admin Panel</a></li>
                     {{/if}}

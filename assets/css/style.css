@@ -620,3 +620,13 @@ hr {
 	border-top-left-radius: 8px !important;
 	border-bottom-left-radius: 8px !important;
 }
+
+.notification-dropdown-menu {
+	width: 400px !important;
+	height: auto !important;
+}
+
+.badge {
+    background-color: #f2dede !important;
+    color: #a94442 !important;
+}

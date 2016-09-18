@@ -13,11 +13,17 @@ var compression = require('compression');
 
 var MongoStore = require('connect-mongo') (session); //for storing sessions in database
 
-var routes = require('./routes/index');
-var userRoutes = require('./routes/user');
-var adminRoutes = require('./routes/admin');
-
 var app = express();
+var http = require('http');
+var server = http.createServer(app);
+var io = require('socket.io')(server);
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+var routes = require('./routes/index');
+var userRoutes = require('./routes/user')(io);
+var adminRoutes = require('./routes/admin');
 
 // Templating engine, we are using handlebars
 // This will allow us to create html pages dynamically before serving them.
@@ -60,6 +66,8 @@ app.use(function(req, res, next) {
     res.locals.user = req.user;
     res.locals.messages = req.session.messages;
     next();
+
+
 });
 
 
@@ -92,6 +100,34 @@ app.use(function(error, req, res, next) {
     res.render('error', {error: error, url: url});
 });
 
+/****************** Server Setup ********************/
 
+dbFile.setupDB(function (success, mssg) {
+    if (success) {      // db establiseh
+        server.listen(port, function(){         // now accept connections
+            console.log('listening on port 8080');
+        });
+    }
+    else {
+        console.log(mssg);
+    }
+});
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+/*********************** Setup end *******************/
 
 module.exports = app;

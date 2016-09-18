@@ -1366,3 +1366,73 @@ exports.removeToken = function(token, callback) {
 };
 
 
+/**
+ * Check if the user with the given username has mail.
+ * If the user does, then send the mail that falls within the specified page range.
+ *
+ * @param {object} username object
+ * @param {function} callback of the form (<boolean1>, <boolean2>, <array of objects>, <string>)
+ * - callback(error, success, mail,  message)
+ * */
+exports.getMail = function (username, callback) {
+
+    var mail = db.collection('mail');
+
+    mail.find({receiver: username}).toArray(function (err, data) {
+        if (err) {
+            callback(false, true, null, 'Error: could not retrieve inbox messages.');
+        } else if (!data) {
+            callback(false, false, null, 'No inbox.');
+        } else {
+            // Mail retrieved
+            callback(true, false, data, 'Retrieved inbox');
+        }
+
+    });
+
+};
+
+/**
+ * Adds a notification to a user.
+ * @param email
+ * @param notification
+ * @param callback
+ */
+
+exports.addNotification = function(email, notification, callback) {
+
+    var notif = db.collection('notifications');
+    notification['email'] = email;
+
+    notif.insertOne(notification, function (err) {
+        if (err) {
+            //callback(error, message)
+            callback(true, "Error : Notification has not been added.");
+        }
+
+        else {
+            callback(false, "Notification has been added");
+        }
+    });
+}
+
+/**
+ * Retrieves a list of all notifications related to a user's email.
+ * @param email
+ * @param callback
+ */
+exports.getNotifications = function(email, callback) {
+    var notif = db.collection('notifications');
+
+    notif.find({email: email}).toArray(function (err, data) {
+        if (err) {
+            callback(false, true, null, 'Error: could not retrieve notifications.');
+        } else if (!data) {
+            callback(false, false, null, 'No notifications.');
+        } else {
+            callback(true, false, data, 'Retrieved notifications');
+        }
+
+    });
+
+}

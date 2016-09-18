@@ -6,10 +6,10 @@
     "node": "6.2.2",
     "npm": "3.9.5"
   },
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node ./app.js"
   },
   "repository": {
     "type": "git",

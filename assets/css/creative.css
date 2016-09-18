@@ -108,12 +108,17 @@ padding-top: 200px;
     background-color: transparent;
 }
 
-.navbar-default .dropdown-menu{
+.navbar-default .dropdown-menu,
+.notification-dropdown-menu{
     padding: 0;
 }
 
-.navbar-default .dropdown-menu li a{
+.navbar-default .dropdown-menu li a {
     padding: 10px;
+}
+
+.notification-dropdown-menu li a {
+    padding: 30px;
 }
 
 .navbar-default .dropdown-submenu .dropdown-menu {

@@ -1,106 +1,78 @@
-# solutions_repo  
+# Solutions.Repo
+
 A web app that allows students to view and share test/exam solutions. The app is currently designed for U of T students with
 plans of making it available to students in universities all over the world.
-  
-  
-Installation:
 
-    Heroku-
-    In order to the use the live version of the application deployed on Heroku simply go to the following url on your browser:
-    http://frozen-springs-49303.herokuapp.com/
+## Installation
 
-    GitHub-
-    In order to run the web app locally from your computer please follow the following steps:
-        1. Clone the repository into your desired directory from: https://github.com/HumairAK/solutions_repo
-        2. Make sure node.js and npm are installed on your computer. If not, the easiest way to do this is using Homebrew. Please
-           follow the following steps to install Homebrew + node + npm:
-                1. Run: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" from a
-                   directory of your choosing.
-                2. Run: brew update to get the most updated version
-                3. Run: brew install node to install node and npm simultaneously.
+### Heroku
+In order to the use the live version of the application deployed on Heroku simply go to the following url on your browser:
+https://solutionsrepo.herokuapp.com/
 
-        3. Run: npm install from the root directory
-        4. Run: node ./bin/www.js to run the server
-        5. Open the browser to http://localhost:3000/
+### Github
+In order to run the web app locally from your computer please follow the following steps:
 
-Usage and features:
+1. Clone the repository into your desired directory from: https://github.com/HumairAK/solutions_repo
+2. Make sure node.js and npm are installed on your computer. If not, the easiest way to do this is using Homebrew.
+3. Run: npm install from the root directory
+4. Run: node app.js to run the server
+5. Open the browser to http://localhost:3000/
 
-    General user (not signed in):
+## Usage and Features
 
-        Examination + Solution Search:
+### General user (not signed in)
 
-           1. Type in the course code in the search bar saying: "Enter course name".
-           2. Make sure the "Courses" option is selected to the left of the search bar.
-           3. Select the examination the from the list provided
-           4. Select the questions you wish to view from the list provided. Each question has the number of solutions
-              and comments that other users have posted.
-           5. Once in the solutions page, you can view the solutions but in order to post a solution or comment you must
-              be signed in.
+#### Examination + Solution Search
 
-            Voting:
+1. Go to the main page, and search for the course code of the examination you would like to search in the search bar. Make sure the "Courses" option is selected in the search dropdown.
+2. Select an exam from the search results page.
+3. You will see a list of all the questions in the selected exam, as well as the number of solutions each one of them has. You can click on the items in the list to view the solutions.
 
-               Once in the solutions page you can promote solutions by clicking the green "up" arrow or dislike it by
-               clicking the red "down" arrow.
+##### Voting
 
-        User Search:
-
-            1. Select the "Users" option on the left side of the search bar in the home page.
-            2. Select the user's profile you wish to view.
+Once in the solutions page you can promote solutions by clicking the green "up" arrow or dislike it by clicking the red "down" arrow.
 
 
-    Signed In User:
+#### User Search
+1. Select the "User" option from the search dropdown on the Main page
+2. Select a user from the search results. If the user does not exist, the search results are usually empty.
 
-        In order to sign in and take advantage of commenting and adding solutions you must sign in via your facebook account.
+### Signed In User
 
-        Examination + Solution Search:
-            Add Solution:
+In order to be able to add solutions or comment, you must be have an account. You can create an account using the site, or signin with your Facebook account.
 
-                1. Once in the solutions page click "Add a solution"
-                2. Type in your solution in the form and hit "Submit"
+#### Add solution
 
-            Add Comment:
+In order to add a solution, simply navigate to the solutions page (walk through in Examination + Solution Search section), and click on the "Add a solution" button.
 
-                1. Once in the solutions page click "Comment"
-                2. Type in your comment in the form and hit "Submit"
+#### Add a comment
 
+You can add comments in the solutions page, where you can ask for more clarifications on specific questions.
 
-        Profile + Social Media:
-            In your profile page you can see the users you are following in the "Following" tab and you can see the friends
-            you have in the "Friends" tab. You can also see the messages you have received in "Inbox" and the comments
-            you have made in "Comments". Please follow the following steps to friend a user, message a user or follow a
-            user:
-                Follow an exam:
+#### Profile + Social Media
 
-                    1. Once signed in search for the course you wish to see the exam for and select and exam of your choice
-                    2. Click the "Follow Exam" button once in the page displaying the list of questions for an exam
+In your profile, you can see the exams you are following, as well as messages you receive in the Inbox section.
 
+### Admin User
 
-                Message a user:
+Admin users can only be added by existing admin users. Once added as an admin you have all the privileges as
+a signed in user along with the following (accessed in the Admin panel):
 
-                    1. Once signed in click on the "PROFILE PAGE" at the top of any of the pages
-                    2. Click "Send Message"
-                    3. Fill in the forms: "Send To:" must contain the username of the person you are trying to reach
-                                          "Subject:" is the subject of your message
-                                          "Message:" contains your message in text
-                    4. Once the forms are filled out press "Send Message"
+* Add an exam
+* Add a course
+* Add an Admin
+* Remove an Exam
+* Remove a Course
+* Remove a User
 
+## Built With
 
-    Admin User:
+* Server-Side: Node.js, Express
+* Client-side: Javascript/jQuery, Handlebars, Bootstrap, HTML5/CSS3
+* Database: MongoDB
 
-        Admin users can only be added by existing admin users. Once added as an admin you have all the privileges as
-        a signed in user along with the following:
-
-        Click on the "Admin Panel" to access these features
-
-            Add an Exam:
-                Once in the admin panel fill out the necessary details in the "Add Exam" tab and press "Submit"
-            Add a Course:
-                Once in the admin panel fill out the necessary details in the "Add Course" tab and press "Submit"
-            Add another Admin:
-                Once in the admin panel fill out the necessary details in the "Add Admin" tab and press "Submit"
-            Remove an Exam:
-                Once in the admin panel fill out the necessary details in the "Remove Exam" tab and press "Submit"
-            Remove a Course:
-                Once in the admin panel fill out the necessary details in the "Remove Course" tab and press "Submit"
-            Remove a User:
-                Once in the admin panel fill out the necessary details in the "Remove User" tab and press "Submit"
+## Authors
+* Nana Nosirova
+* Humair Khan
+* Kumar Damani
+* Waref Haque

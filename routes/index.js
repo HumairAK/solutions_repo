@@ -18,6 +18,14 @@ router.get('/', function(req, res, next) {
 
 });
 
+router.get('/auto-complete-courses', function(req, res, next) {
+
+      // console.log('in controller');
+      dbFile.find_all_course_codes_from_exams( function (data) {
+          res.send(JSON.stringify(data));
+      });
+});
+
 /** Serve the about.hbs page */
 router.get('/about', function(req, res, next) {
     res.render('about');

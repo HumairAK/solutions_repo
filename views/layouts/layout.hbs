@@ -13,7 +13,7 @@
     <!--Bootstrap File-->
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/creative.css">
-
+    <link rel="stylesheet" href="/assets/css/typeheadjs.css" title="typehead css" type="text/css">
     <!-- Partial Scripts, Order important -->
     {{# if userProfile}}
         <link href="/assets/css/user_profile.css" rel="stylesheet" type="text/css">
@@ -28,8 +28,9 @@
           crossorigin="anonymous">
 
     <!--JS-->
-    <script src="/assets/js/jquery-2.2.4.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/assets/js/typeaheadPlusBloodhound.js"></script>
 
     <script src="/assets/js/script.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -40,9 +41,8 @@
         <script src="/assets/js/admin_panel.js"></script>
     {{/if}}
     {{# if homePage }}
-        <script src="/assets/js/home_page.js"></script>
+        <script type="text/javascript" src="/assets/js/home_page.js"></script>
     {{/if}}
-
 
 </head>
 <body>

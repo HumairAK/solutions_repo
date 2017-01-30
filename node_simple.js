@@ -117,6 +117,7 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 exports.setupDB = function (callback) {
     mongoFactory.getConnection(uri).then(function (database) {
         db = database;
+        // var corses = exports.find_all_course_codes_from_exams();
         callback(true, "Database connected"); // signal start of app
 
     }).catch(function (err) {
@@ -647,6 +648,28 @@ exports.updatePassword = function (email, password, callback) {
 }*/
 
 /************************* COURSES / EXAMS **********************************/
+
+
+/**
+ * Find all UNIQUE course codes from EXAMS collection
+ *
+ * @param {function} callback: 2 args: (<string>),
+ *                             where <string> : couseCodes array
+ */
+exports.find_all_course_codes_from_exams = function (callback) {
+  var exams = db.collection('exams');
+  exams.distinct("course_code", function (err, result) {
+      if (err) throw console.log(err);
+      else {
+          // console.log(result);
+          callback(result);
+      }
+  });
+
+  // callback(unique_coursecodes.distinct('course_code'));
+  // return (unique_coursecodes.distinct('course_code'));
+};
+
 
 /**
  * Remvove a course from ONLY the courses table IN CASE of accidental

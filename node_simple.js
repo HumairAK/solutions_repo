@@ -117,7 +117,6 @@ var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/
 exports.setupDB = function (callback) {
     mongoFactory.getConnection(uri).then(function (database) {
         db = database;
-        // var corses = exports.find_all_course_codes_from_exams();
         callback(true, "Database connected"); // signal start of app
 
     }).catch(function (err) {
@@ -659,10 +658,9 @@ exports.updatePassword = function (email, password, callback) {
 exports.find_all_course_codes_from_exams = function (callback) {
   var exams = db.collection('exams');
   exams.distinct("course_code", function (err, result) {
-      if (err) throw console.log(err);
+      if (err) callback(false, "Failed to get unique courses");
       else {
-          // console.log(result);
-          callback(result);
+          callback(true, result);
       }
   });
 

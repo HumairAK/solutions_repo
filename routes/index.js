@@ -21,8 +21,11 @@ router.get('/', function(req, res, next) {
 router.get('/auto-complete-courses', function(req, res, next) {
 
       // console.log('in controller');
-      dbFile.find_all_course_codes_from_exams( function (data) {
-          res.send(JSON.stringify(data));
+      dbFile.find_all_course_codes_from_exams( function (success, data) {
+        var res_obj = {};
+        res_obj.success = success;
+        res_obj.data = data;
+        res.send(JSON.stringify(res_obj));
       });
 });
 

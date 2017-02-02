@@ -663,9 +663,6 @@ exports.find_all_course_codes_from_exams = function (callback) {
           callback(true, result);
       }
   });
-
-  // callback(unique_coursecodes.distinct('course_code'));
-  // return (unique_coursecodes.distinct('course_code'));
 };
 
 

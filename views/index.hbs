@@ -59,15 +59,24 @@
 							</ul>
 						</div>
 
+            <!-- Search bar courses (shown by default) -->
             <div id="custom-autocomplete">
-              <!-- Search bar -->
               <input type="text"
-                                 id = "user-input"
-                                 class="form-control typeahead"
-                                 aria-label="..."
-                                 name="search"
-                                 placeholder="Enter course code eg. CSC148">
+                     id = "user-input-course"
+                     class="form-control typeahead"
+                     aria-label="..."
+                     name="search"
+                     placeholder="Enter course code eg. CSC148">
             </div>
+            <!-- Search bar users (hidden by default) -->
+              <input type="text"
+                     id = "user-input-users"
+                     class="form-control"
+                     aria-label="..."
+                     name="search"
+                     placeholder="Enter user info"
+                     style="display:none">
+
 						<!-- Prompt Search -->
 					    <span class="input-group-btn">
                             <button id = 'go-button'

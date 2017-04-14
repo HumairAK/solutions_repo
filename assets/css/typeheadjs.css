@@ -19,6 +19,7 @@ span.twitter-typeahead .tt-dropdown-menu {
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   background-clip: padding-box;
+  margin-top: 10px;
 }
 span.twitter-typeahead .tt-suggestion {
   display: block;

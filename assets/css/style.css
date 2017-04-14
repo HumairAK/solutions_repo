@@ -48,17 +48,18 @@ main .search h2{
 }
 
 .search input {
-    text-align: center;
+    text-align: left;
     box-sizing: border-box;
     background-size: 20px 20px;
-    padding: 0;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .search input, .search button.search-button {
     font-size: 16px;
-	height: 40px;
+    height: 40px;
     border-radius: 10px;
-	border: 2px solid #ccc;
+    border: 2px solid #ccc;
 }
 
 .input-group {

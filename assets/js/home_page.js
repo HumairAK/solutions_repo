@@ -9,13 +9,21 @@ function main(){
 
         switch(type) {
             case "Courses":
-                $("#search-field").attr("action","/search/courses");
-                $("#user-input").attr("placeholder", "Enter coure code");
+                // hide the input for user search 
+                $("#user-input-users").css("display", "none");
+                // show the input for courses search
+                $("#custom-autocomplete").css("display", "block");
+
+                $("#search-field").attr("action", "/search/courses");
                 $("#drop-down-value").text("Courses");
                 break;
             case "Users":
-                $("#search-field").attr("action","/search/users");
-                $("#user-input").attr("placeholder", "Enter user info");
+                // hide the input for courses search
+                $("#custom-autocomplete").css("display", "none");
+                // show the input for users search
+                $("#user-input-users").css("display", "block");
+
+                $("#search-field").attr("action", "/search/users");
                 $("#drop-down-value").text("Users");
                 break;
             default:

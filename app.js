@@ -73,13 +73,11 @@ app.use(function(req, res, next) {
     res.locals.session = req.session;
     res.locals.user = req.user;
     res.locals.messages = req.session.messages;
-    res.locals.config = (process.env.NODE_ENV == 'production') ? 'production' : null;
     next();
 
 
 });
 
-// app.locals.config = (process.env.NODE_ENV == 'production') ? 'production' : null;
 
 // Allows us to customize express routing
 // in a separate file.

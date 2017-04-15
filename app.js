@@ -28,7 +28,7 @@ var adminRoutes = require('./routes/admin');
 // Templating engine, we are using handlebars
 // This will allow us to create html pages dynamically before serving them.
 // use the minifed css if the app running on production, otherwise use reg css
-var layout = (process.env.NODE_ENV == "production") ? 'layout' : 'layout_mini';
+var layout = (process.env.NODE_ENV == "production") ? 'layout_mini' : 'layout';
 app.engine(
   '.hbs', 
   hbs({

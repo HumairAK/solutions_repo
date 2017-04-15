@@ -22,7 +22,7 @@ h1{
 }
 
 main {
-	background-image: url("../images/main.jpg");
+	background-image: url("/assets/images/main.jpg");
 	background-size: 250px 250px;
 	text-align: center;
 	width: 100%;

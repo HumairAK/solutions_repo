@@ -1,4 +1,14 @@
 function main(){
+    $("#go-button").on('click', function(e) {
+        e.preventDefault();
+        if ($("#drop-down-value").text() == "Courses") {
+            // $("#search-field").attr("action", "search/courses");
+            window.location += 'search/courses?search=' + $("#user-input-course").val();
+        } else {
+            // $("#search-field").attr("action", "search/users");
+            window.location += 'search/users?search=' + $("#user-input-users").val();
+        }
+    });
 
     // Search bar drop down scripting (some of it is shared with nav panel
     // in script.js but this code in this file is exclusive to search bar

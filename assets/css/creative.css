@@ -172,7 +172,7 @@ header {
     min-height: 100%;
     text-align: center;
     /*color: #fff;*/
-    background-image: url("../images/main.jpg");
+    background-image: url("/assets/images/main.jpg");
     /*background-color: #5bc0de;*/
     background-size: 250px 250px;
     background-position: center;

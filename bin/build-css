@@ -1,0 +1,18 @@
+#!/bin/sh
+echo Compressing CSS Files...
+saved=0
+for f in `find assets/css/ -name "*.css" -not -name "*.min.css"`;
+do
+	target=${f%.*}.min.css
+	echo "-  $f to $target"
+    node_modules/node-sass/bin/node-sass $f $target --output-style compressed
+done
+
+# move the minified files to min/ folder
+for f_min in `find assets/css/ -maxdepth 1 -name "*.min.css"`;
+do
+	echo "- moving $f_min to min/$f"
+    mv $f_min assets/css/min
+done
+
+echo "Done !"

@@ -27,9 +27,17 @@ var adminRoutes = require('./routes/admin');
 
 // Templating engine, we are using handlebars
 // This will allow us to create html pages dynamically before serving them.
-app.engine('.hbs', hbs({extname: '.hbs', defaultLayout: 'layout',
+// use the minifed css if the app running on production, otherwise use reg css
+var layout = (process.env.NODE_ENV == "production") ? 'layout_mini' : 'layout';
+app.engine(
+  '.hbs', 
+  hbs({
+    extname: '.hbs', 
+    defaultLayout: layout,
     layoutsDir: __dirname + '/views/layouts/', // Set directory for base layout
-    partialsDir: __dirname + '/views/partials'})); // Set directory for partials
+    partialsDir: __dirname + '/views/partials',
+  })
+); // Set directory for partials
 
 app.set('views', path.join(__dirname, 'views')); // Our view path
 app.set('view engine', 'hbs');
@@ -69,7 +77,6 @@ app.use(function(req, res, next) {
 
 
 });
-
 
 
 // Allows us to customize express routing

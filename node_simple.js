@@ -654,6 +654,24 @@ exports.updatePassword = function (email, password, callback) {
 
 /************************* COURSES / EXAMS **********************************/
 
+
+/**
+ * Find all UNIQUE course codes from EXAMS collection
+ *
+ * @param {function} callback: 2 args: (<string>),
+ *                             where <string> : couseCodes array
+ */
+exports.find_all_course_codes_from_exams = function (callback) {
+  var exams = db.collection('exams');
+  exams.distinct("course_code", function (err, result) {
+      if (err) callback(false, "Failed to get unique courses");
+      else {
+          callback(true, result);
+      }
+  });
+};
+
+
 /**
  * Remvove a course from ONLY the courses table IN CASE of accidental
  * addition.

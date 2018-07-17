@@ -103,8 +103,14 @@ var _ = require('underscore');
 var db;
 
 // Standard URI format: mongodb://[dbuser:dbpassword@]host:port/dbname
-var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
-
+if (process.env.NODE_ENV == 'staging') {
+    var uri = exports.uri =  'mongodb://root:solutions_repo@ds023624.mlab.com:23624/solutions_staging';
+} else if (process.env.NODE_ENV == 'production') {
+    var uri = exports.uri =  'mongodb://general:assignment4@ds057862.mlab.com:57862/solutions_repo';
+} else if (process.env.NODE_ENV == 'development') {
+    // Keep this for testing on local machine, do not remove. - Humair
+    //var uri = 'mongodb://localhost:27017/db';
+}
 
 // Keep this for testing on local machine, do not remove. - Humair
 //var uri = 'mongodb://localhost:27017/db';

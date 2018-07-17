@@ -15,7 +15,7 @@ In order to run the web app locally from your computer please follow the followi
 1. Clone the repository into your desired directory from: https://github.com/HumairAK/solutions_repo
 2. Make sure node.js and npm are installed on your computer. If not, the easiest way to do this is using Homebrew.
 3. Run: npm install from the root directory
-4. Run: node app.js to run the server
+4. Run: NODE_ENV=staging node app.js to run the server
 5. Open the browser to http://localhost:3000/
 
 ## Usage and Features
